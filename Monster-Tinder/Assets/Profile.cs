@@ -20,10 +20,6 @@ public class Profile : MonoBehaviour {
 
 	}
 
-	public virtual void CacheIfMatchProfile(){
-
-	}
-
 	public int GetPartsOfType(BodyPart.Type type){
 		return m_typeScores [(int)type];
 	}
@@ -38,6 +34,11 @@ public class Profile : MonoBehaviour {
 		body.GenerateBody();
 		body.CalculateScore (ref m_typeScores);
 		CacheIfMatchProfile ();
+
+	}
+
+
+	public virtual void CacheIfMatchProfile(){
 	}
 		
 }

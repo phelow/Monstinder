@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class DislikeButton : MonoBehaviour {
+public class DislikeButton : Button {
 	[SerializeField]GameObject m_match;
 
 	// Use this for initialization
@@ -18,7 +18,7 @@ public class DislikeButton : MonoBehaviour {
 		GameObject go = GameObject.FindGameObjectWithTag("NextMatch");
 
 		GameObject.Instantiate (m_match, go.transform.position, go.transform.rotation);
-		Destroy (go.transform.parent.gameObject);
-		Debug.Log ("Dislike");
+		StartCoroutine (DestroyMatch (go.transform.parent.gameObject));
+		Destroy (go);
 	}
 }

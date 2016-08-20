@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class LikeButton : MonoBehaviour {
+public class LikeButton : Button {
 	[SerializeField]PlayerProfile m_player;
 	[SerializeField]GameObject m_match;
 	// Use this for initialization
@@ -28,6 +28,8 @@ public class LikeButton : MonoBehaviour {
 			PlayerProfile.RemoveMatch ();
 
 		}
-		Destroy (go.transform.parent.gameObject);
+
+		StartCoroutine (DestroyMatch (go.transform.parent.gameObject));
+		Destroy (go);
 	}
 }
