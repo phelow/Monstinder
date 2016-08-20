@@ -7,7 +7,11 @@ using UnityEngine.UI;
 public class PlayerProfile : Profile {
 	static Dictionary<BodyPart.Type,List<BodyPart.Type>> ms_strongAgainst;
 
-	public static int score = 0;
+	private static int ms_score = 0;
+
+	public static int GetScore(){
+		return ms_score;
+	}
 
 	public bool CheckForMatch(Profile potentialMatch){
 		ms_strongAgainst = new Dictionary<BodyPart.Type, List<BodyPart.Type>> ();
@@ -40,13 +44,13 @@ public class PlayerProfile : Profile {
 	public static void AddMatch(){
 		Text scoreText = GameObject.FindWithTag ("ScoreText").GetComponent<Text>() as Text;
 
-		score++;
-		scoreText.text = "Score: "+ score;
+		ms_score++;
+		scoreText.text = "Score: "+ ms_score;
 	}
 	public static void RemoveMatch(){
 		Text scoreText = GameObject.FindWithTag ("ScoreText").GetComponent<Text>() as Text;
 
-		score--;
-		scoreText.text = "Score: "+ score;
+		ms_score--;
+		scoreText.text = "Score: "+ ms_score;
 	}
 }
