@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 public class BodyPart : MonoBehaviour {
+
+	//TODO: refactor into two dictionaries of lists, this is rediculous
 	//TODO: add other bodyparts
 	private BodyPartSlot [] slots;
 	private static List<GameObject> arms;
@@ -16,6 +18,18 @@ public class BodyPart : MonoBehaviour {
 	private static List<GameObject> rightEars;
 	private static List<GameObject> leftEars;
 	private static List<GameObject> heads;
+
+
+	private static List<GameObject> usableArms;
+	private static List<GameObject> usableRightArms;
+	private static List<GameObject> usableLeftArms;
+	private static List<GameObject> usableLegs;
+	private static List<GameObject> usableRightLegs;
+	private static List<GameObject> usableLeftLegs;
+	private static List<GameObject> usableEars;
+	private static List<GameObject> usableRightEars;
+	private static List<GameObject> usableLeftEars;
+	private static List<GameObject> usableHeads;
 
 	[SerializeField]private List<BodyPart> bodyparts;
 	[SerializeField]private Type m_type;
@@ -30,15 +44,8 @@ public class BodyPart : MonoBehaviour {
 
 	public void InitAndGenerateBody(){
 		this.Init ();
+		BodyPart.RemoveConflicts (this);
 		this.GenerateBody ();
-	}
-
-	void Start(){
-		if (slots != null) {
-			return;
-		}
-
-		InitAndGenerateBody ();
 	}
 
 	// Use this for initialization
@@ -58,43 +65,62 @@ public class BodyPart : MonoBehaviour {
 			leftEars = Resources.LoadAll("leftEars", typeof(GameObject)).Cast<GameObject>().ToList();
 			rightEars = Resources.LoadAll("rightEars", typeof(GameObject)).Cast<GameObject>().ToList();
 		}
+
+		usableArms = new List<GameObject>(arms);
+		usableRightArms = new List<GameObject>(rightArms);
+		usableLeftArms = new List<GameObject>(leftArms);
+		usableLegs = new List<GameObject>(legs);
+		usableRightLegs = new List<GameObject>(rightLegs);
+		usableLeftLegs = new List<GameObject>(leftLegs);
+		usableEars = new List<GameObject>(ears);
+		usableRightEars = new List<GameObject>(rightEars);
+		usableLeftEars = new List<GameObject>(leftEars);
+		usableHeads = new List<GameObject>(heads);
+
 	}
 
 	public BodyPartSlot.BodyPartType GetBodyPartType(){
 		return m_bodyType;
 	}
 
-	private void GenerateBody(){
+	public Type GetElementType(){
+		return m_type;
+	}
+
+	private void GenerateBody( ){
 		foreach (BodyPartSlot slot in slots) {
 			List<GameObject> parts = null;
 
 			switch (slot.GetBodyPartType()) {
 			case BodyPartSlot.BodyPartType.Arm:
-				parts = arms;
+				parts = usableArms;
 				break;
 			case BodyPartSlot.BodyPartType.RightArm:
-				parts = rightArms;
+				parts = usableRightArms;
 				break;
 			case BodyPartSlot.BodyPartType.LeftArm:
-				parts = leftArms;
+				parts = usableLeftArms;
 				break;
 			case BodyPartSlot.BodyPartType.Ear:
-				parts = ears;
+				parts = usableEars;
 				break;
 			case BodyPartSlot.BodyPartType.RightEar:
-				parts = rightEars;
+				parts = usableRightEars;
 				break;
 			case BodyPartSlot.BodyPartType.LeftEar:
-				parts = leftEars;
+				parts = usableLeftEars;
 				break;
 			case BodyPartSlot.BodyPartType.Leg:
-				parts = legs;
+				parts = usableLegs;
 				break;
 			case BodyPartSlot.BodyPartType.RightLeg:
-				parts = rightLegs;
+				parts = usableRightLegs;
 				break;
 			case BodyPartSlot.BodyPartType.LeftLeg:
-				parts = leftLegs;
+				parts = usableLeftLegs;
+				break;
+			case BodyPartSlot.BodyPartType.Head:
+				parts = usableHeads;
 				break;
 			}
 				
@@ -103,13 +129,144 @@ public class BodyPart : MonoBehaviour {
 				return;
 			}
 
+			//TODO: remove from parts all parts that cause a weakness
+
 			int partCount = parts.Count;
 
+			if (partCount == 0) {
+				continue;
+			}
+
 			BodyPart part = (GameObject.Instantiate(parts[Random.Range(0,partCount)],slot.transform.position,slot.transform.rotation) as GameObject).GetComponent(typeof(BodyPart)) as BodyPart;
+			this.RemoveConflicts (part);
+
 			part.transform.parent = this.transform;
 			part.InitAndGenerateBody ();
 
 			bodyparts.Add (part);
+		}
+	}
+
+	public static void RemoveConflicts(BodyPart part){
+		List<GameObject> toRemove;
+
+		toRemove = new List<GameObject> ();
+		foreach(GameObject p in usableArms){
+			if (PlayerProfile.Conflicts (p.GetComponent<BodyPart> (), part)) {
+				toRemove.Add(p);
+			}
+		}
+		foreach (GameObject go in toRemove) {
+			usableArms.Remove (go);
+		}
+
+
+		toRemove = new List<GameObject> ();
+		foreach(GameObject p in usableRightArms){
+			if (PlayerProfile.Conflicts (p.GetComponent<BodyPart> (), part)) {
+				toRemove.Add(p);
+			}
+		}
+		foreach (GameObject go in toRemove) {
+			usableRightArms.Remove (go);
+		}
+
+
+		toRemove = new List<GameObject> ();
+		foreach(GameObject p in usableLeftArms){
+			if (PlayerProfile.Conflicts (p.GetComponent<BodyPart> (), part)) {
+				toRemove.Add(p);
+			}
+		}
+
+		foreach (GameObject go in toRemove) {
+			usableLeftArms.Remove (go);
+		}
+
+		toRemove = new List<GameObject> ();
+		foreach(GameObject p in usableEars){
+			if (PlayerProfile.Conflicts (p.GetComponent<BodyPart> (), part)) {
+				toRemove.Add(p);
+			}
+		}
+
+		foreach (GameObject go in toRemove) {
+			usableEars.Remove (go);
+		}
+
+		toRemove = new List<GameObject> ();
+		foreach(GameObject p in usableRightEars){
+			if (PlayerProfile.Conflicts (p.GetComponent<BodyPart> (), part)) {
+				toRemove.Add(p);
+			}
+		}
+
+		foreach (GameObject go in toRemove) {
+			usableRightEars.Remove (go);
+		}
+
+		toRemove = new List<GameObject> ();
+		foreach(GameObject p in usableLeftEars){
+			if (PlayerProfile.Conflicts (p.GetComponent<BodyPart> (), part)) {
+				toRemove.Add(p);
+			}
+		}
+
+		foreach (GameObject go in toRemove) {
+			usableLeftEars.Remove (go);
+		}
+
+		toRemove = new List<GameObject> ();
+		foreach(GameObject p in usableRightEars){
+			if (PlayerProfile.Conflicts (p.GetComponent<BodyPart> (), part)) {
+				toRemove.Add(p);
+			}
+		}
+
+		foreach (GameObject go in toRemove) {
+			usableRightEars.Remove (go);
+		}
+
+		toRemove = new List<GameObject> ();
+		foreach(GameObject p in usableLegs){
+			if (PlayerProfile.Conflicts (p.GetComponent<BodyPart> (), part)) {
+				toRemove.Add(p);
+			}
+		}
+
+		foreach (GameObject go in toRemove) {
+			usableLegs.Remove (go);
+		}
+
+		toRemove = new List<GameObject> ();
+		foreach(GameObject p in usableLeftLegs){
+			if (PlayerProfile.Conflicts (p.GetComponent<BodyPart> (), part)) {
+				toRemove.Add(p);
+			}
+		}
+
+		foreach (GameObject go in toRemove) {
+			usableLeftLegs.Remove (go);
+		}
+
+		toRemove = new List<GameObject> ();
+		foreach(GameObject p in usableRightLegs){
+			if (PlayerProfile.Conflicts (p.GetComponent<BodyPart> (), part)) {
+				toRemove.Add(p);
+			}
+		}
+		foreach (GameObject go in toRemove) {
+			usableRightLegs.Remove (go);
+		}
+
+		toRemove = new List<GameObject> ();
+		foreach(GameObject p in usableHeads){
+			if (PlayerProfile.Conflicts (p.GetComponent<BodyPart> (), part)) {
+				toRemove.Add(p);
+			}
+		}
+		foreach (GameObject go in toRemove) {
+			usableHeads.Remove (go);
 		}
 	}
 

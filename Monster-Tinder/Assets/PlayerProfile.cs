@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 
 public class PlayerProfile : Profile {
-	static Dictionary<BodyPart.Type,List<BodyPart.Type>> ms_strongAgainst;
 
 	private static int ms_score = 0;
 
@@ -13,13 +12,11 @@ public class PlayerProfile : Profile {
 		return ms_score;
 	}
 
+	public static bool Conflicts(BodyPart a, BodyPart b){
+		return ms_strongAgainst [a.GetElementType ()].Contains (b.GetElementType ()) || ms_strongAgainst [b.GetElementType ()].Contains (a.GetElementType ());
+	}
+
 	public bool CheckForMatch(Profile potentialMatch){
-		ms_strongAgainst = new Dictionary<BodyPart.Type, List<BodyPart.Type>> ();
-
-		ms_strongAgainst.Add (BodyPart.Type.Fire, new List<BodyPart.Type>());
-
-		ms_strongAgainst.Add (BodyPart.Type.Water, new List<BodyPart.Type>());
-		ms_strongAgainst [BodyPart.Type.Water].Add (BodyPart.Type.Fire);
 
 
 		//calculate num same parts (likelihood of match)
