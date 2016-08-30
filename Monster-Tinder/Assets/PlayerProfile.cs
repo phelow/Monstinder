@@ -21,15 +21,15 @@ public class PlayerProfile : Profile {
 
 		//calculate num same parts (likelihood of match)
 		int sameParts = 0;
-		for (int i = 0; i < (int)BodyPart.Type.Count; i++) {
-			sameParts += Mathf.Min (GetPartsOfType ((BodyPart.Type)i), potentialMatch.GetPartsOfType ((BodyPart.Type)i));
+		for (int i = 0; i < (int)BodyPart.ElementType.Count; i++) {
+			sameParts += Mathf.Min (GetPartsOfType ((BodyPart.ElementType)i), potentialMatch.GetPartsOfType ((BodyPart.ElementType)i));
 		}
 
 
 		int differentParts = 0;
 		//calculate num typematched parts (likelihood of unmatch)
-		foreach (BodyPart.Type type in ms_strongAgainst.Keys) {
-			foreach (BodyPart.Type strongAgainst in ms_strongAgainst[type]) {
+		foreach (BodyPart.ElementType type in ms_strongAgainst.Keys) {
+			foreach (BodyPart.ElementType strongAgainst in ms_strongAgainst[type]) {
 				differentParts += Mathf.Min (GetPartsOfType(type),potentialMatch.GetPartsOfType(strongAgainst)) + Mathf.Min (potentialMatch.GetPartsOfType(strongAgainst),GetPartsOfType(type));
 			}
 		}

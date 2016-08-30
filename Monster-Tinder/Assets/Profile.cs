@@ -12,13 +12,13 @@ public class Profile : MonoBehaviour {
 
 	[SerializeField]private Text m_text;
 
-	static protected Dictionary<BodyPart.Type,List<BodyPart.Type>> ms_strongAgainst;
+	static protected Dictionary<BodyPart.ElementType,List<BodyPart.ElementType>> ms_strongAgainst;
 
 	// Use this for initialization
 	void Start () {
 		AssembleStrongAgainst ();
 		if (m_bodies == null) {
-			var bodies = Resources.LoadAll("bodies", typeof(GameObject)).Cast<GameObject>();
+			var bodies = Resources.LoadAll(BodyPartSlot.BodyPartType.Body.ToString(), typeof(GameObject)).Cast<GameObject>();
 
 			m_bodies = bodies.ToArray ();
 		}
@@ -35,20 +35,20 @@ public class Profile : MonoBehaviour {
 
 	protected virtual void AssembleStrongAgainst(){
 
-		ms_strongAgainst = new Dictionary<BodyPart.Type, List<BodyPart.Type>> ();
+		ms_strongAgainst = new Dictionary<BodyPart.ElementType, List<BodyPart.ElementType>> ();
 
-		ms_strongAgainst.Add (BodyPart.Type.Fire, new List<BodyPart.Type> ());
+		ms_strongAgainst.Add (BodyPart.ElementType.Fire, new List<BodyPart.ElementType> ());
 
-		ms_strongAgainst.Add (BodyPart.Type.Water, new List<BodyPart.Type> ());
-		ms_strongAgainst [BodyPart.Type.Water].Add (BodyPart.Type.Fire);
+		ms_strongAgainst.Add (BodyPart.ElementType.Water, new List<BodyPart.ElementType> ());
+		ms_strongAgainst [BodyPart.ElementType.Water].Add (BodyPart.ElementType.Fire);
 	}
 
-	public int GetPartsOfType(BodyPart.Type type){
+	public int GetPartsOfType(BodyPart.ElementType type){
 		return m_typeScores [(int)type];
 	}
 
 	void GenerateProfile(){
-		m_typeScores = new int[(int)BodyPart.Type.Count];
+		m_typeScores = new int[(int)BodyPart.ElementType.Count];
 		//Pick a starting body
 
 		BodyPart body = (GameObject.Instantiate(m_bodies[Random.Range(0,m_bodies.Length)],m_bodySlot.transform.position,m_bodySlot.transform.rotation) as GameObject).GetComponent(typeof(BodyPart)) as BodyPart;
