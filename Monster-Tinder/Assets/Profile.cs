@@ -38,9 +38,16 @@ public class Profile : MonoBehaviour {
 		ms_strongAgainst = new Dictionary<BodyPart.ElementType, List<BodyPart.ElementType>> ();
 
 		ms_strongAgainst.Add (BodyPart.ElementType.Fire, new List<BodyPart.ElementType> ());
-
+		ms_strongAgainst.Add (BodyPart.ElementType.Grass, new List<BodyPart.ElementType> ());
+		ms_strongAgainst.Add (BodyPart.ElementType.Ground, new List<BodyPart.ElementType> ());
 		ms_strongAgainst.Add (BodyPart.ElementType.Water, new List<BodyPart.ElementType> ());
+
+
 		ms_strongAgainst [BodyPart.ElementType.Water].Add (BodyPart.ElementType.Fire);
+		ms_strongAgainst [BodyPart.ElementType.Water].Add (BodyPart.ElementType.Ground);
+		ms_strongAgainst [BodyPart.ElementType.Fire].Add (BodyPart.ElementType.Grass);
+		ms_strongAgainst [BodyPart.ElementType.Grass].Add (BodyPart.ElementType.Water);
+		ms_strongAgainst [BodyPart.ElementType.Ground].Add (BodyPart.ElementType.Fire);
 	}
 
 	public int GetPartsOfType(BodyPart.ElementType type){

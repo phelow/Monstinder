@@ -20,6 +20,8 @@ public class BodyPart : MonoBehaviour {
 	public enum ElementType{
 		Fire,
 		Water,
+		Grass,
+		Ground,
 		Count
 	}
 
@@ -56,8 +58,17 @@ public class BodyPart : MonoBehaviour {
 
 	private void GenerateBody( ){
 		foreach (BodyPartSlot slot in slots) {
-			List<GameObject> parts = usableBodyParts [slot.GetBodyPartType ()];
-				
+			BodyPartSlot.BodyPartType bodyPartSlot = slot.GetBodyPartType ();
+
+			List<GameObject> parts = usableBodyParts [bodyPartSlot];
+
+			if (bodyPartSlot == BodyPartSlot.BodyPartType.LeftArm || bodyPartSlot == BodyPartSlot.BodyPartType.RightArm) {
+				parts.AddRange (usableBodyParts [BodyPartSlot.BodyPartType.Arm]);
+			} else if (bodyPartSlot == BodyPartSlot.BodyPartType.LeftLeg || bodyPartSlot == BodyPartSlot.BodyPartType.RightLeg) {
+				parts.AddRange (usableBodyParts [BodyPartSlot.BodyPartType.Leg]);
+			} else if (bodyPartSlot == BodyPartSlot.BodyPartType.LeftEar || bodyPartSlot == BodyPartSlot.BodyPartType.RightEar) {
+				parts.AddRange (usableBodyParts [BodyPartSlot.BodyPartType.Ear]);
+			}
 
 			if (parts == null) {
 				return;
