@@ -22,6 +22,8 @@ public class BodyPart : MonoBehaviour {
 		Water,
 		Grass,
 		Ground,
+		Ghost,
+		Poison,
 		Count
 	}
 
