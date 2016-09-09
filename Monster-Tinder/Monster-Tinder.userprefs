@@ -1,22 +1,22 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj" RefactoringSettings.EnableRefactorings="True">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Profile.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\BodyPart.cs">
     <Files>
-      <File FileName="Assets\Profile.cs" Line="54" Column="81" />
-      <File FileName="Assets\BodyPart.cs" Line="57" Column="9" />
-      <File FileName="Assets\SessionManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Profile.cs" Line="68" Column="8" />
+      <File FileName="Assets\BodyPart.cs" Line="63" Column="11" />
+      <File FileName="Assets\SessionManager.cs" Line="47" Column="42" />
       <File FileName="Assets\MatchProfile.cs" Line="1" Column="1" />
       <File FileName="Assets\LikeButton.cs" Line="1" Column="1" />
       <File FileName="Assets\DifficultySystem.cs" Line="1" Column="1" />
-      <File FileName="Assets\PlayerProfile.cs" Line="32" Column="22" />
+      <File FileName="Assets\PlayerProfile.cs" Line="15" Column="2" />
       <File FileName="Assets\HighScore.cs" Line="1" Column="1" />
       <File FileName="Assets\BodyPartSlot.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="E:\Game Development\Monster-Tinder\Monster-Tinder\Assets\BodyPart.cs" line="70" column="1" />
-      <Breakpoint file="E:\Game Development\Monster-Tinder\Monster-Tinder\Assets\BodyPart.cs" line="61" column="1" />
+      <Breakpoint file="E:\Game Development\Monster-Tinder\Monster-Tinder\Assets\BodyPart.cs" line="66" column="36" />
+      <Breakpoint file="E:\Game Development\Monster-Tinder\Monster-Tinder\Assets\BodyPart.cs" line="38" column="3" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

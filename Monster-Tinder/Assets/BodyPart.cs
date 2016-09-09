@@ -59,6 +59,10 @@ public class BodyPart : MonoBehaviour {
 	}
 
 	private void GenerateBody( ){
+		if (slots == null) {
+			return;
+		}
+
 		foreach (BodyPartSlot slot in slots) {
 			BodyPartSlot.BodyPartType bodyPartSlot = slot.GetBodyPartType ();
 
@@ -88,7 +92,7 @@ public class BodyPart : MonoBehaviour {
 			BodyPart.RemoveConflicts (part);
 
 			part.transform.parent = this.transform;
-			part.InitAndGenerateBody ();
+			part.GenerateBody ();
 
 			theseBodyParts.Add (part);
 		}

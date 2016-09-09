@@ -9,6 +9,8 @@ public class SessionManager : MonoBehaviour {
 
 	[SerializeField]private Text m_timerText;
 	[SerializeField]private Text m_matchesNeededText;
+	[SerializeField]private AudioSource m_audioSource;
+	[SerializeField]private AudioClip m_alarmClip;
 
 	[SerializeField]private GameObject m_highscoreText;
 	[SerializeField]private GameObject m_highscoreSpawnPosition;
@@ -41,6 +43,10 @@ public class SessionManager : MonoBehaviour {
 
 
 		//end the level
+		m_audioSource.PlayOneShot(m_alarmClip);
+		yield return new WaitForSeconds (5.0f);
+
+
 
 		//Check for high score, save if you have one
 		int previousHighscore =  PlayerPrefs.GetInt ("HighScore",0);
