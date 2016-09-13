@@ -35,11 +35,12 @@ public class BodyPart : MonoBehaviour {
 
 	// Use this for initialization
 	void Init () {
+
 		slots = this.GetComponentsInChildren<BodyPartSlot> ();
+
 		if (bodyParts == null) {
 			bodyParts = new Dictionary<BodyPartSlot.BodyPartType, List<GameObject>> ();
 			for (int i = 0; i <=  (int)BodyPartSlot.BodyPartType.Body; i++) {
-				Debug.Log (((BodyPartSlot.BodyPartType)i).ToString ());
 				bodyParts [(BodyPartSlot.BodyPartType)i] = Resources.LoadAll (((BodyPartSlot.BodyPartType)i).ToString(), typeof(GameObject)).Cast<GameObject>().ToList();
 			}
 		}
@@ -59,6 +60,9 @@ public class BodyPart : MonoBehaviour {
 	}
 
 	private void GenerateBody( ){
+
+		slots = this.GetComponentsInChildren<BodyPartSlot> ();
+
 		if (slots == null) {
 			return;
 		}
@@ -75,14 +79,14 @@ public class BodyPart : MonoBehaviour {
 			} else if (bodyPartSlot == BodyPartSlot.BodyPartType.LeftEar || bodyPartSlot == BodyPartSlot.BodyPartType.RightEar) {
 				parts.AddRange (usableBodyParts [BodyPartSlot.BodyPartType.Ear]);
 			}
-
+			Debug.Log (this.m_bodyType);
 			if (parts == null) {
 				return;
 			}
 
 			//TODO: remove from parts all parts that cause a weakness
-
 			int partCount = parts.Count;
+			Debug.Log(this.m_bodyType + " " + partCount);
 
 			if (partCount == 0) {
 				continue;
