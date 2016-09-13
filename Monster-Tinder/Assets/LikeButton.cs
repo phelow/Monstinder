@@ -2,8 +2,9 @@
 using System.Collections;
 
 public class LikeButton : Button {
-	[SerializeField]PlayerProfile m_player;
 	[SerializeField]GameObject m_match;
+	[SerializeField]private AudioClip m_noMatchLikeClip;
+	[SerializeField]private AudioClip m_matchLikeClip;
 	// Use this for initialization
 	void Start () {
 	
@@ -23,8 +24,10 @@ public class LikeButton : Button {
 		Debug.Log ("Like");
 
 		if (m_player.CheckForMatch (MatchProfile.ms_currentMatch)) {
+			this.m_audioSource.PlayOneShot (m_matchLikeClip);
 			PlayerProfile.AddMatch ();
 		} else {
+			this.m_audioSource.PlayOneShot (m_noMatchLikeClip);
 			PlayerProfile.RemoveMatch ();
 
 		}

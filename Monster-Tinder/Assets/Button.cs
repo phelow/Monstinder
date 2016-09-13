@@ -2,6 +2,8 @@
 using System.Collections;
 
 public class Button : MonoBehaviour {
+	[SerializeField]protected PlayerProfile m_player;
+	[SerializeField]protected AudioSource m_audioSource;
 
 	// Use this for initialization
 	void Start () {

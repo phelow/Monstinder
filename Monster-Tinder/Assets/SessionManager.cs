@@ -44,7 +44,7 @@ public class SessionManager : MonoBehaviour {
 
 		//end the level
 		m_audioSource.PlayOneShot(m_alarmClip);
-		yield return new WaitForSeconds (5.0f);
+		yield return new WaitForSeconds (3.0f);
 
 
 
