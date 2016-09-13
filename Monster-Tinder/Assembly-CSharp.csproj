@@ -54,6 +54,7 @@
      <Compile Include="Assets\HighScore.cs" />
      <Compile Include="Assets\LikeButton.cs" />
      <Compile Include="Assets\MatchProfile.cs" />
+     <Compile Include="Assets\PlayAfterThirtySeconds.cs" />
      <Compile Include="Assets\PlayerProfile.cs" />
      <Compile Include="Assets\Profile.cs" />
      <Compile Include="Assets\SessionManager.cs" />
