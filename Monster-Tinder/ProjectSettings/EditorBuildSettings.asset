@@ -9,3 +9,7 @@ EditorBuildSettings:
     path: Assets/Main Menu.unity
   - enabled: 1
     path: Assets/PrototypeScene.unity
+  - enabled: 1
+    path: Assets/Success.unity
+  - enabled: 1
+    path: Assets/Failure.unity

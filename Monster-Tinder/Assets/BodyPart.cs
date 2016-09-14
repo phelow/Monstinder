@@ -24,6 +24,8 @@ public class BodyPart : MonoBehaviour {
 		Ground,
 		Ghost,
 		Poison,
+		Dark,
+		Fairy,
 		Count
 	}
 
@@ -92,7 +94,7 @@ public class BodyPart : MonoBehaviour {
 				continue;
 			}
 
-			BodyPart part = (GameObject.Instantiate(parts[Random.Range(0,partCount)],slot.transform.position,slot.transform.rotation) as GameObject).GetComponent(typeof(BodyPart)) as BodyPart;
+			BodyPart part = (GameObject.Instantiate(parts[Random.Range(0,partCount)],slot.transform.position + slot.transform.forward * -1,slot.transform.rotation) as GameObject).GetComponent(typeof(BodyPart)) as BodyPart;
 			BodyPart.RemoveConflicts (part);
 
 			part.transform.parent = this.transform;

@@ -26,8 +26,13 @@ public class Profile : MonoBehaviour {
 		Debug.Log (m_bodies);
 
 		GenerateProfile ();
+		ResetScore ();
 	}
-	
+
+	public virtual void ResetScore(){
+
+	}
+
 	// Update is called once per frame
 	void Update () {
 
@@ -43,6 +48,8 @@ public class Profile : MonoBehaviour {
 		ms_strongAgainst.Add (BodyPart.ElementType.Water, new List<BodyPart.ElementType> ());
 		ms_strongAgainst.Add (BodyPart.ElementType.Ghost, new List<BodyPart.ElementType> ());
 		ms_strongAgainst.Add (BodyPart.ElementType.Poison, new List<BodyPart.ElementType> ());
+		ms_strongAgainst.Add (BodyPart.ElementType.Dark, new List<BodyPart.ElementType> ());
+		ms_strongAgainst.Add (BodyPart.ElementType.Fairy, new List<BodyPart.ElementType> ());
 
 
 		ms_strongAgainst [BodyPart.ElementType.Water].Add (BodyPart.ElementType.Fire);
@@ -52,6 +59,9 @@ public class Profile : MonoBehaviour {
 		ms_strongAgainst [BodyPart.ElementType.Ground].Add (BodyPart.ElementType.Fire);
 		ms_strongAgainst [BodyPart.ElementType.Ground].Add (BodyPart.ElementType.Poison);
 		ms_strongAgainst [BodyPart.ElementType.Poison].Add (BodyPart.ElementType.Ghost);
+		ms_strongAgainst [BodyPart.ElementType.Poison].Add (BodyPart.ElementType.Fairy);
+		ms_strongAgainst [BodyPart.ElementType.Dark].Add (BodyPart.ElementType.Ghost);
+		ms_strongAgainst [BodyPart.ElementType.Fairy].Add (BodyPart.ElementType.Dark);
 	}
 
 	public int GetPartsOfType(BodyPart.ElementType type){

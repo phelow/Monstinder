@@ -58,6 +58,8 @@ public class SessionManager : MonoBehaviour {
 			GameObject.Instantiate (m_highscoreText, m_highscoreSpawnPosition.transform.position, m_highscoreSpawnPosition.transform.rotation);
 		}
 
+		PlayerPrefs.SetInt ("LastDifficultyPlayed",curDifficulty);
+
 
 			//if unlocked return to main menu
 		if (matchesNeeded < curScore) {
@@ -65,13 +67,13 @@ public class SessionManager : MonoBehaviour {
 				PlayerPrefs.SetInt ("MaxLevel", curDifficulty + 1);
 			}
 
-			SceneManager.LoadScene (0);
+			SceneManager.LoadScene (2);
 		} else {
 			yield return new WaitForSeconds(2.0f);
 			foreach(GameObject go in m_endGameDestruction){
 				Destroy(go);
 			}
-			SceneManager.LoadScene (1);
+			SceneManager.LoadScene (3);
 		}
 			//else offer option to repeat the level
 	}

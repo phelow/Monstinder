@@ -8,6 +8,10 @@ public class PlayerProfile : Profile {
 
 	private static int ms_score = 0;
 
+	public override void ResetScore(){
+		ms_score = 0;
+	}
+
 	public static int GetScore(){
 		return ms_score;
 	}
