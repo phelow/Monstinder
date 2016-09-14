@@ -36,7 +36,7 @@ public class PlayerProfile : Profile {
 			}
 		}
 
-		return sameParts >= differentParts * 1.5f;
+		return sameParts > differentParts * 2.5f;
 
 	}
 
