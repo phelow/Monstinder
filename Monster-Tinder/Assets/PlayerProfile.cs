@@ -21,8 +21,6 @@ public class PlayerProfile : Profile {
 	}
 
 	public bool CheckForMatch(Profile potentialMatch){
-
-
 		//calculate num same parts (likelihood of match)
 		int sameParts = 0;
 		for (int i = 0; i < (int)BodyPart.ElementType.Count; i++) {

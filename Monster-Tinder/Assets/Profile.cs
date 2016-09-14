@@ -11,11 +11,13 @@ public class Profile : MonoBehaviour {
 	[SerializeField]protected int [] m_typeScores;
 
 	[SerializeField]private Text m_text;
+	[SerializeField]private bool m_wait = false;
 
 	static protected Dictionary<BodyPart.ElementType,List<BodyPart.ElementType>> ms_strongAgainst;
 
 	// Use this for initialization
 	void Start () {
+
 		AssembleStrongAgainst ();
 		if (m_bodies == null) {
 			var bodies = Resources.LoadAll(BodyPartSlot.BodyPartType.Body.ToString(), typeof(GameObject)).Cast<GameObject>();
@@ -25,7 +27,11 @@ public class Profile : MonoBehaviour {
 
 		Debug.Log (m_bodies);
 
-		GenerateProfile ();
+		if (m_wait == true) {
+			StartCoroutine (GenerateProfileAfterPlayer ());
+		} else {
+			GenerateProfile ();
+		}
 		ResetScore ();
 	}
 
@@ -36,6 +42,11 @@ public class Profile : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+	}
+
+	private IEnumerator GenerateProfileAfterPlayer(){
+		yield return new WaitForSeconds (1.0f);
+		GenerateProfile ();
 	}
 
 	protected virtual void AssembleStrongAgainst(){

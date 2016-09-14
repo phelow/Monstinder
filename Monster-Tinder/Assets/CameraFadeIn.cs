@@ -12,6 +12,7 @@ public class CameraFadeIn : MonoBehaviour {
 	}
 
 	private IEnumerator FadeIn(){
+		yield return new WaitForSeconds (1.1f);
 		float t = 0.0f;
 		while (t < m_fadeTime) {
 			t += Time.deltaTime;
