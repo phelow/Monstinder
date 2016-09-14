@@ -1,25 +1,26 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj" RefactoringSettings.EnableRefactorings="True">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\CameraFadeIn.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\PlayerProfile.cs">
     <Files>
-      <File FileName="Assets\Profile.cs" Line="1" Column="1" />
+      <File FileName="Assets\Profile.cs" Line="70" Column="19" />
       <File FileName="Assets\BodyPart.cs" Line="1" Column="1" />
       <File FileName="Assets\SessionManager.cs" Line="1" Column="1" />
       <File FileName="Assets\MatchProfile.cs" Line="1" Column="1" />
-      <File FileName="Assets\LikeButton.cs" Line="27" Column="44" />
+      <File FileName="Assets\LikeButton.cs" Line="26" Column="25" />
       <File FileName="Assets\DifficultySystem.cs" Line="1" Column="1" />
-      <File FileName="Assets\PlayerProfile.cs" Line="1" Column="1" />
+      <File FileName="Assets\PlayerProfile.cs" Line="37" Column="44" />
       <File FileName="Assets\HighScore.cs" Line="1" Column="1" />
       <File FileName="Assets\BodyPartSlot.cs" Line="1" Column="1" />
-      <File FileName="Assets\DislikeButton.cs" Line="5" Column="37" />
+      <File FileName="Assets\DislikeButton.cs" Line="1" Column="1" />
       <File FileName="Assets\Button.cs" Line="1" Column="1" />
-      <File FileName="Assets\CameraFadeIn.cs" Line="22" Column="20" />
+      <File FileName="Assets\CameraFadeIn.cs" Line="1" Column="1" />
+      <File FileName="Assets\PlayAfterThirtySeconds.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="E:\Game Development\Monster-Tinder\Monster-Tinder\Assets\BodyPart.cs" line="66" column="36" />
-      <Breakpoint file="E:\Game Development\Monster-Tinder\Monster-Tinder\Assets\BodyPart.cs" line="38" column="3" />
+      <Breakpoint file="E:\Game Development\Monster-Tinder\Monster-Tinder\Assets\BodyPart.cs" line="70" column="36" />
+      <Breakpoint file="E:\Game Development\Monster-Tinder\Monster-Tinder\Assets\BodyPart.cs" line="37" column="3" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

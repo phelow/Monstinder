@@ -34,7 +34,7 @@ public class PlayerProfile : Profile {
 			}
 		}
 
-		return Random.Range (sameParts, Mathf.Pow (sameParts, 2)) > Random.Range (differentParts, Mathf.Pow (differentParts, 2));
+		return sameParts >= differentParts * 1.5f;
 
 	}
 
