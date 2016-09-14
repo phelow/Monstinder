@@ -73,6 +73,7 @@ public class Profile : MonoBehaviour {
 		//Pick a starting body
 
 		BodyPart body = (GameObject.Instantiate(m_bodies[Random.Range(0,m_bodies.Length)],m_bodySlot.transform.position,m_bodySlot.transform.rotation) as GameObject).GetComponent(typeof(BodyPart)) as BodyPart;
+		body.transform.localScale = new Vector3 (.1f, .1f, .01f);
 		body.transform.parent = this.transform;
 		//fill out limbs
 		body.InitAndGenerateBody();

@@ -9,6 +9,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 496424}
   - 212: {fileID: 21268538}
+  - 61: {fileID: 61000012936301622}
   m_Layer: 0
   m_Name: sprite
   m_TagString: Untagged
@@ -73,6 +74,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 468916}
   - 114: {fileID: 11409928}
+  - 61: {fileID: 61000012430724466}
   m_Layer: 0
   m_Name: Water Right Leg
   m_TagString: Untagged
@@ -255,3 +257,31 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 183838}
   m_IsPrefabParent: 1
+--- !u!61 &61000012430724466
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 183838}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: 0.34347057, y: -0.3849071}
+  serializedVersion: 2
+  m_Size: {x: 0.81635296, y: 1.0101925}
+--- !u!61 &61000012936301622
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 142982}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Size: {x: 0.04, y: 0.05}

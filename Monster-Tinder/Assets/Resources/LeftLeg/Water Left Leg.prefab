@@ -25,6 +25,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 453864}
   - 114: {fileID: 11428100}
+  - 61: {fileID: 61000010042814364}
   m_Layer: 0
   m_Name: Water Left Leg
   m_TagString: Untagged
@@ -255,3 +256,17 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 126488}
   m_IsPrefabParent: 1
+--- !u!61 &61000010042814364
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 126488}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: -0.32668114, y: -0.39888448}
+  serializedVersion: 2
+  m_Size: {x: 0.8413258, y: 1.0101854}

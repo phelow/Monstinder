@@ -67,6 +67,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000010411039296}
   - 212: {fileID: 212000011247765160}
+  - 61: {fileID: 61000010895972646}
   m_Layer: 0
   m_Name: sprite
   m_TagString: Untagged
@@ -226,6 +227,20 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012798551322}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!61 &61000010895972646
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000012027267886}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Size: {x: 0.09, y: 0.06}
 --- !u!114 &114000010485123360
 MonoBehaviour:
   m_ObjectHideFlags: 1

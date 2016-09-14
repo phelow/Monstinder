@@ -10,6 +10,8 @@ public class BodyPart : MonoBehaviour {
 	private BodyPartSlot [] slots;
 	private static Dictionary<BodyPartSlot.BodyPartType, List<GameObject>> bodyParts;
 
+	public BoxCollider2D m_collider;
+
 	private static Dictionary<BodyPartSlot.BodyPartType, List<GameObject>> usableBodyParts;
 
 	[SerializeField]private List<BodyPart> theseBodyParts; //todo name
@@ -30,9 +32,8 @@ public class BodyPart : MonoBehaviour {
 	}
 
 	public void InitAndGenerateBody(){
-		this.Init ();
-		BodyPart.RemoveConflicts (this);
-		this.GenerateBody ();
+		Init ();
+		GenerateBody ();
 	}
 
 	// Use this for initialization
@@ -61,8 +62,8 @@ public class BodyPart : MonoBehaviour {
 		return m_type;
 	}
 
-	private void GenerateBody( ){
-
+	public void GenerateBody( ){
+		transform.localScale = new Vector3 (1.0f, 1.0f, .1f);
 		slots = this.GetComponentsInChildren<BodyPartSlot> ();
 
 		if (slots == null) {
@@ -70,6 +71,29 @@ public class BodyPart : MonoBehaviour {
 		}
 
 		foreach (BodyPartSlot slot in slots) {
+			bool c = false;
+			foreach (BodyPart bp in theseBodyParts) {
+				BoxCollider2D bc = bp.GetComponentInChildren<BoxCollider2D> ();
+
+				if (bc == null) {
+					bc = bp.GetComponent<BoxCollider2D> ();
+				}
+
+				if (bc == null) {
+					continue;
+				}
+
+
+
+				if (bc.bounds.Intersects (new Bounds(new Vector3(slot.transform.position.x,slot.transform.position.y,bc.bounds.center.z),Vector3.one * 0.2f) ) ) {
+					c = true;
+				}
+			}
+
+			if(c && slot.GetBodyPartType() != BodyPartSlot.BodyPartType.Head){
+				continue;
+			}
+
 			BodyPartSlot.BodyPartType bodyPartSlot = slot.GetBodyPartType ();
 
 			List<GameObject> parts = usableBodyParts [bodyPartSlot];
@@ -98,6 +122,8 @@ public class BodyPart : MonoBehaviour {
 			BodyPart.RemoveConflicts (part);
 
 			part.transform.parent = this.transform;
+
+			//if the slot is within a trigger do not create a new gameobjec
 			part.GenerateBody ();
 
 			theseBodyParts.Add (part);

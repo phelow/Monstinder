@@ -27,6 +27,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 448816}
   - 114: {fileID: 11484148}
+  - 61: {fileID: 61000013660791026}
   m_Layer: 0
   m_Name: Water Left Ear
   m_TagString: Untagged
@@ -58,6 +59,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 403988}
   - 212: {fileID: 21247000}
+  - 61: {fileID: 61000011388753892}
   m_Layer: 0
   m_Name: sprite
   m_TagString: Untagged
@@ -127,7 +129,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 110162}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.703365, y: 0.289, z: 9.253391}
+  m_LocalPosition: {x: 7.0346093, y: -2.2646503, z: 9.051925}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -255,3 +257,31 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 110162}
   m_IsPrefabParent: 1
+--- !u!61 &61000011388753892
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 142094}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Size: {x: 0.05, y: 0.07}
+--- !u!61 &61000013660791026
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 110162}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: -0.39766312, y: 0.5347872}
+  serializedVersion: 2
+  m_Size: {x: 0.96816254, y: 1.4213294}

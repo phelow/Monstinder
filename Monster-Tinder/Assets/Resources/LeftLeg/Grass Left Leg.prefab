@@ -69,6 +69,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000014243270974}
   - 114: {fileID: 114000012834848516}
+  - 61: {fileID: 61000011029793952}
   m_Layer: 0
   m_Name: Grass Left Leg
   m_TagString: Untagged
@@ -167,6 +168,20 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010072393954}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!61 &61000011029793952
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013162865004}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: -0.49975395, y: -0.5136174}
+  serializedVersion: 2
+  m_Size: {x: 1.83092, y: 1.2252522}
 --- !u!114 &114000012834848516
 MonoBehaviour:
   m_ObjectHideFlags: 1
