@@ -13,6 +13,7 @@ public class BodyPart : MonoBehaviour {
 	public BoxCollider2D m_collider;
 
 	private static Dictionary<BodyPartSlot.BodyPartType, List<GameObject>> usableBodyParts; //TODO: mae
+	private static float ms_placementTolerance = .01f;
 
 	[SerializeField]private List<BodyPart> theseBodyParts; //todo name
 	[SerializeField]private ElementType m_type;
@@ -71,7 +72,7 @@ public class BodyPart : MonoBehaviour {
 		return m_type;
 	}
 		
-	public IEnumerator GenerateBodyCoroutine(Orientation orientation = Orientation.Neutral){
+	public IEnumerator GenerateBodyCoroutine(int depth = 0, Orientation orientation = Orientation.Neutral){
 
 		BodyPart.RemoveConflicts (this);
 		if (orientation == Orientation.Neutral) {
@@ -105,33 +106,25 @@ public class BodyPart : MonoBehaviour {
 		}
 
 		foreach (BodyPartSlot slot in slots) {
+			if (Random.Range (0, depth) > Random.Range (2, 5)) {
+				continue;
+			}
+
+
+			RaycastHit2D[] hits = Physics2D.CircleCastAll (new Vector2 (slot.transform.position.x, slot.transform.position.y), ms_placementTolerance, Vector2.zero);
+			foreach (RaycastHit2D hit in hits) {
+				Debug.Log (hit.collider.gameObject.transform.parent.name + " " + hit.centroid);
+			}
+			if (hits.Length > 0) {
+				continue;
+			}
+
+
 			BodyPartSlot.BodyPartType bodyPartSlotType = slot.GetBodyPartType ();
 			if (orientation == Orientation.Left && (bodyPartSlotType == BodyPartSlot.BodyPartType.RightEar || bodyPartSlotType == BodyPartSlot.BodyPartType.RightLeg || bodyPartSlotType == BodyPartSlot.BodyPartType.RightArm)) {
 				continue;
 			}
 			else if (orientation == Orientation.Right && (bodyPartSlotType == BodyPartSlot.BodyPartType.LeftEar || bodyPartSlotType == BodyPartSlot.BodyPartType.LeftLeg || bodyPartSlotType == BodyPartSlot.BodyPartType.LeftArm)) {
-				continue;
-			}
-
-
-			bool c = false;
-			foreach (BodyPart bp in theseBodyParts) {
-				BoxCollider2D bc = bp.GetComponentInChildren<BoxCollider2D> ();
-
-				if (bc == null) {
-					bc = bp.GetComponent<BoxCollider2D> ();
-				}
-
-				if (bc == null) {
-					continue;
-				}
-
-				if (bc.bounds.Intersects (new Bounds(new Vector3(slot.transform.position.x,slot.transform.position.y,bc.bounds.center.z),Vector3.one * .1f) ) ) {
-					c = true;
-				}
-			}
-
-			if(c && slot.GetBodyPartType() != BodyPartSlot.BodyPartType.Head){
 				continue;
 			}
 
@@ -146,6 +139,7 @@ public class BodyPart : MonoBehaviour {
 			} else if (bodyPartSlot == BodyPartSlot.BodyPartType.LeftEar || bodyPartSlot == BodyPartSlot.BodyPartType.RightEar) {
 				parts.AddRange (usableBodyParts [BodyPartSlot.BodyPartType.Ear]);
 			}
+
 			Debug.Log (this.m_bodyType);
 			if (parts == null) {
 				return false;
@@ -159,23 +153,26 @@ public class BodyPart : MonoBehaviour {
 				continue;
 			}
 
-			BodyPart part = (GameObject.Instantiate(parts[Random.Range(0,partCount)],slot.transform.position + slot.transform.forward * -1,slot.transform.rotation) as GameObject).GetComponent(typeof(BodyPart)) as BodyPart;
+			Vector3 spawnPosition = slot.transform.position;
+			BodyPart part = (GameObject.Instantiate (parts [Random.Range (0, partCount)], spawnPosition, slot.transform.rotation) as GameObject).GetComponent (typeof(BodyPart)) as BodyPart;
 			part.transform.Rotate (new Vector3 (0, 0, Random.Range (m_minRotation, m_maxRotation)));
 
 
 			part.transform.parent = this.transform;
 
 			//if the slot is within a trigger do not create a new gameobjec
-			part.GenerateBody (orientation);
-			yield return new WaitForEndOfFrame ();
+			part.GenerateBody (depth, orientation);
 
 			theseBodyParts.Add (part);
+
 		}
+
+		yield return new WaitForEndOfFrame ();
 	}
 
 
-	public void GenerateBody(Orientation orientation = Orientation.Neutral ){
-		this.StartCoroutine (this.GenerateBodyCoroutine (orientation));
+	public void GenerateBody(int depth = 0, Orientation orientation = Orientation.Neutral ){
+		this.StartCoroutine (this.GenerateBodyCoroutine (depth, orientation));
 	}
 
 	public static void RemoveConflicts(BodyPart part){

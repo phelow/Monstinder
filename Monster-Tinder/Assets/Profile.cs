@@ -17,7 +17,6 @@ public class Profile : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
 		AssembleStrongAgainst ();
 		if (m_bodies == null) {
 			var bodies = Resources.LoadAll(BodyPartSlot.BodyPartType.Body.ToString(), typeof(GameObject)).Cast<GameObject>();

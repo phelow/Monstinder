@@ -19,7 +19,13 @@ public class LikeButton : Button {
 		//Spawn a new Match
 		//TODO: clean this up
 		GameObject go = GameObject.FindGameObjectWithTag("NextMatch");
-		GameObject.Instantiate (m_match, go.transform.position, go.transform.rotation);
+		Vector3 position = go.transform.position;
+		Quaternion rotation = go.transform.rotation;
+
+		StartCoroutine (DestroyMatch (go.transform.parent.gameObject));
+		Destroy (go);
+
+		GameObject.Instantiate (m_match, position, rotation);
 
 		Debug.Log ("Like");
 
@@ -32,7 +38,5 @@ public class LikeButton : Button {
 
 		}
 
-		StartCoroutine (DestroyMatch (go.transform.parent.gameObject));
-		Destroy (go);
 	}
 }

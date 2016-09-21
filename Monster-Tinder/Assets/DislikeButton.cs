@@ -23,6 +23,7 @@ public class DislikeButton : Button {
 
 		//if not match play tearing bubble wrap sound
 		if (this.m_player.CheckForMatch (MatchProfile.ms_currentMatch)) {
+			PlayerProfile.RemoveMatch ();
 			this.m_audioSource.PlayOneShot (m_matchDislikeClip);
 		} else {
 			//else if it wasn't a match play popping noise

@@ -4,8 +4,8 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class SessionManager : MonoBehaviour {
-	private const int mc_startingTime = 30;
-	private const int mc_timePerLevel = 10;
+	private const int mc_startingTime = 60;
+	private const int mc_timePerLevel = 30;
 
 	[SerializeField]private Text m_timerText;
 	[SerializeField]private Text m_matchesNeededText;

@@ -6,7 +6,23 @@ using UnityEngine.UI;
 
 public class PlayerProfile : Profile {
 
+	[SerializeField]private SpriteRenderer m_matchRenderer;
+
+	[SerializeField]private Sprite m_match;
+
+	[SerializeField]private Sprite m_litMatch;
+	[SerializeField]private Sprite m_burntMatch;
+
+	private IEnumerator m_burningRoutine;
 	private static int ms_score = 0;
+
+	protected static PlayerProfile ms_instance;
+
+	void Awake(){
+		
+		ms_instance = this;
+	}
+
 
 	public override void ResetScore(){
 		ms_score = 0;
@@ -40,13 +56,34 @@ public class PlayerProfile : Profile {
 
 	}
 
+	private IEnumerator Burn(){
+		while (true) {
+			m_matchRenderer.sprite = m_litMatch;
+			yield return new WaitForSeconds (.1f);
+			m_matchRenderer.sprite = m_match;
+			yield return new WaitForSeconds (.1f);
+		}
+	}
+
 	public static void AddMatch(){
+		if (ms_instance.m_burningRoutine != null) {
+			ms_instance.StopCoroutine (ms_instance.m_burningRoutine);
+		}
+		ms_instance.m_burningRoutine = ms_instance.Burn ();
+
+		ms_instance.StartCoroutine (ms_instance.m_burningRoutine);
+
 		Text scoreText = GameObject.FindWithTag ("ScoreText").GetComponent<Text>() as Text;
 
 		ms_score++;
 		scoreText.text = "Score: "+ ms_score;
+
 	}
 	public static void RemoveMatch(){
+		if (ms_instance.m_burningRoutine != null) {
+			ms_instance.StopCoroutine (ms_instance.m_burningRoutine);
+		}
+		ms_instance.m_matchRenderer.sprite = ms_instance.m_burntMatch;
 		Text scoreText = GameObject.FindWithTag ("ScoreText").GetComponent<Text>() as Text;
 
 		ms_score--;
