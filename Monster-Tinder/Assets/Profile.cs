@@ -5,15 +5,126 @@ using UnityEngine.UI;
 using System.Linq;
 
 public class Profile : MonoBehaviour {
-	private GameObject[] m_bodies;
-	[SerializeField]private GameObject m_bodySlot;
+	protected GameObject[] m_bodies;
+	protected BodyPart m_body;
+	[SerializeField]protected GameObject m_bodySlot;
 
 	[SerializeField]protected int [] m_typeScores;
 
 	[SerializeField]private Text m_text;
-	[SerializeField]private bool m_wait = false;
 
 	static protected Dictionary<BodyPart.ElementType,List<BodyPart.ElementType>> ms_strongAgainst;
+
+	public static void HighLightMatchingParts(Profile a, Profile b){
+		List<BodyPart> toHighlight = new List<BodyPart> ();
+
+		List<BodyPart> aList = a.getAllBodyParts ();
+		List<BodyPart> bList = b.getAllBodyParts ();
+		toHighlight.AddRange (aList);
+		toHighlight.AddRange (bList);
+
+
+		foreach (BodyPart bp in aList) {
+			if (ContainsConflict (bp, bList)) {
+				toHighlight.Remove(bp);
+			}
+		}
+
+
+		foreach (BodyPart bp in bList) {
+			if (ContainsConflict (bp, aList)) {
+				toHighlight.Remove (bp);
+			}
+		}
+
+		a.StartCoroutine (a.HighLighBodyParts (toHighlight,Color.green));
+
+	}
+
+	public static void HighLightConflicts(Profile a, Profile b){
+		List<BodyPart> toHighlight = new List<BodyPart> ();
+
+		List<BodyPart> aList = a.getAllBodyParts ();
+		List<BodyPart> bList = b.getAllBodyParts ();
+
+		foreach (BodyPart bp in aList) {
+			if (ContainsConflict (bp, bList)) {
+				toHighlight.Add (bp);
+			}
+		}
+
+
+		foreach (BodyPart bp in bList) {
+			if (ContainsConflict (bp, aList)) {
+				toHighlight.Add (bp);
+			}
+		}
+
+		b.StartCoroutine (a.HighLighBodyParts (toHighlight,Color.red));
+
+	}
+
+	private IEnumerator HighLighBodyParts(List<BodyPart> toHighlight, Color c){
+		Dictionary<SpriteRenderer,Color> highlightSprites = new Dictionary<SpriteRenderer, Color> ();
+		foreach (BodyPart bp in toHighlight) {
+			SpriteRenderer sr = bp.GetComponentInChildren<SpriteRenderer> ();
+			if (!highlightSprites.ContainsKey (sr)) {
+				highlightSprites.Add (sr, sr.color);
+			}
+		}
+
+
+		float t = 0.0f;
+
+		while (t < 1.0f) {
+			t += Time.deltaTime;
+
+			float g = 0.0f;
+			//interpolate to green
+			while (g < .1f) {
+				t += Time.deltaTime;
+				g += Time.deltaTime;
+				foreach (SpriteRenderer key in highlightSprites.Keys) {
+					key.color = Color.Lerp (highlightSprites [key],c, g / .1f);
+				}
+				yield return new WaitForEndOfFrame ();
+			}
+
+
+			//interpolate back to base
+			g = 0.0f;
+			//interpolate to green
+			while (g < .1f) {
+				t += Time.deltaTime;
+				g += Time.deltaTime;
+				foreach (SpriteRenderer key in highlightSprites.Keys) {
+					key.color = Color.Lerp (c, highlightSprites [key], g / .1f);
+				}
+				yield return new WaitForEndOfFrame ();
+			}
+
+			yield return new WaitForEndOfFrame ();
+		}
+
+		foreach (SpriteRenderer key in highlightSprites.Keys) {
+			key.color = highlightSprites [key];
+		}
+	}
+
+	public static bool ContainsConflict(BodyPart part, List<BodyPart> bps){
+		foreach (BodyPart bp in bps) {
+			if (PlayerProfile.Conflicts (part, bp)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public List<BodyPart> getAllBodyParts(){
+		List<BodyPart> bps = m_body.GetAllBodyParts();
+		bps.Add (m_body);
+		return bps;
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -21,16 +132,22 @@ public class Profile : MonoBehaviour {
 		if (m_bodies == null) {
 			var bodies = Resources.LoadAll(BodyPartSlot.BodyPartType.Body.ToString(), typeof(GameObject)).Cast<GameObject>();
 
-			m_bodies = bodies.ToArray ();
+			List<GameObject> usableBodies = new List<GameObject> ();
+			List<BodyPart.ElementType> usableElements = SessionManager.AvailableTypes ();
+
+			foreach (GameObject body in bodies) {
+				if (usableElements.Contains (body.GetComponent<BodyPart> ().GetElementType ())) {
+					usableBodies.Add (body);
+				}
+			}
+
+			m_bodies = usableBodies.ToArray ();
 		}
 
 		Debug.Log (m_bodies);
 
-		if (m_wait == true) {
-			StartCoroutine (GenerateProfileAfterPlayer ());
-		} else {
-			GenerateProfile ();
-		}
+		GenerateProfile ();
+
 		ResetScore ();
 	}
 
@@ -60,6 +177,8 @@ public class Profile : MonoBehaviour {
 		ms_strongAgainst.Add (BodyPart.ElementType.Poison, new List<BodyPart.ElementType> ());
 		ms_strongAgainst.Add (BodyPart.ElementType.Dark, new List<BodyPart.ElementType> ());
 		ms_strongAgainst.Add (BodyPart.ElementType.Fairy, new List<BodyPart.ElementType> ());
+		ms_strongAgainst.Add (BodyPart.ElementType.Bug, new List<BodyPart.ElementType> ());
+		ms_strongAgainst.Add (BodyPart.ElementType.Steel, new List<BodyPart.ElementType> ());
 
 
 		ms_strongAgainst [BodyPart.ElementType.Water].Add (BodyPart.ElementType.Fire);
@@ -72,15 +191,24 @@ public class Profile : MonoBehaviour {
 		ms_strongAgainst [BodyPart.ElementType.Poison].Add (BodyPart.ElementType.Fairy);
 		ms_strongAgainst [BodyPart.ElementType.Dark].Add (BodyPart.ElementType.Ghost);
 		ms_strongAgainst [BodyPart.ElementType.Fairy].Add (BodyPart.ElementType.Dark);
+		ms_strongAgainst [BodyPart.ElementType.Bug].Add (BodyPart.ElementType.Grass);
+		ms_strongAgainst [BodyPart.ElementType.Bug].Add (BodyPart.ElementType.Dark);
+		ms_strongAgainst [BodyPart.ElementType.Fire].Add (BodyPart.ElementType.Bug);
+		ms_strongAgainst [BodyPart.ElementType.Steel].Add (BodyPart.ElementType.Fairy);
+		ms_strongAgainst [BodyPart.ElementType.Ground].Add (BodyPart.ElementType.Steel);
+		ms_strongAgainst [BodyPart.ElementType.Fire].Add (BodyPart.ElementType.Steel);
 	}
 
 	public int GetPartsOfType(BodyPart.ElementType type){
 		return m_typeScores [(int)type];
 	}
 
-	void GenerateProfile(){
+	protected virtual void GenerateProfile(){
 		m_typeScores = new int[(int)BodyPart.ElementType.Count];
 		//Pick a starting body
+
+
+
 
 		BodyPart body = (GameObject.Instantiate(m_bodies[Random.Range(0,m_bodies.Length)],m_bodySlot.transform.position,m_bodySlot.transform.rotation) as GameObject).GetComponent(typeof(BodyPart)) as BodyPart;
 		body.transform.localScale = new Vector3 (.1f, .1f, .01f);
@@ -89,6 +217,7 @@ public class Profile : MonoBehaviour {
 		body.InitAndGenerateBody();
 		body.CalculateScore (ref m_typeScores);
 		CacheIfMatchProfile ();
+		m_body = body;
 	}		
 
 	protected virtual void CacheIfMatchProfile(){

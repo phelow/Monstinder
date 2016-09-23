@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Collections;
 
 public class SessionManager : MonoBehaviour {
-	private const int mc_startingTime = 60;
+	private const int mc_startingTime = 15;
 	private const int mc_timePerLevel = 30;
 
 	[SerializeField]private Text m_timerText;
@@ -27,13 +28,61 @@ public class SessionManager : MonoBehaviour {
 		//Kick off timer coroutine
 		StartCoroutine(TimeLevel(time));
 	}
+	/*
+	public enum ElementType{
+		Fire,
+		Water,
+		Grass,
+		Ground,
+		Ghost,
+		Poison,
+		Dark,
+		Fairy,
+		Count
+	}*/
+
+	public static List<BodyPart.ElementType> AvailableTypes(){
+		List<BodyPart.ElementType> availableElements = new List<BodyPart.ElementType>();
+		int curDifficulty = PlayerPrefs.GetInt ("Level",0);
+
+		if (curDifficulty >= 0) {
+			availableElements.Add (BodyPart.ElementType.Fire);
+			availableElements.Add (BodyPart.ElementType.Water);
+			availableElements.Add (BodyPart.ElementType.Grass);
+		}
+
+		if (curDifficulty >= 2) {
+			availableElements.Add (BodyPart.ElementType.Ground);
+			availableElements.Add (BodyPart.ElementType.Dark);
+		}
+
+
+		if (curDifficulty >= 3) {
+			availableElements.Add (BodyPart.ElementType.Ghost);
+			availableElements.Add (BodyPart.ElementType.Poison);
+		}
+
+
+		if (curDifficulty >= 4) {
+			availableElements.Add (BodyPart.ElementType.Fairy);
+			availableElements.Add (BodyPart.ElementType.Bug);
+		}
+
+		if (curDifficulty >= 5) {
+			availableElements.Add (BodyPart.ElementType.Steel);
+		}
+
+		return availableElements;
+
+	}
+
 
 	private IEnumerator TimeLevel(int time){
 
 		//Check for level unlocked
 		int curDifficulty = PlayerPrefs.GetInt ("Level",0);
 		int maxLevelUnlocked = PlayerPrefs.GetInt ("MaxLevel", 0);
-		int matchesNeeded = curDifficulty + 5 / Mathf.Max ((5 - curDifficulty), 1) + 5;
+		int matchesNeeded = curDifficulty  + 5 / Mathf.Max ((5 - curDifficulty), 1) + 2;
 		m_matchesNeededText.text = "matches Needed:" +  matchesNeeded;
 		while (time > 0) {
 			yield return new WaitForSeconds (1.0f);

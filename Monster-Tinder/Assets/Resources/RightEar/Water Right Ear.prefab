@@ -9,7 +9,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 493416}
   - 212: {fileID: 21243878}
-  - 61: {fileID: 61000011063835050}
   m_Layer: 0
   m_Name: sprite
   m_TagString: Untagged
@@ -198,8 +197,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eb5f90e408075f47bb13f536241e6fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_collider: {fileID: 0}
   theseBodyParts: []
   m_type: 1
+  m_minRotation: -30
+  m_maxRotation: 30
   m_bodyType: 4
 --- !u!135 &13560516
 SphereCollider:
@@ -257,20 +259,6 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 149348}
   m_IsPrefabParent: 1
---- !u!61 &61000011063835050
-BoxCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 111100}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Size: {x: 0.05, y: 0.07}
 --- !u!61 &61000012417688012
 BoxCollider2D:
   m_ObjectHideFlags: 1

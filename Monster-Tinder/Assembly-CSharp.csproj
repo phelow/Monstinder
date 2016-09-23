@@ -46,9 +46,11 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\BodyPart.cs" />
+     <Compile Include="Assets\BodyPartDisplay.cs" />
      <Compile Include="Assets\BodyPartSlot.cs" />
      <Compile Include="Assets\Button.cs" />
      <Compile Include="Assets\CameraFadeIn.cs" />
+     <Compile Include="Assets\DestroyAfterTime.cs" />
      <Compile Include="Assets\DifficultySystem.cs" />
      <Compile Include="Assets\DislikeButton.cs" />
      <Compile Include="Assets\GenerateFailureText.cs" />

@@ -32,7 +32,17 @@ public class BodyPart : MonoBehaviour {
 		Poison,
 		Dark,
 		Fairy,
+		Bug,
+		Steel,
 		Count
+	}
+
+	public float MinRotation(){
+		return m_minRotation;
+	}
+
+	public float MaxRotation(){
+		return m_maxRotation;
 	}
 
 	public enum Orientation{
@@ -46,10 +56,20 @@ public class BodyPart : MonoBehaviour {
 		GenerateBody ();
 	}
 
-	// Use this for initialization
-	void Init () {
+	public List<BodyPart> GetAllBodyParts(){
+		List<BodyPart> allParts = new List<BodyPart> ();
 
-		slots = this.GetComponentsInChildren<BodyPartSlot> ();
+		allParts.AddRange (this.theseBodyParts);
+		foreach (BodyPart bp in this.theseBodyParts) {
+			allParts.AddRange (bp.GetAllBodyParts ());
+		}
+
+		return allParts;
+	}
+
+	// Use this for initialization
+	public static void Init () {
+		List<BodyPart.ElementType> usableElements = SessionManager.AvailableTypes ();
 
 		if (bodyParts == null) {
 			bodyParts = new Dictionary<BodyPartSlot.BodyPartType, List<GameObject>> ();
@@ -60,7 +80,14 @@ public class BodyPart : MonoBehaviour {
 		usableBodyParts = new Dictionary<BodyPartSlot.BodyPartType, List<GameObject>> ();
 
 		for (int i = 0; i <= (int)BodyPartSlot.BodyPartType.Body; i++) {
-			usableBodyParts.Add((BodyPartSlot.BodyPartType)i,new List<GameObject>(bodyParts [(BodyPartSlot.BodyPartType)i]));
+			List<GameObject> tmp = new List<GameObject> ();
+			foreach (GameObject bp in bodyParts [(BodyPartSlot.BodyPartType)i]) {
+				if (usableElements.Contains (bp.GetComponent<BodyPart>().GetElementType ())) {
+					tmp.Add (bp);
+				}
+			}
+			usableBodyParts.Add((BodyPartSlot.BodyPartType)i,tmp);
+
 		}
 	}
 
@@ -71,6 +98,11 @@ public class BodyPart : MonoBehaviour {
 	public ElementType GetElementType(){
 		return m_type;
 	}
+
+	public BodyPartSlot []  GetSlots(){
+		return this.GetComponentsInChildren<BodyPartSlot> ().ToArray();
+	}
+
 		
 	public IEnumerator GenerateBodyCoroutine(int depth = 0, Orientation orientation = Orientation.Neutral){
 
@@ -106,7 +138,9 @@ public class BodyPart : MonoBehaviour {
 		}
 
 		foreach (BodyPartSlot slot in slots) {
-			if (Random.Range (0, depth) > Random.Range (2, 5)) {
+			bool isHead = slot.GetBodyPartType () == BodyPartSlot.BodyPartType.Head;
+
+			if (Random.Range (0, depth) > Random.Range (2, 5) && isHead == false) {
 				continue;
 			}
 
@@ -115,7 +149,7 @@ public class BodyPart : MonoBehaviour {
 			foreach (RaycastHit2D hit in hits) {
 				Debug.Log (hit.collider.gameObject.transform.parent.name + " " + hit.centroid);
 			}
-			if (hits.Length > 0) {
+			if (hits.Length > 0 || (hits.Length == 1 && ( hits[0].collider.gameObject == this.gameObject || hits[0].collider.gameObject.transform.parent == this.gameObject) && isHead == false)) {
 				continue;
 			}
 
@@ -128,17 +162,7 @@ public class BodyPart : MonoBehaviour {
 				continue;
 			}
 
-			BodyPartSlot.BodyPartType bodyPartSlot = slot.GetBodyPartType ();
-
-			List<GameObject> parts = usableBodyParts [bodyPartSlot];
-
-			if (bodyPartSlot == BodyPartSlot.BodyPartType.LeftArm || bodyPartSlot == BodyPartSlot.BodyPartType.RightArm) {
-				parts.AddRange (usableBodyParts [BodyPartSlot.BodyPartType.Arm]);
-			} else if (bodyPartSlot == BodyPartSlot.BodyPartType.LeftLeg || bodyPartSlot == BodyPartSlot.BodyPartType.RightLeg) {
-				parts.AddRange (usableBodyParts [BodyPartSlot.BodyPartType.Leg]);
-			} else if (bodyPartSlot == BodyPartSlot.BodyPartType.LeftEar || bodyPartSlot == BodyPartSlot.BodyPartType.RightEar) {
-				parts.AddRange (usableBodyParts [BodyPartSlot.BodyPartType.Ear]);
-			}
+			List<GameObject> parts = GetUsableParts(slot.GetBodyPartType ());
 
 			Debug.Log (this.m_bodyType);
 			if (parts == null) {
@@ -153,15 +177,11 @@ public class BodyPart : MonoBehaviour {
 				continue;
 			}
 
-			Vector3 spawnPosition = slot.transform.position;
-			BodyPart part = (GameObject.Instantiate (parts [Random.Range (0, partCount)], spawnPosition, slot.transform.rotation) as GameObject).GetComponent (typeof(BodyPart)) as BodyPart;
-			part.transform.Rotate (new Vector3 (0, 0, Random.Range (m_minRotation, m_maxRotation)));
+			BodyPart part = slot.AddPart (parts [Random.Range (0, partCount)].GetComponent<BodyPart>(),m_minRotation,m_maxRotation);
 
-
-			part.transform.parent = this.transform;
 
 			//if the slot is within a trigger do not create a new gameobjec
-			part.GenerateBody (depth, orientation);
+			part.GenerateBody (++depth, orientation);
 
 			theseBodyParts.Add (part);
 
@@ -170,6 +190,20 @@ public class BodyPart : MonoBehaviour {
 		yield return new WaitForEndOfFrame ();
 	}
 
+	public static List<GameObject> GetUsableParts(BodyPartSlot.BodyPartType bodyPartSlot){
+
+		List<GameObject> parts = usableBodyParts [bodyPartSlot];
+
+		if (bodyPartSlot == BodyPartSlot.BodyPartType.LeftArm || bodyPartSlot == BodyPartSlot.BodyPartType.RightArm) {
+			parts.AddRange (usableBodyParts [BodyPartSlot.BodyPartType.Arm]);
+		} else if (bodyPartSlot == BodyPartSlot.BodyPartType.LeftLeg || bodyPartSlot == BodyPartSlot.BodyPartType.RightLeg) {
+			parts.AddRange (usableBodyParts [BodyPartSlot.BodyPartType.Leg]);
+		} else if (bodyPartSlot == BodyPartSlot.BodyPartType.LeftEar || bodyPartSlot == BodyPartSlot.BodyPartType.RightEar) {
+			parts.AddRange (usableBodyParts [BodyPartSlot.BodyPartType.Ear]);
+		}
+
+		return parts;
+	}
 
 	public void GenerateBody(int depth = 0, Orientation orientation = Orientation.Neutral ){
 		this.StartCoroutine (this.GenerateBodyCoroutine (depth, orientation));

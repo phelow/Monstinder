@@ -5,6 +5,12 @@ public class Button : MonoBehaviour {
 	[SerializeField]protected PlayerProfile m_player;
 	[SerializeField]protected AudioSource m_audioSource;
 
+	protected static bool ms_active = true;
+
+	public static void SetActive(bool state){
+		ms_active = state;
+	}
+
 	// Use this for initialization
 	void Start () {
 	
@@ -16,18 +22,20 @@ public class Button : MonoBehaviour {
 	}
 
 	protected IEnumerator DestroyMatch(GameObject go){
+		Button.SetActive (false);
 		Rigidbody2D rb = go.GetComponent<Rigidbody2D> ();
 		BoxCollider2D [] colliders = go.GetComponentsInChildren<BoxCollider2D> ();
 
 		for(int i = 0; i < colliders.Length; i++){
 			Destroy (colliders[i]);
 		}
+		yield return new WaitForSeconds (1.0f);
 
 
-		Debug.Log (go);
 		rb.AddForce (new Vector2(Random.Range(-500.0f,500.0f),Random.Range(-500.0f,500.0f)));
 		rb.gravityScale = 10.0f;
-		yield return new WaitForSeconds (5.0f);
+		Button.SetActive (true);
+		yield return new WaitForSeconds (10.0f);
 		Destroy (go);
 	}
 }

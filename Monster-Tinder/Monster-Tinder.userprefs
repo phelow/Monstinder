@@ -1,28 +1,31 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj" RefactoringSettings.EnableRefactorings="True">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\BodyPart.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Button.cs">
     <Files>
-      <File FileName="Assets\BodyPart.cs" Line="75" Column="43" />
-      <File FileName="Assets\Profile.cs" Line="1" Column="1" />
+      <File FileName="Assets\PlayerProfile.cs" Line="145" Column="92" />
+      <File FileName="Assets\BodyPart.cs" Line="173" Column="32" />
+      <File FileName="Assets\Profile.cs" Line="72" Column="41" />
       <File FileName="Assets\SessionManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\MatchProfile.cs" Line="1" Column="1" />
-      <File FileName="Assets\LikeButton.cs" Line="1" Column="1" />
+      <File FileName="Assets\MatchProfile.cs" Line="4" Column="34" />
+      <File FileName="Assets\LikeButton.cs" Line="26" Column="27" />
       <File FileName="Assets\DifficultySystem.cs" Line="1" Column="1" />
-      <File FileName="Assets\PlayerProfile.cs" Line="35" Column="63" />
       <File FileName="Assets\HighScore.cs" Line="1" Column="1" />
-      <File FileName="Assets\BodyPartSlot.cs" Line="1" Column="1" />
-      <File FileName="Assets\DislikeButton.cs" Line="1" Column="1" />
-      <File FileName="Assets\Button.cs" Line="1" Column="1" />
+      <File FileName="Assets\BodyPartSlot.cs" Line="36" Column="2" />
+      <File FileName="Assets\DislikeButton.cs" Line="4" Column="34" />
+      <File FileName="Assets\Button.cs" Line="31" Column="4" />
       <File FileName="Assets\CameraFadeIn.cs" Line="1" Column="1" />
       <File FileName="Assets\PlayAfterThirtySeconds.cs" Line="1" Column="1" />
       <File FileName="Assets\GenerateText.cs" Line="1" Column="1" />
       <File FileName="Assets\ReturnToMainMenuOnClick.cs" Line="1" Column="1" />
       <File FileName="Assets\GenerateFailureText.cs" Line="1" Column="1" />
+      <File FileName="Assets\DestroyAfterTime.cs" Line="1" Column="1" />
+      <File FileName="Assets\BodyPartDisplay.cs" Line="22" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="E:\Game Development\Monster-Tinder\Monster-Tinder\Assets\Profile.cs" line="90" column="8" />
+      <Breakpoint file="E:\Game Development\Monster-Tinder\Monster-Tinder\Assets\LikeButton.cs" line="33" column="11" />
+      <Breakpoint file="E:\Game Development\Monster-Tinder\Monster-Tinder\Assets\PlayerProfile.cs" line="124" column="42" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

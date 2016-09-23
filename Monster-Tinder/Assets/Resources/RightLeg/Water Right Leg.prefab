@@ -74,7 +74,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 468916}
   - 114: {fileID: 11409928}
-  - 61: {fileID: 61000012430724466}
   m_Layer: 0
   m_Name: Water Right Leg
   m_TagString: Untagged
@@ -198,9 +197,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eb5f90e408075f47bb13f536241e6fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_collider: {fileID: 0}
   theseBodyParts: []
   m_type: 1
-  m_bodyType: 2
+  m_minRotation: -30
+  m_maxRotation: 30
+  m_bodyType: 7
 --- !u!135 &13560108
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -257,20 +259,6 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 183838}
   m_IsPrefabParent: 1
---- !u!61 &61000012430724466
-BoxCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 183838}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_Offset: {x: 0.34347057, y: -0.3849071}
-  serializedVersion: 2
-  m_Size: {x: 0.81635296, y: 1.0101925}
 --- !u!61 &61000012936301622
 BoxCollider2D:
   m_ObjectHideFlags: 1

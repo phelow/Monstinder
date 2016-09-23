@@ -32,4 +32,13 @@ public class BodyPartSlot : MonoBehaviour {
 	void Update () {
 	
 	}
+
+	public BodyPart AddPart(BodyPart bp, float minRotation, float maxRotation){
+
+		BodyPart part = (GameObject.Instantiate (bp.gameObject, this.transform.position, this.transform.rotation) as GameObject).GetComponent (typeof(BodyPart)) as BodyPart;
+		part.transform.Rotate (new Vector3 (0, 0, Random.Range (minRotation, maxRotation)));
+		part.transform.parent = this.transform;
+
+		return part;
+	}
 }
