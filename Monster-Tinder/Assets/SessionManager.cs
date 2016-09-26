@@ -103,7 +103,9 @@ public class SessionManager : MonoBehaviour {
 				PlayerPrefs.SetInt ("MaxLevel", curDifficulty + 1);
 			}
 
-			SceneManager.LoadScene (2);
+			Destroy (GameObject.FindGameObjectWithTag ("Player"));
+
+			Fader.Instance.FadeIn().LoadLevel( "Success" ).FadeOut();
 		} else {
 			yield return new WaitForSeconds(2.0f);
 			foreach(GameObject go in m_endGameDestruction){
@@ -112,7 +114,7 @@ public class SessionManager : MonoBehaviour {
 
 			Destroy (GameObject.FindGameObjectWithTag ("Player"));
 
-			Fader.Instance.FadeIn().LoadLevel( "Main Menu" ).FadeOut();
+			Fader.Instance.FadeIn().LoadLevel( "Failure" ).FadeOut();
 		}
 			//else offer option to repeat the level
 	}
