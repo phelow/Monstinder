@@ -38,6 +38,7 @@ public class BodyPartSlot : MonoBehaviour {
 		BodyPart part = (GameObject.Instantiate (bp.gameObject, this.transform.position, this.transform.rotation) as GameObject).GetComponent (typeof(BodyPart)) as BodyPart;
 		part.transform.Rotate (new Vector3 (0, 0, Random.Range (minRotation, maxRotation)));
 		part.transform.parent = this.transform;
+		part.transform.localScale = part.transform.localScale * 4.0f;
 
 		return part;
 	}

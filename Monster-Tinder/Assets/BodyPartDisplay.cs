@@ -24,5 +24,6 @@ public class BodyPartDisplay : MonoBehaviour {
 		}
 		m_displayedPart = go;
 		m_lastPart = GameObject.Instantiate (go, transform.position + transform.forward * -10, transform.rotation) as GameObject;
+		m_lastPart.transform.localScale = m_lastPart.transform.localScale * 4.0f;
 	}
 }

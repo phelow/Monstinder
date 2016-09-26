@@ -64,7 +64,7 @@ public class PlayerProfile : Profile {
 			}
 		}
 
-		return sameParts > differentParts;
+		return sameParts >= differentParts;
 
 	}
 
@@ -100,9 +100,25 @@ public class PlayerProfile : Profile {
 		while (frontier.Count > 0) {
 			BodyPartSlot slot = frontier.Pop ();
 
-			//TODO:pick three bodyparts
-			List<GameObject> parts = BodyPart.GetUsableParts(slot.GetBodyPartType ());
+			RaycastHit2D[] hits = Physics2D.CircleCastAll (new Vector2 (slot.transform.position.x, slot.transform.position.y),BodyPart.ms_placementTolerance, Vector2.zero);
+			foreach (RaycastHit2D hit in hits) {
+				Debug.Log (hit.collider.gameObject.transform.parent.name + " " + hit.centroid);
+			}
+			if (hits.Length > 0 || (hits.Length == 1 && ( hits[0].collider.gameObject == this.gameObject || hits[0].collider.gameObject.transform.parent == this.gameObject))) {
+				continue;
+			}
 
+
+			BodyPartSlot.BodyPartType bodyPartSlotType = slot.GetBodyPartType ();
+			//TODO:pick three bodyparts
+			HashSet<BodyPart.ElementType> types = new HashSet<BodyPart.ElementType>();
+			List<GameObject> parts;
+			if (body == null) {
+				parts = BodyPart.GetUsableParts (slot.GetBodyPartType (), true,null);
+
+			} else {
+				parts = BodyPart.GetUsableParts (slot.GetBodyPartType (), true, body.CountTypes (ref types));
+			}
 			foreach (BodyPartDisplay display in m_bodyPartDisplays) {
 				display.Display (parts[Random.Range(0,parts.Count)]);
 			}
@@ -137,12 +153,14 @@ public class PlayerProfile : Profile {
 		m_body.transform.parent = this.transform;
 
 		//TODO: go to the next scene
-		SceneManager.LoadScene(2);
+		Fader.Instance.FadeIn().LoadLevel( "PrototypeScene" ).FadeIn(3.0f).FadeOut(3.0f);
 	}
 
 	public void OnLevelWasLoaded(){
-		ms_instance.m_spawnScoreTextHere = GameObject.Find ("ScoreTextSpawnPoint");
-		ms_instance.m_matchRenderer = GameObject.Find ("match1").GetComponent<SpriteRenderer> ();
+		if (SceneManager.GetActiveScene ().name == "PrototypeScene") {
+			ms_instance.m_spawnScoreTextHere = GameObject.Find ("ScoreTextSpawnPoint");
+			ms_instance.m_matchRenderer = GameObject.Find ("match1").GetComponent<SpriteRenderer> ();
+		}
 	}
 
 	public static void AddMatch(){
@@ -154,6 +172,7 @@ public class PlayerProfile : Profile {
 		if (ms_instance.m_burningRoutine != null) {
 			ms_instance.StopCoroutine (ms_instance.m_burningRoutine);
 		}
+
 		ms_instance.m_burningRoutine = ms_instance.Burn ();
 
 		ms_instance.StartCoroutine (ms_instance.m_burningRoutine);

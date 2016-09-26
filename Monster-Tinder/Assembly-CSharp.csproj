@@ -62,8 +62,22 @@
      <Compile Include="Assets\PlayerProfile.cs" />
      <Compile Include="Assets\Profile.cs" />
      <Compile Include="Assets\ReturnToMainMenuOnClick.cs" />
+     <Compile Include="Assets\Screen Fader Pack\Code\DefaultScreenFader.cs" />
+     <Compile Include="Assets\Screen Fader Pack\Code\Fader.cs" />
+     <Compile Include="Assets\Screen Fader Pack\Code\ImageScreenFader.cs" />
+     <Compile Include="Assets\Screen Fader Pack\Code\LinesScreenFader.cs" />
+     <Compile Include="Assets\Screen Fader Pack\Code\SquaredScreenFader.cs" />
+     <Compile Include="Assets\Screen Fader Pack\Code\StripeScreenFader.cs" />
+     <Compile Include="Assets\Screen Fader Pack\Demo\Demo - Coroutines\DemoCoroutineGUI.cs" />
+     <Compile Include="Assets\Screen Fader Pack\Demo\Demo - Default\DemoDefaultGUI.cs" />
+     <Compile Include="Assets\Screen Fader Pack\Demo\Demo - Object Fading\DemoObjectFadingGUI.cs" />
+     <Compile Include="Assets\Screen Fader Pack\Demo\Demo - Squared\DemoSquaredGUI.cs" />
+     <Compile Include="Assets\Screen Fader Pack\Demo\Demo - Stripes\DemoStripesGUI.cs" />
+     <Compile Include="Assets\Screen Fader Pack\Demo\Other stuff\RotatableObject.cs" />
+     <Compile Include="Assets\Screen Fader Pack\Demo\Other stuff\SwitchScenesGUI.cs" />
      <Compile Include="Assets\SessionManager.cs" />
      <Compile Include="Assets\StartGame.cs" />
+     <None Include="Assets\Screen Fader Pack\ReadMe (eng).txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>D:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

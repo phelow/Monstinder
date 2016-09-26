@@ -4,8 +4,13 @@ using UnityEngine.SceneManagement;
 
 public class StartGame : MonoBehaviour {
 
+	public void Start(){
+		Fader.Instance.FadeOut (3);
+	}
+
 	// Use this for initialization
 	public void LaunchGame () {
-		SceneManager.LoadScene (1);
+
+		Fader.Instance.FadeIn().LoadLevel( "CharacterCustomization" ).FadeOut();
 	}	
 }

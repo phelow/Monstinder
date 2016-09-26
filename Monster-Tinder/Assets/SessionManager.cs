@@ -28,18 +28,6 @@ public class SessionManager : MonoBehaviour {
 		//Kick off timer coroutine
 		StartCoroutine(TimeLevel(time));
 	}
-	/*
-	public enum ElementType{
-		Fire,
-		Water,
-		Grass,
-		Ground,
-		Ghost,
-		Poison,
-		Dark,
-		Fairy,
-		Count
-	}*/
 
 	public static List<BodyPart.ElementType> AvailableTypes(){
 		List<BodyPart.ElementType> availableElements = new List<BodyPart.ElementType>();
@@ -78,7 +66,6 @@ public class SessionManager : MonoBehaviour {
 
 
 	private IEnumerator TimeLevel(int time){
-
 		//Check for level unlocked
 		int curDifficulty = PlayerPrefs.GetInt ("Level",0);
 		int maxLevelUnlocked = PlayerPrefs.GetInt ("MaxLevel", 0);
@@ -122,7 +109,10 @@ public class SessionManager : MonoBehaviour {
 			foreach(GameObject go in m_endGameDestruction){
 				Destroy(go);
 			}
-			SceneManager.LoadScene (3);
+
+			Destroy (GameObject.FindGameObjectWithTag ("Player"));
+
+			Fader.Instance.FadeIn().LoadLevel( "Main Menu" ).FadeOut();
 		}
 			//else offer option to repeat the level
 	}

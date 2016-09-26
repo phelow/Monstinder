@@ -13,7 +13,7 @@ public class BodyPart : MonoBehaviour {
 	public BoxCollider2D m_collider;
 
 	private static Dictionary<BodyPartSlot.BodyPartType, List<GameObject>> usableBodyParts; //TODO: mae
-	private static float ms_placementTolerance = .01f;
+	public static float ms_placementTolerance = .01f;
 
 	[SerializeField]private List<BodyPart> theseBodyParts; //todo name
 	[SerializeField]private ElementType m_type;
@@ -49,6 +49,20 @@ public class BodyPart : MonoBehaviour {
 		Left,
 		Right,
 		Neutral
+	}
+
+	public HashSet<BodyPart.ElementType> CountTypes(ref HashSet<BodyPart.ElementType> types){
+		if (types == null) {
+			types = new HashSet<BodyPart.ElementType> ();
+		}
+
+		types.Add (this.m_type);
+
+		foreach (BodyPart bp in this.theseBodyParts) {
+			bp.CountTypes (ref types);
+		}
+
+		return types;
 	}
 
 	public void InitAndGenerateBody(){
@@ -190,7 +204,7 @@ public class BodyPart : MonoBehaviour {
 		yield return new WaitForEndOfFrame ();
 	}
 
-	public static List<GameObject> GetUsableParts(BodyPartSlot.BodyPartType bodyPartSlot){
+	public static List<GameObject> GetUsableParts(BodyPartSlot.BodyPartType bodyPartSlot,bool isPlayer = false, HashSet<BodyPart.ElementType> types = null){
 
 		List<GameObject> parts = usableBodyParts [bodyPartSlot];
 
@@ -200,6 +214,35 @@ public class BodyPart : MonoBehaviour {
 			parts.AddRange (usableBodyParts [BodyPartSlot.BodyPartType.Leg]);
 		} else if (bodyPartSlot == BodyPartSlot.BodyPartType.LeftEar || bodyPartSlot == BodyPartSlot.BodyPartType.RightEar) {
 			parts.AddRange (usableBodyParts [BodyPartSlot.BodyPartType.Ear]);
+		}
+
+		if (isPlayer) {
+			int minTypes = Mathf.Min(PlayerPrefs.GetInt ("Level", 0)/2,(int)BodyPart.ElementType.Count-1);
+
+			if (types == null || minTypes < types.Count) {
+				return parts;
+			}
+
+			foreach(BodyPart.ElementType type in types){
+
+				parts = RemoveAllOfType(parts,type);
+			}
+		}
+
+		return parts;
+	}
+
+	private static List<GameObject> RemoveAllOfType(List<GameObject> parts, BodyPart.ElementType type){
+		List<GameObject> toRemove = new List<GameObject> ();
+
+		foreach (GameObject part in parts) {
+			if (part.GetComponent<BodyPart> ().GetElementType() == type) {
+				toRemove.Add (part);
+			}
+		}
+
+		foreach (GameObject part in toRemove) {
+			parts.Remove (part);
 		}
 
 		return parts;
