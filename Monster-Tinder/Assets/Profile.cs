@@ -6,7 +6,7 @@ using System.Linq;
 
 public class Profile : MonoBehaviour {
 	protected GameObject[] m_bodies;
-	protected BodyPart m_body;
+	[SerializeField]protected BodyPart m_body;
 	[SerializeField]protected GameObject m_bodySlot;
 
 	[SerializeField]protected int [] m_typeScores;
@@ -204,7 +204,7 @@ public class Profile : MonoBehaviour {
 	}
 
 	protected virtual void GenerateProfile(){
-		m_typeScores = new int[(int)BodyPart.ElementType.Count];
+		m_typeScores = new int[(int)BodyPart.ElementType.zCount];
 		//Pick a starting body
 
 

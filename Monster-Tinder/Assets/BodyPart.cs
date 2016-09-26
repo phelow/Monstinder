@@ -34,7 +34,7 @@ public class BodyPart : MonoBehaviour {
 		Fairy,
 		Bug,
 		Steel,
-		Count
+		zCount
 	}
 
 	public float MinRotation(){
@@ -49,6 +49,14 @@ public class BodyPart : MonoBehaviour {
 		Left,
 		Right,
 		Neutral
+	}
+
+	public void AddChildPart(BodyPart bp){
+		if (this.theseBodyParts == null) {
+			this.theseBodyParts = new List<BodyPart> ();
+		}
+
+		this.theseBodyParts.Add (bp);
 	}
 
 	public HashSet<BodyPart.ElementType> CountTypes(ref HashSet<BodyPart.ElementType> types){
@@ -160,9 +168,7 @@ public class BodyPart : MonoBehaviour {
 
 
 			RaycastHit2D[] hits = Physics2D.CircleCastAll (new Vector2 (slot.transform.position.x, slot.transform.position.y), ms_placementTolerance, Vector2.zero);
-			foreach (RaycastHit2D hit in hits) {
-				Debug.Log (hit.collider.gameObject.transform.parent.name + " " + hit.centroid);
-			}
+
 			if (hits.Length > 0 || (hits.Length == 1 && ( hits[0].collider.gameObject == this.gameObject || hits[0].collider.gameObject.transform.parent == this.gameObject) && isHead == false)) {
 				continue;
 			}
@@ -178,26 +184,22 @@ public class BodyPart : MonoBehaviour {
 
 			List<GameObject> parts = GetUsableParts(slot.GetBodyPartType ());
 
-			Debug.Log (this.m_bodyType);
 			if (parts == null) {
 				return false;
 			}
 
 			//TODO: remove from parts all parts that cause a weakness
 			int partCount = parts.Count;
-			Debug.Log(this.m_bodyType + " " + partCount);
 
 			if (partCount == 0) {
 				continue;
 			}
 
-			BodyPart part = slot.AddPart (parts [Random.Range (0, partCount)].GetComponent<BodyPart>(),m_minRotation,m_maxRotation);
+			BodyPart part = slot.AddPart (parts [Random.Range (0, partCount)].GetComponent<BodyPart>(),m_minRotation,m_maxRotation,this);
 
 
 			//if the slot is within a trigger do not create a new gameobjec
 			part.GenerateBody (++depth, orientation);
-
-			theseBodyParts.Add (part);
 
 		}
 
@@ -217,7 +219,7 @@ public class BodyPart : MonoBehaviour {
 		}
 
 		if (isPlayer) {
-			int minTypes = Mathf.Min(PlayerPrefs.GetInt ("Level", 0)/2,(int)BodyPart.ElementType.Count-1);
+			int minTypes = Mathf.Min(PlayerPrefs.GetInt ("Level", 0)/2,(int)BodyPart.ElementType.zCount-1);
 
 			if (types == null || minTypes < types.Count) {
 				return parts;

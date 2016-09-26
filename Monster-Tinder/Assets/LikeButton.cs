@@ -15,7 +15,7 @@ public class LikeButton : Button {
 
 	}
 
-	void OnMouseDown(){
+	public void ButtonPress(){
 		if (Button.ms_active) {
 			//Spawn a new Match
 			//TODO: clean this up

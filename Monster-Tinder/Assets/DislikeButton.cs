@@ -16,7 +16,7 @@ public class DislikeButton : Button {
 	
 	}
 
-	void OnMouseDown(){
+	public void ButtonPress(){
 		if (Button.ms_active) {
 			GameObject go = GameObject.FindGameObjectWithTag ("NextMatch");
 

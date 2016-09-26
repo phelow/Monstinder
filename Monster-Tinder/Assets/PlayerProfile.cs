@@ -51,7 +51,7 @@ public class PlayerProfile : Profile {
 	public bool CheckForMatch(Profile potentialMatch){
 		//calculate num same parts (likelihood of match)
 		int sameParts = 0;
-		for (int i = 0; i < (int)BodyPart.ElementType.Count; i++) {
+		for (int i = 0; i < (int)BodyPart.ElementType.zCount; i++) {
 			sameParts += Mathf.Min (GetPartsOfType ((BodyPart.ElementType)i), potentialMatch.GetPartsOfType ((BodyPart.ElementType)i));
 		}
 
@@ -60,9 +60,14 @@ public class PlayerProfile : Profile {
 		//calculate num typematched parts (likelihood of unmatch)
 		foreach (BodyPart.ElementType type in ms_strongAgainst.Keys) {
 			foreach (BodyPart.ElementType strongAgainst in ms_strongAgainst[type]) {
-				differentParts += Mathf.Min (GetPartsOfType(type),potentialMatch.GetPartsOfType(strongAgainst)) + Mathf.Min (potentialMatch.GetPartsOfType(strongAgainst),GetPartsOfType(type));
+				differentParts +=  Mathf.Max(Mathf.Max(Mathf.Min (GetPartsOfType(type),potentialMatch.GetPartsOfType(strongAgainst)), 
+										Mathf.Min (potentialMatch.GetPartsOfType(strongAgainst),GetPartsOfType(type))),
+					Mathf.Max(Mathf.Min (potentialMatch.GetPartsOfType(type),GetPartsOfType(strongAgainst)), 
+						Mathf.Min (GetPartsOfType(strongAgainst),potentialMatch.GetPartsOfType(type))));
 			}
 		}
+
+		Debug.Log ("Same Parts:" + sameParts + " Different Prts:" + differentParts);
 
 		return sameParts >= differentParts;
 
@@ -78,7 +83,7 @@ public class PlayerProfile : Profile {
 	}
 
 	protected override void GenerateProfile(){
-		m_typeScores = new int[(int)BodyPart.ElementType.Count];
+		m_typeScores = new int[(int)BodyPart.ElementType.zCount];
 		//Pick a starting body
 
 
@@ -94,11 +99,17 @@ public class PlayerProfile : Profile {
 		DontDestroyOnLoad (this.gameObject);
 		BodyPart.Init ();
 		Stack<BodyPartSlot> frontier = new Stack<BodyPartSlot>();
-
+		m_bodySlot.GetComponent<BodyPartSlot> ().m_depth = 0;
 		frontier.Push (m_bodySlot.GetComponent<BodyPartSlot>());
-		BodyPart body = null;
 		while (frontier.Count > 0) {
 			BodyPartSlot slot = frontier.Pop ();
+
+
+			bool isHead = slot.GetBodyPartType () == BodyPartSlot.BodyPartType.Head;
+
+			if (Random.Range (0, slot.m_depth) > Random.Range (2, 5) && isHead == false) {
+				continue;
+			}
 
 			RaycastHit2D[] hits = Physics2D.CircleCastAll (new Vector2 (slot.transform.position.x, slot.transform.position.y),BodyPart.ms_placementTolerance, Vector2.zero);
 			foreach (RaycastHit2D hit in hits) {
@@ -113,11 +124,11 @@ public class PlayerProfile : Profile {
 			//TODO:pick three bodyparts
 			HashSet<BodyPart.ElementType> types = new HashSet<BodyPart.ElementType>();
 			List<GameObject> parts;
-			if (body == null) {
+			if (m_body == null) {
 				parts = BodyPart.GetUsableParts (slot.GetBodyPartType (), true,null);
 
 			} else {
-				parts = BodyPart.GetUsableParts (slot.GetBodyPartType (), true, body.CountTypes (ref types));
+				parts = BodyPart.GetUsableParts (slot.GetBodyPartType (), true, m_body.CountTypes (ref types));
 			}
 			foreach (BodyPartDisplay display in m_bodyPartDisplays) {
 				display.Display (parts[Random.Range(0,parts.Count)]);
@@ -130,14 +141,18 @@ public class PlayerProfile : Profile {
 
 			}
 
-			//TODO:Add the choice to the body
-			m_choice = slot.AddPart(m_choice,m_choice.MinRotation(),m_choice.MaxRotation());
+			BodyPart.RemoveConflicts (m_choice);
 
-			if (body == null) {
-				body = m_choice;
+			//TODO:Add the choice to the body
+			m_choice = slot.AddPart(m_choice,m_choice.MinRotation(),m_choice.MaxRotation(),slot.m_parentPart);
+
+			if (m_body == null) {
+				m_body = m_choice;
 			}
 
 			foreach(BodyPartSlot s in m_choice.GetSlots()){
+				s.m_parentPart = m_choice;
+				s.m_depth = slot.m_depth + 1;
 				frontier.Push(s);
 			}
 
@@ -146,9 +161,8 @@ public class PlayerProfile : Profile {
 
 
 
-		body.CalculateScore (ref m_typeScores);
+		m_body.CalculateScore (ref m_typeScores);
 		CacheIfMatchProfile ();
-		m_body = body;
 
 		m_body.transform.parent = this.transform;
 

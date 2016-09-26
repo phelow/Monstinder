@@ -4,6 +4,8 @@ using System.Collections;
 public class BodyPartSlot : MonoBehaviour {
 
 	[SerializeField]private BodyPartSlot.BodyPartType m_slotType;
+	public BodyPart m_parentPart;
+	public int m_depth;
 
 	public enum BodyPartType{
 		Arm,
@@ -33,12 +35,19 @@ public class BodyPartSlot : MonoBehaviour {
 	
 	}
 
-	public BodyPart AddPart(BodyPart bp, float minRotation, float maxRotation){
+	public BodyPart AddPart(BodyPart bp, float minRotation, float maxRotation, BodyPart parentPart){
 
 		BodyPart part = (GameObject.Instantiate (bp.gameObject, this.transform.position, this.transform.rotation) as GameObject).GetComponent (typeof(BodyPart)) as BodyPart;
 		part.transform.Rotate (new Vector3 (0, 0, Random.Range (minRotation, maxRotation)));
 		part.transform.parent = this.transform;
 		part.transform.localScale = part.transform.localScale * 4.0f;
+
+		if (parentPart == null) {
+
+			return part;
+		}
+
+		parentPart.AddChildPart (part);
 
 		return part;
 	}
