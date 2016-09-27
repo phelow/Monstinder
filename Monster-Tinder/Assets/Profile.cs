@@ -67,9 +67,9 @@ public class Profile : MonoBehaviour {
 	private IEnumerator HighLighBodyParts(List<BodyPart> toHighlight, Color c){
 		Dictionary<SpriteRenderer,Color> highlightSprites = new Dictionary<SpriteRenderer, Color> ();
 		foreach (BodyPart bp in toHighlight) {
-			SpriteRenderer sr = bp.GetComponentInChildren<SpriteRenderer> ();
-			if (!highlightSprites.ContainsKey (sr)) {
-				highlightSprites.Add (sr, sr.color);
+			SpriteRenderer [] sr = bp.GetComponentsInChildren<SpriteRenderer> ();
+			if (!highlightSprites.ContainsKey (sr[sr.Length-1])) {
+				highlightSprites.Add (sr[sr.Length-1], sr[sr.Length-1].color);
 			}
 		}
 
@@ -121,8 +121,8 @@ public class Profile : MonoBehaviour {
 	}
 
 	public List<BodyPart> getAllBodyParts(){
-		List<BodyPart> bps = m_body.GetAllBodyParts();
-		bps.Add (m_body);
+		List<BodyPart> bps = this.gameObject.GetComponentsInChildren<BodyPart> ().ToList();
+		bps.Add (this.m_body);
 		return bps;
 	}
 

@@ -7,10 +7,17 @@ public class ReturnToMainMenuOnClick : MonoBehaviour {
 
 		Fader.Instance.FadeOut (3.0f);
 	}
+
+	public void r(){
+
+		Fader.Instance.FadeIn().LoadLevel( "Main Menu" ).FadeOut();
+	}
+
 	// Update is called once per frame
 	void Update () {
 		if (Input.GetMouseButtonDown (0) || Input.GetMouseButtonDown (1) || Input.GetMouseButtonDown (2)) {
-			Fader.Instance.FadeIn().LoadLevel( "Main Menu" ).FadeOut();
+			r();
+
 		}
 	}
 }
