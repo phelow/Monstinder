@@ -100,7 +100,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 140368}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
   m_LocalPosition: {x: 6.747, y: -1.173, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -197,8 +197,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eb5f90e408075f47bb13f536241e6fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_collider: {fileID: 0}
   theseBodyParts: []
   m_type: 0
+  m_minRotation: -30
+  m_maxRotation: 30
   m_bodyType: 1
 --- !u!135 &13570918
 SphereCollider:

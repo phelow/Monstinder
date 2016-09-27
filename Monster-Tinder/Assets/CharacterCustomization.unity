@@ -144,18 +144,6 @@ Prefab:
       propertyPath: m_bodyPartDisplays.Array.data[2]
       value: 
       objectReference: {fileID: 1999869835}
-    - target: {fileID: 4000011918523886, guid: e6c3f84e22e0f954fb9660d86ec7f370, type: 2}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011918523886, guid: e6c3f84e22e0f954fb9660d86ec7f370, type: 2}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011918523886, guid: e6c3f84e22e0f954fb9660d86ec7f370, type: 2}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e6c3f84e22e0f954fb9660d86ec7f370, type: 2}
   m_IsPrefabParent: 0

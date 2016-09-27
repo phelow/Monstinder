@@ -195,7 +195,7 @@ public class BodyPart : MonoBehaviour {
 				continue;
 			}
 
-			BodyPart part = slot.AddPart (parts [Random.Range (0, partCount)].GetComponent<BodyPart>(),m_minRotation,m_maxRotation,this);
+			BodyPart part = slot.AddPart (parts [Random.Range (0, partCount)].GetComponent<BodyPart>(),this);
 
 
 			//if the slot is within a trigger do not create a new gameobjec

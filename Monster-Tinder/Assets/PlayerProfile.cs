@@ -21,6 +21,8 @@ public class PlayerProfile : Profile {
 
 	[SerializeField]private static BodyPart m_choice = null;
 
+	[SerializeField]private GameObject m_spawnIndicator;
+
 	private IEnumerator m_burningRoutine;
 	private static int ms_score = 0;
 
@@ -131,9 +133,12 @@ public class PlayerProfile : Profile {
 				parts = BodyPart.GetUsableParts (slot.GetBodyPartType (), true, m_body.CountTypes (ref types));
 			}
 			foreach (BodyPartDisplay display in m_bodyPartDisplays) {
-				display.Display (parts[Random.Range(0,parts.Count)]);
+				BodyPart bp = parts [Random.Range (0, parts.Count)].GetComponent<BodyPart>();
+
+				display.Display (bp.gameObject,bp.MinRotation(),bp.MaxRotation());
 			}
 
+			m_spawnIndicator.transform.position = slot.transform.position;
 			m_choice = null;
 			//TODO:Let the player choose one
 			while (m_choice == null) {
@@ -143,8 +148,10 @@ public class PlayerProfile : Profile {
 
 			BodyPart.RemoveConflicts (m_choice);
 
+			m_choice.transform.localScale *= .25f;
+
 			//TODO:Add the choice to the body
-			m_choice = slot.AddPart(m_choice,m_choice.MinRotation(),m_choice.MaxRotation(),slot.m_parentPart);
+			m_choice = slot.AddPart(m_choice,slot.m_parentPart);
 
 			if (m_body == null) {
 				m_body = m_choice;
@@ -159,7 +166,7 @@ public class PlayerProfile : Profile {
 			yield return new WaitForEndOfFrame();
 		}
 
-
+		Destroy (m_spawnIndicator);
 
 		m_body.CalculateScore (ref m_typeScores);
 		CacheIfMatchProfile ();

@@ -184,7 +184,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 180934}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: -0.99737966, w: -0.072345495}
   m_LocalPosition: {x: 6.703365, y: 0.07102847, z: 9.253391}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -396,6 +396,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_slotType: 8
+  m_parentPart: {fileID: 0}
+  m_depth: 0
 --- !u!114 &11420388
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -408,6 +410,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_slotType: 1
+  m_parentPart: {fileID: 0}
+  m_depth: 0
 --- !u!114 &11463630
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -420,6 +424,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_slotType: 4
+  m_parentPart: {fileID: 0}
+  m_depth: 0
 --- !u!114 &11476572
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -432,6 +438,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_slotType: 2
+  m_parentPart: {fileID: 0}
+  m_depth: 0
 --- !u!114 &11494340
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -444,6 +452,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_slotType: 5
+  m_parentPart: {fileID: 0}
+  m_depth: 0
 --- !u!114 &11495212
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -456,6 +466,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_slotType: 7
+  m_parentPart: {fileID: 0}
+  m_depth: 0
 --- !u!135 &13514002
 SphereCollider:
   m_ObjectHideFlags: 1

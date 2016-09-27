@@ -3,7 +3,6 @@ using System.Collections;
 
 public class BodyPartDisplay : MonoBehaviour {
 	private GameObject m_displayedPart;
-	private GameObject m_lastPart;
 	// Use this for initialization
 	void Start () {
 	
@@ -18,12 +17,12 @@ public class BodyPartDisplay : MonoBehaviour {
 		PlayerProfile.SetChoice (m_displayedPart.GetComponent<BodyPart> ());
 	}
 
-	public void Display(GameObject go){
-		if (m_lastPart != null) {
-			Destroy (m_lastPart);
+	public void Display(GameObject go,float minRotation,float maxRotation){
+		if (m_displayedPart != null) {
+			Destroy (m_displayedPart);
 		}
-		m_displayedPart = go;
-		m_lastPart = GameObject.Instantiate (go, transform.position + transform.forward * -10, transform.rotation) as GameObject;
-		m_lastPart.transform.localScale = m_lastPart.transform.localScale * 4.0f;
+		m_displayedPart = GameObject.Instantiate (go, transform.position + transform.forward * -10, transform.rotation) as GameObject;
+		m_displayedPart.transform.localScale = m_displayedPart.transform.localScale * 4.0f;
+		m_displayedPart.transform.Rotate(new Vector3(0,0,Random.Range(minRotation,maxRotation)));
 	}
 }
