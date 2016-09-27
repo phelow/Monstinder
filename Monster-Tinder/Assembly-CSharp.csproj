@@ -56,6 +56,7 @@
      <Compile Include="Assets\GenerateFailureText.cs" />
      <Compile Include="Assets\GenerateText.cs" />
      <Compile Include="Assets\HighScore.cs" />
+     <Compile Include="Assets\InterpolateColor.cs" />
      <Compile Include="Assets\LikeButton.cs" />
      <Compile Include="Assets\MatchProfile.cs" />
      <Compile Include="Assets\PlayAfterThirtySeconds.cs" />

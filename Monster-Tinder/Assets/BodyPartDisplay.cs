@@ -14,7 +14,7 @@ public class BodyPartDisplay : MonoBehaviour {
 	
 	}
 
-	void OnMouseDown(){
+	public void ButtonClicked(){
 		PlayerProfile.SetChoice (m_displayedPart.GetComponent<BodyPart> ());
 	}
 
