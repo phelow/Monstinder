@@ -169,7 +169,7 @@ public class BodyPart : MonoBehaviour {
 
 			RaycastHit2D[] hits = Physics2D.CircleCastAll (new Vector2 (slot.transform.position.x, slot.transform.position.y), ms_placementTolerance, Vector2.zero);
 
-			if (hits.Length > 0 || (hits.Length == 1 && ( hits[0].collider.gameObject == this.gameObject || hits[0].collider.gameObject.transform.parent == this.gameObject) && isHead == false)) {
+			if (isHead == false && (hits.Length > 0 || (hits.Length == 1 && ( hits[0].collider.gameObject == this.gameObject || hits[0].collider.gameObject.transform.parent == this.gameObject)))) {
 				continue;
 			}
 
@@ -195,7 +195,7 @@ public class BodyPart : MonoBehaviour {
 				continue;
 			}
 
-			BodyPart part = slot.AddPart (parts [Random.Range (0, partCount)].GetComponent<BodyPart>(),this);
+			BodyPart part = slot.AddPart (parts [Random.Range (0, partCount)].GetComponent<BodyPart>(),this,this.MinRotation(),this.MaxRotation());
 
 
 			//if the slot is within a trigger do not create a new gameobjec

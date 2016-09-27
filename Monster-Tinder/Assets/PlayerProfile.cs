@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 public class PlayerProfile : Profile {
 
 	[SerializeField]private SpriteRenderer m_matchRenderer;
+	[SerializeField]private GameObject m_NahButton;
 
 	[SerializeField]private Sprite m_match;
 
@@ -22,7 +23,7 @@ public class PlayerProfile : Profile {
 	[SerializeField]private static BodyPart m_choice = null;
 
 	[SerializeField]private GameObject m_spawnIndicator;
-
+	private static bool skip = false;
 	private IEnumerator m_burningRoutine;
 	private static int ms_score = 0;
 
@@ -33,7 +34,11 @@ public class PlayerProfile : Profile {
 		ms_instance = this;
 	}
 
-	public static void SetChoice(BodyPart bp){
+	public static void SetChoice(BodyPart bp = null){
+		if (bp == null) {
+			skip = true;
+			return;
+		}
 		m_choice = bp;
 	}
 
@@ -47,6 +52,10 @@ public class PlayerProfile : Profile {
 	}
 
 	public static bool Conflicts(BodyPart a, BodyPart b){
+		if (a == null || b == null) {
+			return false;
+		}
+
 		return ms_strongAgainst [a.GetElementType ()].Contains (b.GetElementType ()) || ms_strongAgainst [b.GetElementType ()].Contains (a.GetElementType ());
 	}
 
@@ -104,13 +113,21 @@ public class PlayerProfile : Profile {
 		m_bodySlot.GetComponent<BodyPartSlot> ().m_depth = 0;
 		frontier.Push (m_bodySlot.GetComponent<BodyPartSlot>());
 		while (frontier.Count > 0) {
+
+			m_NahButton.SetActive(false);
 			BodyPartSlot slot = frontier.Pop ();
 
 
 			bool isHead = slot.GetBodyPartType () == BodyPartSlot.BodyPartType.Head;
 
-			if (Random.Range (0, slot.m_depth) > Random.Range (2, 5) && isHead == false) {
+
+			if (slot.m_depth > 5 && isHead == false) {
 				continue;
+			}
+
+			if (slot.m_depth > 2 && isHead == false) {
+
+				m_NahButton.SetActive(true);
 			}
 
 			RaycastHit2D[] hits = Physics2D.CircleCastAll (new Vector2 (slot.transform.position.x, slot.transform.position.y),BodyPart.ms_placementTolerance, Vector2.zero);
@@ -141,9 +158,13 @@ public class PlayerProfile : Profile {
 			m_spawnIndicator.transform.position = slot.transform.position;
 			m_choice = null;
 			//TODO:Let the player choose one
-			while (m_choice == null) {
+			while (m_choice == null && !(skip == true && slot.GetBodyPartType () != BodyPartSlot.BodyPartType.Body)) {
 				yield return new WaitForEndOfFrame();
 
+			}
+			if (skip == true) {
+				skip = false;
+				continue;
 			}
 
 			BodyPart.RemoveConflicts (m_choice);
