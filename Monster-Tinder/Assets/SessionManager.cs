@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class SessionManager : MonoBehaviour {
-	private const int mc_startingTime = 15;
+	private const int mc_startingTime = 30;
 	private const int mc_timePerLevel = 30;
 
 	[SerializeField]private Text m_timerText;
@@ -86,10 +86,11 @@ public class SessionManager : MonoBehaviour {
 
 		//Check for high score, save if you have one
 		int previousHighscore =  PlayerPrefs.GetInt ("HighScore",0);
-		int curScore = PlayerProfile.GetScore ();
+		int curScore = PlayerProfile.GetScore () * curDifficulty;
 
 		if (curScore > previousHighscore) {
-			PlayerPrefs.SetInt ("HighScore",curScore);
+			PlayerPrefs.SetInt ("HighScore",curScore );
+			PlayerPrefs.SetInt ("HighScoreBeaten", 1);
 
 			GameObject.Instantiate (m_highscoreText, m_highscoreSpawnPosition.transform.position, m_highscoreSpawnPosition.transform.rotation);
 		}

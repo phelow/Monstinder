@@ -21,6 +21,10 @@ public class BodyPartDisplay : MonoBehaviour {
 		if (m_displayedPart != null) {
 			Destroy (m_displayedPart);
 		}
+		if (go == null) {
+			return;
+		}
+
 		m_displayedPart = GameObject.Instantiate (go, transform.position + transform.forward * -10, transform.rotation) as GameObject;
 		m_displayedPart.transform.localScale = m_displayedPart.transform.localScale * 4.0f;
 		m_displayedPart.transform.Rotate(new Vector3(0,0,Random.Range(minRotation,maxRotation)));

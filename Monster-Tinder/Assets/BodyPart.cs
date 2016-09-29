@@ -37,6 +37,10 @@ public class BodyPart : MonoBehaviour {
 		zCount
 	}
 
+	public static string GetElementTypeString(ElementType et){
+		return et.ToString ();
+	}
+
 	public float MinRotation(){
 		return m_minRotation;
 	}
@@ -75,6 +79,8 @@ public class BodyPart : MonoBehaviour {
 
 	public void InitAndGenerateBody(){
 		Init ();
+
+		transform.localScale = new Vector3 (3.0f, 3.0f, .1f);
 		GenerateBody ();
 	}
 
@@ -152,11 +158,10 @@ public class BodyPart : MonoBehaviour {
 			}
 		}
 
-		transform.localScale = new Vector3 (1.0f, 1.0f, .1f);
 		slots = this.GetComponentsInChildren<BodyPartSlot> ();
 
 		if (slots == null) {
-			return false;
+			yield break;
 		}
 
 		foreach (BodyPartSlot slot in slots) {
@@ -185,7 +190,7 @@ public class BodyPart : MonoBehaviour {
 			List<GameObject> parts = GetUsableParts(slot.GetBodyPartType ());
 
 			if (parts == null) {
-				return false;
+				yield break;
 			}
 
 			//TODO: remove from parts all parts that cause a weakness
@@ -251,6 +256,7 @@ public class BodyPart : MonoBehaviour {
 	}
 
 	public void GenerateBody(int depth = 0, Orientation orientation = Orientation.Neutral ){
+
 		this.StartCoroutine (this.GenerateBodyCoroutine (depth, orientation));
 	}
 

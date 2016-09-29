@@ -86,6 +86,7 @@ GameObject:
   - 4: {fileID: 4000010578418964}
   - 114: {fileID: 114000010202534306}
   - 50: {fileID: 50000013899118294}
+  - 61: {fileID: 61000012782894310}
   m_Layer: 0
   m_Name: Score +2
   m_TagString: Untagged
@@ -114,7 +115,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012158621010}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.421866, y: -1.0949681, z: -6.398799}
+  m_LocalPosition: {x: 2.629971, y: -6.705621, z: -5.5755568}
   m_LocalScale: {x: 2.1383395, y: 0.5545953, z: 0.91090786}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -146,12 +147,26 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0.1
   m_IsKinematic: 0
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!61 &61000012782894310
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000012158621010}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_Offset: {x: 0.079285674, y: -0.7890124}
+  serializedVersion: 2
+  m_Size: {x: 1.7226527, y: 0.7352467}
 --- !u!114 &114000010202534306
 MonoBehaviour:
   m_ObjectHideFlags: 1

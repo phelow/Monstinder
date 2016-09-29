@@ -389,6 +389,7 @@ MonoBehaviour:
   m_typeScores: 
   m_text: {fileID: 0}
   m_matchRenderer: {fileID: 0}
+  m_NahButton: {fileID: 0}
   m_match: {fileID: 21300000, guid: e00e45792a1a0d34d910157bca67d9e4, type: 3}
   m_litMatch: {fileID: 21300000, guid: 37920ccf1f9643f4c8417c001f35a713, type: 3}
   m_burntMatch: {fileID: 21300000, guid: 478f7b3ba77b8054ba728c66a8dbbd2f, type: 3}

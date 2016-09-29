@@ -26,6 +26,7 @@ public class PlayerProfile : Profile {
 	private static bool skip = false;
 	private IEnumerator m_burningRoutine;
 	private static int ms_score = 0;
+	private Text m_tipText;
 
 	protected static PlayerProfile ms_instance;
 
@@ -63,7 +64,13 @@ public class PlayerProfile : Profile {
 		//calculate num same parts (likelihood of match)
 		int sameParts = 0;
 		for (int i = 0; i < (int)BodyPart.ElementType.zCount; i++) {
-			sameParts += Mathf.Min (GetPartsOfType ((BodyPart.ElementType)i), potentialMatch.GetPartsOfType ((BodyPart.ElementType)i));
+			int newSameParts = Mathf.Min (GetPartsOfType ((BodyPart.ElementType)i), potentialMatch.GetPartsOfType ((BodyPart.ElementType)i));
+			sameParts += newSameParts;
+
+			if (newSameParts > 0) {
+				DropTutorialText (BodyPart.GetElementTypeString ((BodyPart.ElementType)i) + " loves other " + BodyPart.GetElementTypeString ((BodyPart.ElementType)i), Color.green);
+			}
+
 		}
 
 
@@ -71,17 +78,43 @@ public class PlayerProfile : Profile {
 		//calculate num typematched parts (likelihood of unmatch)
 		foreach (BodyPart.ElementType type in ms_strongAgainst.Keys) {
 			foreach (BodyPart.ElementType strongAgainst in ms_strongAgainst[type]) {
-				differentParts +=  Mathf.Max(Mathf.Max(Mathf.Min (GetPartsOfType(type),potentialMatch.GetPartsOfType(strongAgainst)), 
+
+
+				int newDifferentParts =  Mathf.Max(Mathf.Max(Mathf.Min (GetPartsOfType(type),potentialMatch.GetPartsOfType(strongAgainst)), 
 										Mathf.Min (potentialMatch.GetPartsOfType(strongAgainst),GetPartsOfType(type))),
 					Mathf.Max(Mathf.Min (potentialMatch.GetPartsOfType(type),GetPartsOfType(strongAgainst)), 
 						Mathf.Min (GetPartsOfType(strongAgainst),potentialMatch.GetPartsOfType(type))));
+
+				differentParts += newDifferentParts;
+
+				if (newDifferentParts > 0) {
+					DropTutorialText (BodyPart.GetElementTypeString (type) + " hates " + BodyPart.GetElementTypeString (strongAgainst), Color.red);
+				}
 			}
 		}
 
 		Debug.Log ("Same Parts:" + sameParts + " Different Prts:" + differentParts);
-
+		ms_instance.m_tipText.text = "Matching Parts:" + sameParts + " Clashing Parts:" + differentParts;
 		return sameParts >= differentParts;
 
+	}
+
+	public void DropTutorialText(string text, Color c){
+		GameObject addPointsText = GameObject.Instantiate (ms_instance.m_plusPoint,ms_instance.m_spawnScoreTextHere.transform.position,ms_instance.m_spawnScoreTextHere.transform.rotation) as GameObject;
+		Rigidbody2D rb = addPointsText.GetComponent<Rigidbody2D> ();
+		rb.AddForce (new Vector2 (Random.Range (-10.0f, 10.0f), Random.Range (-10.0f, 10.0f)));
+		rb.AddTorque (Random.Range (-10.0f, 10.0f));
+
+		Text t = addPointsText.GetComponentInChildren<Text> ();
+
+		t.color = c;
+		t.text = text;
+
+
+	}
+
+	public static void ClearTipText(){
+		ms_instance.m_tipText.text = "";
 	}
 
 	private IEnumerator Burn(){
@@ -149,10 +182,25 @@ public class PlayerProfile : Profile {
 			} else {
 				parts = BodyPart.GetUsableParts (slot.GetBodyPartType (), true, m_body.CountTypes (ref types));
 			}
-			foreach (BodyPartDisplay display in m_bodyPartDisplays) {
-				BodyPart bp = parts [Random.Range (0, parts.Count)].GetComponent<BodyPart>();
 
-				display.Display (bp.gameObject,bp.MinRotation(),bp.MaxRotation());
+			bool shouldContinue = false;
+
+			foreach (BodyPartDisplay display in m_bodyPartDisplays) {
+				BodyPart bp = null;
+				if (parts.Count > 0) {
+					bp = parts [Random.Range (0, parts.Count)].GetComponent<BodyPart> ();
+				}
+				if (bp == null) {
+					display.Display (null,0,0);
+					shouldContinue = true;
+				} else {
+					display.Display (bp.gameObject, bp.MinRotation (), bp.MaxRotation ());
+
+				}
+			}
+
+			if (shouldContinue) {
+				continue;
 			}
 
 			m_spawnIndicator.transform.position = slot.transform.position;
@@ -202,6 +250,7 @@ public class PlayerProfile : Profile {
 		if (SceneManager.GetActiveScene ().name == "PrototypeScene") {
 			ms_instance.m_spawnScoreTextHere = GameObject.Find ("ScoreTextSpawnPoint");
 			ms_instance.m_matchRenderer = GameObject.Find ("match1").GetComponent<SpriteRenderer> ();
+			ms_instance.m_tipText = GameObject.Find ("TipText").GetComponent<Text>();
 		}
 	}
 
@@ -225,6 +274,7 @@ public class PlayerProfile : Profile {
 		scoreText.text = "Score: "+ ms_score;
 
 	}
+
 	public static void RemoveMatch(){
 		GameObject losePointsText = GameObject.Instantiate (ms_instance.m_minusPoint,ms_instance.m_spawnScoreTextHere.transform.position,ms_instance.m_spawnScoreTextHere.transform.rotation)  as GameObject;
 		Rigidbody2D rb = losePointsText.GetComponent<Rigidbody2D> ();

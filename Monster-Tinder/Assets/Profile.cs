@@ -68,9 +68,13 @@ public class Profile : MonoBehaviour {
 		Dictionary<SpriteRenderer,Color> highlightSprites = new Dictionary<SpriteRenderer, Color> ();
 		foreach (BodyPart bp in toHighlight) {
 			SpriteRenderer [] sr = bp.GetComponentsInChildren<SpriteRenderer> ();
-			if (!highlightSprites.ContainsKey (sr[sr.Length-1])) {
-				highlightSprites.Add (sr[sr.Length-1], sr[sr.Length-1].color);
-			}
+			int i = sr.Length;
+			do{
+				if (!highlightSprites.ContainsKey (sr[i-1])) {
+					highlightSprites.Add (sr[i-1], sr[i-1].color);
+				}
+				i--;
+			}while( i >= 1 && highlightSprites.ContainsKey (sr[i-1]));
 		}
 
 
