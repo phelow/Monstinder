@@ -283,6 +283,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_slotType: 2
+  m_parentPart: {fileID: 0}
+  m_depth: 0
 --- !u!114 &114000012931307134
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -295,6 +297,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_slotType: 1
+  m_parentPart: {fileID: 0}
+  m_depth: 0
 --- !u!114 &114000013677112230
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -311,6 +315,7 @@ MonoBehaviour:
   m_type: 5
   m_minRotation: -30
   m_maxRotation: 30
+  m_spriteRenderer: {fileID: 212000013636570922}
   m_bodyType: 9
 --- !u!135 &135000014255093556
 SphereCollider:

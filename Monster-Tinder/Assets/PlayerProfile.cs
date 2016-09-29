@@ -102,7 +102,7 @@ public class PlayerProfile : Profile {
 	public void DropTutorialText(string text, Color c){
 		GameObject addPointsText = GameObject.Instantiate (ms_instance.m_plusPoint,ms_instance.m_spawnScoreTextHere.transform.position,ms_instance.m_spawnScoreTextHere.transform.rotation) as GameObject;
 		Rigidbody2D rb = addPointsText.GetComponent<Rigidbody2D> ();
-		rb.AddForce (new Vector2 (Random.Range (-10.0f, 10.0f), Random.Range (-10.0f, 10.0f)));
+		rb.AddForce (new Vector2 (Random.Range (-100.0f, 100.0f), Random.Range (-100.0f, 100.0f)));
 		rb.AddTorque (Random.Range (-10.0f, 10.0f));
 
 		Text t = addPointsText.GetComponentInChildren<Text> ();
@@ -158,17 +158,9 @@ public class PlayerProfile : Profile {
 				continue;
 			}
 
-			if (slot.m_depth > 2 && isHead == false) {
+			if (slot.m_depth > 1 && isHead == false) {
 
 				m_NahButton.SetActive(true);
-			}
-
-			RaycastHit2D[] hits = Physics2D.CircleCastAll (new Vector2 (slot.transform.position.x, slot.transform.position.y),BodyPart.ms_placementTolerance, Vector2.zero);
-			foreach (RaycastHit2D hit in hits) {
-				Debug.Log (hit.collider.gameObject.transform.parent.name + " " + hit.centroid);
-			}
-			if (hits.Length > 0 || (hits.Length == 1 && ( hits[0].collider.gameObject == this.gameObject || hits[0].collider.gameObject.transform.parent == this.gameObject))) {
-				continue;
 			}
 
 

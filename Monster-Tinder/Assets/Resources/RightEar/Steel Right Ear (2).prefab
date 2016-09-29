@@ -152,7 +152,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000013983298514}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.089, y: 0.386, z: 9.253391}
+  m_LocalPosition: {x: 7.72, y: 0.83, z: 9.253391}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -227,6 +227,7 @@ MonoBehaviour:
   m_type: 9
   m_minRotation: -30
   m_maxRotation: 30
+  m_spriteRenderer: {fileID: 212000011985795008}
   m_bodyType: 4
 --- !u!135 &135000011038945732
 SphereCollider:

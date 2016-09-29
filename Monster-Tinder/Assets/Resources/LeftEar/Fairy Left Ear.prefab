@@ -130,6 +130,7 @@ MonoBehaviour:
   m_type: 7
   m_minRotation: -30
   m_maxRotation: 30
+  m_spriteRenderer: {fileID: 212000012086518492}
   m_bodyType: 5
 --- !u!212 &212000012086518492
 SpriteRenderer:

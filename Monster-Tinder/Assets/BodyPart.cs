@@ -19,6 +19,11 @@ public class BodyPart : MonoBehaviour {
 	[SerializeField]private ElementType m_type;
 	[SerializeField]private float m_minRotation = -30;
 	[SerializeField]private float m_maxRotation = 30;
+	[SerializeField]private SpriteRenderer m_spriteRenderer;
+
+	public SpriteRenderer GetSpriteRenderer(){
+		return m_spriteRenderer;
+	}
 
 
 	[SerializeField]private BodyPartSlot.BodyPartType m_bodyType;

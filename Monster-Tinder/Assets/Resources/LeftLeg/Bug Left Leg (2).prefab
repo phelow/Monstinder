@@ -168,7 +168,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000013611417770}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.441, y: -0.215, z: 9.253391}
+  m_LocalPosition: {x: 7.07, y: 0.23, z: 9.253391}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -257,6 +257,7 @@ MonoBehaviour:
   m_type: 8
   m_minRotation: -30
   m_maxRotation: 30
+  m_spriteRenderer: {fileID: 212000011916302766}
   m_bodyType: 8
 --- !u!114 &114000012173233304
 MonoBehaviour:
@@ -270,6 +271,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_slotType: 5
+  m_parentPart: {fileID: 0}
+  m_depth: 0
 --- !u!135 &135000011451689576
 SphereCollider:
   m_ObjectHideFlags: 1

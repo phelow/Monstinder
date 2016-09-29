@@ -227,6 +227,7 @@ MonoBehaviour:
   m_type: 7
   m_minRotation: -30
   m_maxRotation: 30
+  m_spriteRenderer: {fileID: 212000013725732726}
   m_bodyType: 4
 --- !u!135 &135000013435656860
 SphereCollider:
