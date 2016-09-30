@@ -13,7 +13,6 @@ public class SessionManager : MonoBehaviour {
 	[SerializeField]private AudioSource m_audioSource;
 	[SerializeField]private AudioClip m_alarmClip;
 
-	[SerializeField]private GameObject m_highscoreText;
 	[SerializeField]private GameObject m_highscoreSpawnPosition;
 
 	[SerializeField]private GameObject [] m_endGameDestruction;
@@ -91,29 +90,25 @@ public class SessionManager : MonoBehaviour {
 		if (curScore > previousHighscore) {
 			PlayerPrefs.SetInt ("HighScore",curScore );
 			PlayerPrefs.SetInt ("HighScoreBeaten", 1);
-
-			GameObject.Instantiate (m_highscoreText, m_highscoreSpawnPosition.transform.position, m_highscoreSpawnPosition.transform.rotation);
 		}
 
 		PlayerPrefs.SetInt ("LastDifficultyPlayed",curDifficulty);
 
 
+		foreach(GameObject go in m_endGameDestruction){
+			Destroy(go);
+			Destroy (GameObject.FindGameObjectWithTag ("Player"));
+		}
+
 			//if unlocked return to main menu
-		if (matchesNeeded < curScore) {
+		if ( PlayerProfile.GetScore ()  >= matchesNeeded) {
 			if (maxLevelUnlocked < curDifficulty + 1) {
 				PlayerPrefs.SetInt ("MaxLevel", curDifficulty + 1);
 			}
 
-			Destroy (GameObject.FindGameObjectWithTag ("Player"));
 
 			Fader.Instance.FadeIn().LoadLevel( "Success" ).FadeOut();
 		} else {
-			yield return new WaitForSeconds(2.0f);
-			foreach(GameObject go in m_endGameDestruction){
-				Destroy(go);
-			}
-
-			Destroy (GameObject.FindGameObjectWithTag ("Player"));
 
 			Fader.Instance.FadeIn().LoadLevel( "Failure" ).FadeOut();
 		}

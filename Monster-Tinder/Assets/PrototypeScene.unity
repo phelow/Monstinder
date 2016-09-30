@@ -4608,7 +4608,6 @@ MonoBehaviour:
   m_matchesNeededText: {fileID: 1221963551}
   m_audioSource: {fileID: 26234102}
   m_alarmClip: {fileID: 8300000, guid: 5f359602d1fea4449a3c12f618ba71b4, type: 3}
-  m_highscoreText: {fileID: 149652, guid: 560631daef8a9a545b1983283a9c9753, type: 2}
   m_highscoreSpawnPosition: {fileID: 2141642708}
   m_endGameDestruction:
   - {fileID: 688017438}

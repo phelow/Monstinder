@@ -224,7 +224,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_collider: {fileID: 0}
   theseBodyParts: []
-  m_type: 1
+  m_type: 8
   m_minRotation: -30
   m_maxRotation: 30
   m_spriteRenderer: {fileID: 212000012316680714}

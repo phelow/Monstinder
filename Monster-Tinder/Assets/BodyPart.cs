@@ -20,6 +20,7 @@ public class BodyPart : MonoBehaviour {
 	[SerializeField]private float m_minRotation = -30;
 	[SerializeField]private float m_maxRotation = 30;
 	[SerializeField]private SpriteRenderer m_spriteRenderer;
+	private const float ms_collisionTolerance = 0.01f;
 
 	public SpriteRenderer GetSpriteRenderer(){
 		return m_spriteRenderer;
@@ -176,13 +177,25 @@ public class BodyPart : MonoBehaviour {
 				continue;
 			}
 
+			bool shouldContinue = false;
+			if (isHead == false) {
 
-			RaycastHit2D[] hits = Physics2D.CircleCastAll (new Vector2 (slot.transform.position.x, slot.transform.position.y), ms_placementTolerance, Vector2.zero);
+				Collider2D [] hits = Physics2D.OverlapCircleAll(new Vector2(slot.transform.position.x,slot.transform.position.y),ms_collisionTolerance);
+				Collider2D thisCollider = this.GetComponent<Collider2D> ();
+				Collider2D spriteCollider = this.m_spriteRenderer.GetComponent<Collider2D> ();
 
-			if (isHead == false && (hits.Length > 0 || (hits.Length == 1 && ( hits[0].collider.gameObject == this.gameObject || hits[0].collider.gameObject.transform.parent == this.gameObject)))) {
-				continue;
+				foreach (Collider2D hit in hits) {
+					if (!((thisCollider != null && hit == thisCollider) || (spriteCollider != null && spriteCollider == hit))) {
+						shouldContinue = true;
+						break;
+					}
+				}
+
 			}
 
+			if (shouldContinue) {
+				continue;
+			}
 
 			BodyPartSlot.BodyPartType bodyPartSlotType = slot.GetBodyPartType ();
 			if (orientation == Orientation.Left && (bodyPartSlotType == BodyPartSlot.BodyPartType.RightEar || bodyPartSlotType == BodyPartSlot.BodyPartType.RightLeg || bodyPartSlotType == BodyPartSlot.BodyPartType.RightArm)) {

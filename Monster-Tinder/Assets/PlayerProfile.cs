@@ -158,7 +158,7 @@ public class PlayerProfile : Profile {
 				continue;
 			}
 
-			if (slot.m_depth > 1 && isHead == false) {
+			if (slot.m_depth >= 1 && isHead == false) {
 
 				m_NahButton.SetActive(true);
 			}

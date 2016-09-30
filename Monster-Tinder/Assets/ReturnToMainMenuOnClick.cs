@@ -12,12 +12,4 @@ public class ReturnToMainMenuOnClick : MonoBehaviour {
 
 		Fader.Instance.FadeIn().LoadLevel( "Main Menu" ).FadeOut();
 	}
-
-	// Update is called once per frame
-	void Update () {
-		if (Input.GetMouseButtonDown (0) || Input.GetMouseButtonDown (1) || Input.GetMouseButtonDown (2)) {
-			r();
-
-		}
-	}
 }
