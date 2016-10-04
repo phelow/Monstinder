@@ -32,7 +32,6 @@ public class Button : MonoBehaviour {
 
 		yield return new WaitForSeconds (1.0f);
 
-		PlayerProfile.ClearTipText ();
 		rb.isKinematic = false;
 		rb.AddForce (new Vector2(Random.Range(-500.0f,500.0f),Random.Range(-500.0f,500.0f)));
 		rb.gravityScale = 10.0f;

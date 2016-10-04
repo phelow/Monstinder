@@ -20,7 +20,22 @@ public class BodyPart : MonoBehaviour {
 	[SerializeField]private float m_minRotation = -30;
 	[SerializeField]private float m_maxRotation = 30;
 	[SerializeField]private SpriteRenderer m_spriteRenderer;
+	[SerializeField]private Color m_origColor;
 	private const float ms_collisionTolerance = 0.01f;
+
+	void Start(){
+		m_origColor = m_spriteRenderer.color;
+	}
+
+    public void SetCollider(BoxCollider2D collider)
+    {
+        this.m_collider = collider;
+    }
+
+
+    public Color GetColor(){
+		return m_origColor;
+	}
 
 	public SpriteRenderer GetSpriteRenderer(){
 		return m_spriteRenderer;
@@ -198,12 +213,6 @@ public class BodyPart : MonoBehaviour {
 			}
 
 			BodyPartSlot.BodyPartType bodyPartSlotType = slot.GetBodyPartType ();
-			if (orientation == Orientation.Left && (bodyPartSlotType == BodyPartSlot.BodyPartType.RightEar || bodyPartSlotType == BodyPartSlot.BodyPartType.RightLeg || bodyPartSlotType == BodyPartSlot.BodyPartType.RightArm)) {
-				continue;
-			}
-			else if (orientation == Orientation.Right && (bodyPartSlotType == BodyPartSlot.BodyPartType.LeftEar || bodyPartSlotType == BodyPartSlot.BodyPartType.LeftLeg || bodyPartSlotType == BodyPartSlot.BodyPartType.LeftArm)) {
-				continue;
-			}
 
 			List<GameObject> parts = GetUsableParts(slot.GetBodyPartType ());
 

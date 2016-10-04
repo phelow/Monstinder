@@ -27,12 +27,22 @@ public class PlayerProfile : Profile {
 	private IEnumerator m_burningRoutine;
 	private static int ms_score = 0;
 	private Text m_tipText;
+	private static int ms_correctChoices = 0;
+	private static int ms_incorrectChoices = 0;
 
 	protected static PlayerProfile ms_instance;
 
 	void Awake(){
 		
 		ms_instance = this;
+	}
+
+	public static int GetCorrectChoices(){
+		return ms_correctChoices;
+	}
+
+	public static int GetIncorrectChoices(){
+		return ms_incorrectChoices;
 	}
 
 	public static void SetChoice(BodyPart bp = null){
@@ -113,10 +123,6 @@ public class PlayerProfile : Profile {
 
 	}
 
-	public static void ClearTipText(){
-		ms_instance.m_tipText.text = "";
-	}
-
 	private IEnumerator Burn(){
 		while (true) {
 			m_matchRenderer.sprite = m_litMatch;
@@ -129,10 +135,6 @@ public class PlayerProfile : Profile {
 	protected override void GenerateProfile(){
 		m_typeScores = new int[(int)BodyPart.ElementType.zCount];
 		//Pick a starting body
-
-
-
-
 		//fill out limbs
 		StartCoroutine(GeneratePlayerBody());
 	}
@@ -239,10 +241,15 @@ public class PlayerProfile : Profile {
 	}
 
 	public void OnLevelWasLoaded(){
-		if (SceneManager.GetActiveScene ().name == "PrototypeScene") {
+		if (SceneManager.GetActiveScene ().name == "CharacterCustomization") {
+
+		}
+		else if (SceneManager.GetActiveScene ().name == "PrototypeScene") {
 			ms_instance.m_spawnScoreTextHere = GameObject.Find ("ScoreTextSpawnPoint");
 			ms_instance.m_matchRenderer = GameObject.Find ("match1").GetComponent<SpriteRenderer> ();
-			ms_instance.m_tipText = GameObject.Find ("TipText").GetComponent<Text>();
+			ms_instance.m_tipText = GameObject.Find ("TipText").GetComponent<Text> ();
+		} else {
+			Destroy (this.gameObject);
 		}
 	}
 
@@ -263,6 +270,7 @@ public class PlayerProfile : Profile {
 		Text scoreText = GameObject.FindWithTag ("ScoreText").GetComponent<Text>() as Text;
 
 		ms_score++;
+		ms_correctChoices++;
 		scoreText.text = "Score: "+ ms_score;
 
 	}
@@ -280,6 +288,7 @@ public class PlayerProfile : Profile {
 		Text scoreText = GameObject.FindWithTag ("ScoreText").GetComponent<Text>() as Text;
 
 		ms_score--;
+		ms_incorrectChoices++;
 		scoreText.text = "Score: "+ ms_score;
 	}
 }

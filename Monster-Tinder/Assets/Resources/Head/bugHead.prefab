@@ -69,6 +69,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000014200835248}
   - 212: {fileID: 212000010291445370}
+  - 114: {fileID: 114000013559057786}
   m_Layer: 0
   m_Name: blueHead
   m_TagString: Untagged
@@ -148,7 +149,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000012291991870}
   - 114: {fileID: 114000014232420466}
-  - 61: {fileID: 61000011567679780}
   m_Layer: 0
   m_Name: bugHead
   m_TagString: Untagged
@@ -317,20 +317,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010959623436}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!61 &61000011567679780
-BoxCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000013885886456}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1}
 --- !u!114 &114000011793896850
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -387,6 +373,19 @@ MonoBehaviour:
   m_slotType: 8
   m_parentPart: {fileID: 0}
   m_depth: 0
+--- !u!114 &114000013559057786
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000011439214410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6e19f9a5dff54548b3cd3c365135943, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_bp: {fileID: 0}
+  m_spriteRenderer: {fileID: 0}
 --- !u!114 &114000014232420466
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -404,6 +403,7 @@ MonoBehaviour:
   m_minRotation: -30
   m_maxRotation: 30
   m_spriteRenderer: {fileID: 212000010291445370}
+  m_origColor: {r: 0, g: 0, b: 0, a: 0}
   m_bodyType: 9
 --- !u!135 &135000013687550320
 SphereCollider:

@@ -100,7 +100,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000010030727284}
   - 114: {fileID: 114000012040118578}
-  - 61: {fileID: 61000012267978876}
   m_Layer: 0
   m_Name: Steel Head
   m_TagString: Untagged
@@ -150,7 +149,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000011886532942}
   - 212: {fileID: 212000012701141200}
-  - 61: {fileID: 61000012640293890}
+  - 114: {fileID: 114000012472390980}
   m_Layer: 0
   m_Name: blueHead
   m_TagString: Untagged
@@ -468,34 +467,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012949654964}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!61 &61000012267978876
-BoxCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000012473601092}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_Offset: {x: -0.0062417984, y: -0.0049996376}
-  serializedVersion: 2
-  m_Size: {x: 1.7930341, y: 1.7909776}
---- !u!61 &61000012640293890
-BoxCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000013939768518}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Size: {x: 0.36, y: 0.07}
 --- !u!114 &114000010387281004
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -597,6 +568,7 @@ MonoBehaviour:
   m_minRotation: -30
   m_maxRotation: 30
   m_spriteRenderer: {fileID: 212000012701141200}
+  m_origColor: {r: 0, g: 0, b: 0, a: 0}
   m_bodyType: 9
 --- !u!114 &114000012073379956
 MonoBehaviour:
@@ -612,6 +584,19 @@ MonoBehaviour:
   m_slotType: 1
   m_parentPart: {fileID: 0}
   m_depth: 0
+--- !u!114 &114000012472390980
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013939768518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6e19f9a5dff54548b3cd3c365135943, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_bp: {fileID: 0}
+  m_spriteRenderer: {fileID: 0}
 --- !u!114 &114000013054035924
 MonoBehaviour:
   m_ObjectHideFlags: 1

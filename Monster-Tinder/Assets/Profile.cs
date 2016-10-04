@@ -12,6 +12,8 @@ public class Profile : MonoBehaviour {
 	[SerializeField]protected int [] m_typeScores;
 
 	[SerializeField]private Text m_text;
+	public IEnumerator m_highlightBodyPartsCoroutine;
+
 
 	static protected Dictionary<BodyPart.ElementType,List<BodyPart.ElementType>> ms_strongAgainst;
 
@@ -37,7 +39,12 @@ public class Profile : MonoBehaviour {
 			}
 		}
 
-		a.StartCoroutine (a.HighLighBodyParts (toHighlight,Color.green));
+		if (a.m_highlightBodyPartsCoroutine != null) {
+			a.StopCoroutine (a.m_highlightBodyPartsCoroutine);
+		}
+
+		a.m_highlightBodyPartsCoroutine = a.HighLightBodyParts (toHighlight, Color.green);
+		a.StartCoroutine (a.m_highlightBodyPartsCoroutine);
 
 	}
 
@@ -60,32 +67,37 @@ public class Profile : MonoBehaviour {
 			}
 		}
 
-		b.StartCoroutine (a.HighLighBodyParts (toHighlight,Color.red));
+		if (a.m_highlightBodyPartsCoroutine != null) {
+			a.StopCoroutine (a.m_highlightBodyPartsCoroutine);
+		}
+
+		a.m_highlightBodyPartsCoroutine = a.HighLightBodyParts (toHighlight, Color.red);
+		b.StartCoroutine (a.HighLightBodyParts (toHighlight,Color.red));
 
 	}
 
-	private IEnumerator HighLighBodyParts(List<BodyPart> toHighlight, Color c){
+	private IEnumerator HighLightBodyParts(List<BodyPart> toHighlight, Color c){
 		Dictionary<SpriteRenderer,Color> highlightSprites = new Dictionary<SpriteRenderer, Color> ();
 		foreach (BodyPart bp in toHighlight) {
 			SpriteRenderer sr = bp.GetSpriteRenderer();
 			if (!highlightSprites.ContainsKey (sr)) {
-				highlightSprites.Add (sr, sr.color);
+				highlightSprites.Add (sr, bp.GetColor());
 			}
 		}
 
 
 		float t = 0.0f;
 
-		while (t < 1.0f) {
-			t += Time.deltaTime;
+		while (t < 10.0f) {
+			yield return new WaitForSeconds (.5f);
 
 			float g = 0.0f;
 			//interpolate to green
-			while (g < .1f) {
+			while (g < 1.0f) {
 				t += Time.deltaTime;
 				g += Time.deltaTime;
 				foreach (SpriteRenderer key in highlightSprites.Keys) {
-					key.color = Color.Lerp (highlightSprites [key],c, g / .1f);
+					key.color = Color.Lerp (highlightSprites [key],c, g);
 				}
 				yield return new WaitForEndOfFrame ();
 			}
@@ -94,11 +106,11 @@ public class Profile : MonoBehaviour {
 			//interpolate back to base
 			g = 0.0f;
 			//interpolate to green
-			while (g < .1f) {
+			while (g < 1.0f) {
 				t += Time.deltaTime;
 				g += Time.deltaTime;
 				foreach (SpriteRenderer key in highlightSprites.Keys) {
-					key.color = Color.Lerp (c, highlightSprites [key], g / .1f);
+					key.color = Color.Lerp (c, highlightSprites [key], g);
 				}
 				yield return new WaitForEndOfFrame ();
 			}

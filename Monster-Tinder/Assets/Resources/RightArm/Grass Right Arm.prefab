@@ -51,25 +51,9 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000010411039296}
   - 212: {fileID: 212000011247765160}
-  - 61: {fileID: 61000010895972646}
+  - 114: {fileID: 114000013423679224}
   m_Layer: 0
   m_Name: sprite
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!1 &1000012505016594
-GameObject:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 4000013054876014}
-  - 114: {fileID: 114000014034161892}
-  m_Layer: 0
-  m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -88,21 +72,6 @@ GameObject:
   - 23: {fileID: 23000012813032496}
   m_Layer: 0
   m_Name: Sphere
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!1 &1000013533732610
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 4000012985755402}
-  m_Layer: 0
-  m_Name: Slots
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -161,35 +130,7 @@ Transform:
   m_Children:
   - {fileID: 4000012926043304}
   - {fileID: 4000010411039296}
-  - {fileID: 4000012985755402}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
---- !u!4 &4000012985755402
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000013533732610}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_Children:
-  - {fileID: 4000013054876014}
-  m_Father: {fileID: 4000012950670984}
-  m_RootOrder: 2
---- !u!4 &4000013054876014
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000012505016594}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.74, y: 1.13, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_Children: []
-  m_Father: {fileID: 4000012985755402}
   m_RootOrder: 0
 --- !u!23 &23000012813032496
 MeshRenderer:
@@ -227,20 +168,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012798551322}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!61 &61000010895972646
-BoxCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000012027267886}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Size: {x: 0.09, y: 0.06}
 --- !u!114 &114000010485123360
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -258,21 +185,21 @@ MonoBehaviour:
   m_minRotation: -30
   m_maxRotation: 30
   m_spriteRenderer: {fileID: 212000011247765160}
+  m_origColor: {r: 0, g: 0, b: 0, a: 0}
   m_bodyType: 1
---- !u!114 &114000014034161892
+--- !u!114 &114000013423679224
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000012505016594}
+  m_GameObject: {fileID: 1000012027267886}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 679b38e7e5eddab498144a93fdcc1557, type: 3}
+  m_Script: {fileID: 11500000, guid: b6e19f9a5dff54548b3cd3c365135943, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_slotType: 1
-  m_parentPart: {fileID: 0}
-  m_depth: 0
+  m_bp: {fileID: 114000010485123360}
+  m_spriteRenderer: {fileID: 212000011247765160}
 --- !u!135 &135000011389430244
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -314,7 +241,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 423664952801dae4dbc06885106f08ac, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

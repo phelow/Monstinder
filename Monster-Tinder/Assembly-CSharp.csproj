@@ -60,6 +60,7 @@
      <Compile Include="Assets\LerpText.cs" />
      <Compile Include="Assets\LikeButton.cs" />
      <Compile Include="Assets\ManagePersistantSound.cs" />
+     <Compile Include="Assets\MatchManager.cs" />
      <Compile Include="Assets\MatchProfile.cs" />
      <Compile Include="Assets\NoChoice.cs" />
      <Compile Include="Assets\PlayAfterThirtySeconds.cs" />

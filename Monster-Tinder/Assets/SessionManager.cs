@@ -68,7 +68,7 @@ public class SessionManager : MonoBehaviour {
 		//Check for level unlocked
 		int curDifficulty = PlayerPrefs.GetInt ("Level",0);
 		int maxLevelUnlocked = PlayerPrefs.GetInt ("MaxLevel", 0);
-		int matchesNeeded = curDifficulty  + 5 / Mathf.Max ((5 - curDifficulty), 1) + 2;
+		int matchesNeeded = curDifficulty*3  + 5 / Mathf.Max ((5 - curDifficulty), 1) + 2;
 		m_matchesNeededText.text = "matches Needed:" +  matchesNeeded;
 		while (time > 0) {
 			yield return new WaitForSeconds (1.0f);
@@ -94,11 +94,8 @@ public class SessionManager : MonoBehaviour {
 
 		PlayerPrefs.SetInt ("LastDifficultyPlayed",curDifficulty);
 
-
-		foreach(GameObject go in m_endGameDestruction){
-			Destroy(go);
-			Destroy (GameObject.FindGameObjectWithTag ("Player"));
-		}
+		PlayerPrefs.SetInt ("LastCorrectChoices",PlayerProfile.GetCorrectChoices());
+		PlayerPrefs.SetInt ("LastIncorrectChoices",PlayerProfile.GetIncorrectChoices());
 
 			//if unlocked return to main menu
 		if ( PlayerProfile.GetScore ()  >= matchesNeeded) {

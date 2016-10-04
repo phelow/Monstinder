@@ -9,6 +9,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 494330}
   - 212: {fileID: 21213400}
+  - 114: {fileID: 114000011512876078}
   m_Layer: 0
   m_Name: sprite
   m_TagString: Untagged
@@ -25,7 +26,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 453864}
   - 114: {fileID: 11428100}
-  - 61: {fileID: 61000010042814364}
   m_Layer: 0
   m_Name: Water Left Leg
   m_TagString: Untagged
@@ -203,6 +203,7 @@ MonoBehaviour:
   m_minRotation: -30
   m_maxRotation: 30
   m_spriteRenderer: {fileID: 21213400}
+  m_origColor: {r: 0, g: 0, b: 0, a: 0}
   m_bodyType: 8
 --- !u!135 &13588102
 SphereCollider:
@@ -260,17 +261,16 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 126488}
   m_IsPrefabParent: 1
---- !u!61 &61000010042814364
-BoxCollider2D:
+--- !u!114 &114000011512876078
+MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 126488}
+  m_GameObject: {fileID: 108484}
   m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_Offset: {x: -0.32668114, y: -0.39888448}
-  serializedVersion: 2
-  m_Size: {x: 0.8413258, y: 1.0101854}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6e19f9a5dff54548b3cd3c365135943, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_bp: {fileID: 11428100}
+  m_spriteRenderer: {fileID: 21213400}

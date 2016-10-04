@@ -40,7 +40,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 416518}
   - 212: {fileID: 21216346}
-  - 61: {fileID: 61000014185817710}
+  - 114: {fileID: 114000012670978654}
   m_Layer: 0
   m_Name: sprite
   m_TagString: Untagged
@@ -203,6 +203,7 @@ MonoBehaviour:
   m_minRotation: -30
   m_maxRotation: 30
   m_spriteRenderer: {fileID: 21216346}
+  m_origColor: {r: 0, g: 0, b: 0, a: 0}
   m_bodyType: 2
 --- !u!135 &13518684
 SphereCollider:
@@ -260,17 +261,16 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 133378}
   m_IsPrefabParent: 1
---- !u!61 &61000014185817710
-BoxCollider2D:
+--- !u!114 &114000012670978654
+MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 141880}
   m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Size: {x: 0.05, y: 0.05}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6e19f9a5dff54548b3cd3c365135943, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_bp: {fileID: 11465798}
+  m_spriteRenderer: {fileID: 21216346}

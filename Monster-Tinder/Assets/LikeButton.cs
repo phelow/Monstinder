@@ -23,7 +23,8 @@ public class LikeButton : Button {
 			Vector3 position = go.transform.position;
 			Quaternion rotation = go.transform.rotation;
 
-			StartCoroutine (DestroyMatch (go.transform.parent.gameObject));
+			MatchManager.DockMatch (go.transform.parent.gameObject);
+
 			Destroy (go);
 
 			GameObject.Instantiate (m_match, position, rotation);

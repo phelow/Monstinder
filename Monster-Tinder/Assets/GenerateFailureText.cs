@@ -14,6 +14,8 @@ public class GenerateFailureText : MonoBehaviour {
 		}
 		PlayerPrefs.SetInt ("HighScoreBeaten", 0);
 		m_text.text += "\nHigh Score: " + PlayerPrefs.GetInt ("HighScore");
+		m_text.text += "\nCorrect Choices: " + PlayerPrefs.GetInt ("LastCorrectChoices");
+		m_text.text += "\nIncorrect Choices: " + PlayerPrefs.GetInt ("LastIncorrectChoices");
 	}
 
 	

@@ -34,7 +34,7 @@ public class DislikeButton : Button {
 
 			}
 
-			StartCoroutine (DestroyMatch (go.transform.parent.gameObject));
+			MatchManager.DockMatch (go.transform.parent.gameObject);
 			Destroy (go);
 		}
 	}
