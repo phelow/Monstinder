@@ -21,6 +21,9 @@ public class BodyPart : MonoBehaviour {
 	[SerializeField]private float m_maxRotation = 30;
 	[SerializeField]private SpriteRenderer m_spriteRenderer;
 	[SerializeField]private Color m_origColor;
+
+    public Sprite m_setsprite = null;
+
 	private const float ms_collisionTolerance = 0.01f;
 
 	void Start(){
@@ -47,15 +50,17 @@ public class BodyPart : MonoBehaviour {
 	public enum ElementType{
 		Fire,
 		Water,
-		Grass,
-		Ground,
-		Ghost,
+		Plant,
+		Earth,
+		Spirit,
 		Poison,
 		Dark,
-		Fairy,
+		Light,
 		Bug,
-		Steel,
-		zCount
+		Metal,
+        Dragon,
+        Glitch,
+        zCount
 	}
 
 	public static string GetElementTypeString(ElementType et){

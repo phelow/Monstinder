@@ -35,31 +35,36 @@ public class SessionManager : MonoBehaviour {
 		if (curDifficulty >= 0) {
 			availableElements.Add (BodyPart.ElementType.Fire);
 			availableElements.Add (BodyPart.ElementType.Water);
-			availableElements.Add (BodyPart.ElementType.Grass);
+			availableElements.Add (BodyPart.ElementType.Plant);
 		}
 
 		if (curDifficulty >= 2) {
-			availableElements.Add (BodyPart.ElementType.Ground);
+			availableElements.Add (BodyPart.ElementType.Earth);
 			availableElements.Add (BodyPart.ElementType.Dark);
 		}
 
 
 		if (curDifficulty >= 3) {
-			availableElements.Add (BodyPart.ElementType.Ghost);
+			availableElements.Add (BodyPart.ElementType.Spirit);
 			availableElements.Add (BodyPart.ElementType.Poison);
 		}
 
 
 		if (curDifficulty >= 4) {
-			availableElements.Add (BodyPart.ElementType.Fairy);
+			availableElements.Add (BodyPart.ElementType.Light);
 			availableElements.Add (BodyPart.ElementType.Bug);
 		}
 
 		if (curDifficulty >= 5) {
-			availableElements.Add (BodyPart.ElementType.Steel);
-		}
+			availableElements.Add (BodyPart.ElementType.Metal);
+            availableElements.Add(BodyPart.ElementType.Dragon);
+        }
+        if (curDifficulty >= 5)
+        {
+            availableElements.Add(BodyPart.ElementType.Glitch);
+        }
 
-		return availableElements;
+        return availableElements;
 
 	}
 

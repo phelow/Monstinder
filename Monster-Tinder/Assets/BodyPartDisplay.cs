@@ -13,8 +13,12 @@ public class BodyPartDisplay : MonoBehaviour {
 	
 	}
 
-	public void ButtonClicked(){
-		PlayerProfile.SetChoice (m_displayedPart.GetComponent<BodyPart> ());
+	public void ButtonClicked()
+    {
+        if (m_displayedPart != null)
+        {
+            PlayerProfile.SetChoice(m_displayedPart.GetComponent<BodyPart>());
+        }
 	}
 
 	public void Display(GameObject go,float minRotation,float maxRotation){

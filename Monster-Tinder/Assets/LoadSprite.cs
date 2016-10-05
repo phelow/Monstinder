@@ -33,7 +33,15 @@ public class LoadSprite : MonoBehaviour {
 
         Object[] sprites = ms_sprites[this.m_bp.GetBodyPartType()][this.m_bp.GetElementType()];
         try {
-            this.m_spriteRenderer.sprite = sprites[Random.Range(0, sprites.Length)] as Sprite;
+            if (this.m_bp.m_setsprite != null)
+            {
+                this.m_spriteRenderer.sprite = this.m_bp.m_setsprite;
+            }
+            else {
+                this.m_spriteRenderer.sprite = sprites[Random.Range(0, sprites.Length)] as Sprite;
+            }
+            this.m_bp.m_setsprite = this.m_spriteRenderer.sprite;
+
         }
         catch
         {

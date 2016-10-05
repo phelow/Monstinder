@@ -13,9 +13,10 @@ public class Profile : MonoBehaviour {
 
 	[SerializeField]private Text m_text;
 	public IEnumerator m_highlightBodyPartsCoroutine;
+    private List<BodyPart> m_toHighlight;
+    private Color m_highlightColor;
 
-
-	static protected Dictionary<BodyPart.ElementType,List<BodyPart.ElementType>> ms_strongAgainst;
+    static protected Dictionary<BodyPart.ElementType,List<BodyPart.ElementType>> ms_strongAgainst;
 
 	public static void HighLightMatchingParts(Profile a, Profile b){
 		List<BodyPart> toHighlight = new List<BodyPart> ();
@@ -77,46 +78,46 @@ public class Profile : MonoBehaviour {
 	}
 
 	private IEnumerator HighLightBodyParts(List<BodyPart> toHighlight, Color c){
+        this.m_toHighlight = toHighlight;
+        this.m_highlightColor = c;
+
 		Dictionary<SpriteRenderer,Color> highlightSprites = new Dictionary<SpriteRenderer, Color> ();
-		foreach (BodyPart bp in toHighlight) {
+		foreach (BodyPart bp in m_toHighlight) {
 			SpriteRenderer sr = bp.GetSpriteRenderer();
 			if (!highlightSprites.ContainsKey (sr)) {
 				highlightSprites.Add (sr, bp.GetColor());
 			}
 		}
 
-
-		float t = 0.0f;
-
-		while (t < 10.0f) {
-			yield return new WaitForSeconds (.5f);
-
-			float g = 0.0f;
-			//interpolate to green
-			while (g < 1.0f) {
-				t += Time.deltaTime;
-				g += Time.deltaTime;
-				foreach (SpriteRenderer key in highlightSprites.Keys) {
-					key.color = Color.Lerp (highlightSprites [key],c, g);
-				}
-				yield return new WaitForEndOfFrame ();
-			}
+        for (int i = 0; i < 10; i++)
+        {
+            float g = 0.0f;
+            //interpolate to green
+            while (g < 1.0f)
+            {
+                g += Time.deltaTime;
+                foreach (SpriteRenderer key in highlightSprites.Keys)
+                {
+                    key.color = Color.Lerp(highlightSprites[key], m_highlightColor, g);
+                }
+                yield return new WaitForEndOfFrame();
+            }
 
 
-			//interpolate back to base
-			g = 0.0f;
-			//interpolate to green
-			while (g < 1.0f) {
-				t += Time.deltaTime;
-				g += Time.deltaTime;
-				foreach (SpriteRenderer key in highlightSprites.Keys) {
-					key.color = Color.Lerp (c, highlightSprites [key], g);
-				}
-				yield return new WaitForEndOfFrame ();
-			}
-
-			yield return new WaitForEndOfFrame ();
-		}
+            //interpolate back to base
+            g = 0.0f;
+            //interpolate to green
+            while (g < 1.0f)
+            {
+                g += Time.deltaTime;
+                foreach (SpriteRenderer key in highlightSprites.Keys)
+                {
+                    key.color = Color.Lerp(m_highlightColor, highlightSprites[key], g);
+                }
+                yield return new WaitForEndOfFrame();
+            }
+            yield return new WaitForSeconds(1.0f);
+        }
 
 		foreach (SpriteRenderer key in highlightSprites.Keys) {
 			key.color = highlightSprites [key];
@@ -182,34 +183,39 @@ public class Profile : MonoBehaviour {
 		ms_strongAgainst = new Dictionary<BodyPart.ElementType, List<BodyPart.ElementType>> ();
 
 		ms_strongAgainst.Add (BodyPart.ElementType.Fire, new List<BodyPart.ElementType> ());
-		ms_strongAgainst.Add (BodyPart.ElementType.Grass, new List<BodyPart.ElementType> ());
-		ms_strongAgainst.Add (BodyPart.ElementType.Ground, new List<BodyPart.ElementType> ());
+		ms_strongAgainst.Add (BodyPart.ElementType.Plant, new List<BodyPart.ElementType> ());
+		ms_strongAgainst.Add (BodyPart.ElementType.Earth, new List<BodyPart.ElementType> ());
 		ms_strongAgainst.Add (BodyPart.ElementType.Water, new List<BodyPart.ElementType> ());
-		ms_strongAgainst.Add (BodyPart.ElementType.Ghost, new List<BodyPart.ElementType> ());
+		ms_strongAgainst.Add (BodyPart.ElementType.Spirit, new List<BodyPart.ElementType> ());
 		ms_strongAgainst.Add (BodyPart.ElementType.Poison, new List<BodyPart.ElementType> ());
 		ms_strongAgainst.Add (BodyPart.ElementType.Dark, new List<BodyPart.ElementType> ());
-		ms_strongAgainst.Add (BodyPart.ElementType.Fairy, new List<BodyPart.ElementType> ());
+		ms_strongAgainst.Add (BodyPart.ElementType.Light, new List<BodyPart.ElementType> ());
 		ms_strongAgainst.Add (BodyPart.ElementType.Bug, new List<BodyPart.ElementType> ());
-		ms_strongAgainst.Add (BodyPart.ElementType.Steel, new List<BodyPart.ElementType> ());
+		ms_strongAgainst.Add (BodyPart.ElementType.Metal, new List<BodyPart.ElementType> ());
+        ms_strongAgainst.Add(BodyPart.ElementType.Dragon, new List<BodyPart.ElementType>());
+        ms_strongAgainst.Add(BodyPart.ElementType.Glitch, new List<BodyPart.ElementType>());
 
 
-		ms_strongAgainst [BodyPart.ElementType.Water].Add (BodyPart.ElementType.Fire);
-		ms_strongAgainst [BodyPart.ElementType.Water].Add (BodyPart.ElementType.Ground);
-		ms_strongAgainst [BodyPart.ElementType.Fire].Add (BodyPart.ElementType.Grass);
-		ms_strongAgainst [BodyPart.ElementType.Grass].Add (BodyPart.ElementType.Water);
-		ms_strongAgainst [BodyPart.ElementType.Ground].Add (BodyPart.ElementType.Fire);
-		ms_strongAgainst [BodyPart.ElementType.Ground].Add (BodyPart.ElementType.Poison);
-		ms_strongAgainst [BodyPart.ElementType.Poison].Add (BodyPart.ElementType.Ghost);
-		ms_strongAgainst [BodyPart.ElementType.Poison].Add (BodyPart.ElementType.Fairy);
-		ms_strongAgainst [BodyPart.ElementType.Dark].Add (BodyPart.ElementType.Ghost);
-		ms_strongAgainst [BodyPart.ElementType.Fairy].Add (BodyPart.ElementType.Dark);
-		ms_strongAgainst [BodyPart.ElementType.Bug].Add (BodyPart.ElementType.Grass);
+        ms_strongAgainst [BodyPart.ElementType.Water].Add (BodyPart.ElementType.Fire);
+		ms_strongAgainst [BodyPart.ElementType.Water].Add (BodyPart.ElementType.Earth);
+		ms_strongAgainst [BodyPart.ElementType.Fire].Add (BodyPart.ElementType.Plant);
+		ms_strongAgainst [BodyPart.ElementType.Plant].Add (BodyPart.ElementType.Water);
+		ms_strongAgainst [BodyPart.ElementType.Earth].Add (BodyPart.ElementType.Fire);
+		ms_strongAgainst [BodyPart.ElementType.Earth].Add (BodyPart.ElementType.Poison);
+		ms_strongAgainst [BodyPart.ElementType.Poison].Add (BodyPart.ElementType.Spirit);
+		ms_strongAgainst [BodyPart.ElementType.Poison].Add (BodyPart.ElementType.Light);
+		ms_strongAgainst [BodyPart.ElementType.Dark].Add (BodyPart.ElementType.Spirit);
+		ms_strongAgainst [BodyPart.ElementType.Light].Add (BodyPart.ElementType.Dark);
+		ms_strongAgainst [BodyPart.ElementType.Bug].Add (BodyPart.ElementType.Plant);
 		ms_strongAgainst [BodyPart.ElementType.Bug].Add (BodyPart.ElementType.Dark);
 		ms_strongAgainst [BodyPart.ElementType.Fire].Add (BodyPart.ElementType.Bug);
-		ms_strongAgainst [BodyPart.ElementType.Steel].Add (BodyPart.ElementType.Fairy);
-		ms_strongAgainst [BodyPart.ElementType.Ground].Add (BodyPart.ElementType.Steel);
-		ms_strongAgainst [BodyPart.ElementType.Fire].Add (BodyPart.ElementType.Steel);
-	}
+		ms_strongAgainst [BodyPart.ElementType.Metal].Add (BodyPart.ElementType.Light);
+		ms_strongAgainst [BodyPart.ElementType.Earth].Add (BodyPart.ElementType.Metal);
+		ms_strongAgainst [BodyPart.ElementType.Fire].Add (BodyPart.ElementType.Metal);
+        ms_strongAgainst[BodyPart.ElementType.Dragon].Add(BodyPart.ElementType.Earth);
+        ms_strongAgainst[BodyPart.ElementType.Dragon].Add(BodyPart.ElementType.Metal);
+        ms_strongAgainst[BodyPart.ElementType.Spirit].Add(BodyPart.ElementType.Dragon);
+    }
 
 	public int GetPartsOfType(BodyPart.ElementType type){
 		return m_typeScores [(int)type];
