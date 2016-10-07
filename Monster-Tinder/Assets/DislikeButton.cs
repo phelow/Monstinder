@@ -18,24 +18,26 @@ public class DislikeButton : Button {
 
 	public void ButtonPress(){
 		if (Button.ms_active) {
-			GameObject go = GameObject.FindGameObjectWithTag ("NextMatch");
+			GameObject go = MatchProfile.ms_currentMatch.NextMatchPostion();
+            Vector3 position = go.transform.position;
+            Quaternion rotation = go.transform.rotation;
 
-			GameObject.Instantiate (m_match, go.transform.position, go.transform.rotation);
+            //if not match play tearing bubble wrap sound
+            if (this.m_player.CheckForMatch(MatchProfile.ms_currentMatch)) {
+                Profile.HighLightMatchingParts(m_player, MatchProfile.ms_currentMatch);
+                PlayerProfile.RemoveMatch();
+                this.m_audioSource.PlayOneShot(m_matchDislikeClip);
+                MatchManager.SaveMatch(MatchProfile.ms_currentMatch.gameObject);
 
-			//if not match play tearing bubble wrap sound
-			if (this.m_player.CheckForMatch (MatchProfile.ms_currentMatch)) {
-				Profile.HighLightMatchingParts (m_player, MatchProfile.ms_currentMatch);
-				PlayerProfile.RemoveMatch ();
-				this.m_audioSource.PlayOneShot (m_matchDislikeClip);
-			} else {
-				Profile.HighLightConflicts (m_player, MatchProfile.ms_currentMatch);
-				//else if it wasn't a match play popping noise
-				this.m_audioSource.PlayOneShot (m_noMatchDislikeClip);
+            } else {
+                Profile.HighLightConflicts(m_player, MatchProfile.ms_currentMatch);
+                //else if it wasn't a match play popping noise
+                this.m_audioSource.PlayOneShot(m_noMatchDislikeClip);
+                MatchManager.SaveReject(MatchProfile.ms_currentMatch.gameObject);
 
-			}
-
-			MatchManager.DockMatch (go.transform.parent.gameObject);
-			Destroy (go);
-		}
+            }
+			MatchManager.DockMatch (MatchProfile.ms_currentMatch.gameObject);
+            MatchProfile.ms_currentMatch = (GameObject.Instantiate(m_match, position, rotation) as GameObject).GetComponent<MatchProfile>();
+        }
 	}
 }

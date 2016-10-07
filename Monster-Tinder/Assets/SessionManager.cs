@@ -108,10 +108,8 @@ public class SessionManager : MonoBehaviour {
 				PlayerPrefs.SetInt ("MaxLevel", curDifficulty + 1);
 			}
 
-
-			Fader.Instance.FadeIn().LoadLevel( "Success" ).FadeOut();
+			Fader.Instance.FadeIn().LoadLevel( "MatchRejects" ).FadeOut();
 		} else {
-
 			Fader.Instance.FadeIn().LoadLevel( "Failure" ).FadeOut();
 		}
 			//else offer option to repeat the level

@@ -78,6 +78,7 @@
     <Compile Include="Assets\LikeButton.cs" />
     <Compile Include="Assets\LoadSprite.cs" />
     <Compile Include="Assets\ManagePersistantSound.cs" />
+    <Compile Include="Assets\MatchChoice.cs" />
     <Compile Include="Assets\MatchManager.cs" />
     <Compile Include="Assets\MatchProfile.cs" />
     <Compile Include="Assets\NoChoice.cs" />
@@ -100,6 +101,7 @@
     <Compile Include="Assets\Screen Fader Pack\Demo\Other stuff\SwitchScenesGUI.cs" />
     <Compile Include="Assets\SessionManager.cs" />
     <Compile Include="Assets\StartGame.cs" />
+    <Compile Include="Assets\Tutorializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Screen Fader Pack\ReadMe (eng).txt" />

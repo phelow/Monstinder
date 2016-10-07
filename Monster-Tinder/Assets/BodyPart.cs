@@ -59,8 +59,7 @@ public class BodyPart : MonoBehaviour {
 		Bug,
 		Metal,
         Dragon,
-        Glitch,
-        zCount
+        Glitch
 	}
 
 	public static string GetElementTypeString(ElementType et){
@@ -256,14 +255,13 @@ public class BodyPart : MonoBehaviour {
 		}
 
 		if (isPlayer) {
-			int minTypes = Mathf.Min(PlayerPrefs.GetInt ("Level", 0)/2,(int)BodyPart.ElementType.zCount-1);
+			int minTypes = Mathf.Min(PlayerPrefs.GetInt ("Level", 0)/2, BodyPart.ElementType.GetNames(typeof(BodyPart.ElementType)).Length);
 
 			if (types == null || minTypes < types.Count) {
 				return parts;
 			}
 
 			foreach(BodyPart.ElementType type in types){
-
 				parts = RemoveAllOfType(parts,type);
 			}
 		}

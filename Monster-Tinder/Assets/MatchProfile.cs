@@ -7,6 +7,10 @@ public class MatchProfile : Profile {
 
 	protected override void CacheIfMatchProfile(){
 		Debug.Log ("Caching");
-		ms_currentMatch = this;
 	}
+
+    public GameObject NextMatchPostion()
+    {
+        return m_nextMatch;
+    }
 }

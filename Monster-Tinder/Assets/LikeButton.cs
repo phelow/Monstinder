@@ -8,7 +8,8 @@ public class LikeButton : Button {
 	// Use this for initialization
 	void Start () {
 		this.m_player = GameObject.FindGameObjectWithTag ("Player").GetComponent<PlayerProfile>();
-	}
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -19,15 +20,9 @@ public class LikeButton : Button {
 		if (Button.ms_active) {
 			//Spawn a new Match
 			//TODO: clean this up
-			GameObject go = GameObject.FindGameObjectWithTag ("NextMatch");
-			Vector3 position = go.transform.position;
+			GameObject go = MatchProfile.ms_currentMatch.NextMatchPostion();
+            Vector3 position = go.transform.position;
 			Quaternion rotation = go.transform.rotation;
-
-			MatchManager.DockMatch (go.transform.parent.gameObject);
-
-			Destroy (go);
-
-			GameObject.Instantiate (m_match, position, rotation);
 
 			Debug.Log ("Like");
 
@@ -35,13 +30,17 @@ public class LikeButton : Button {
 				Profile.HighLightMatchingParts (m_player, MatchProfile.ms_currentMatch);
 				this.m_audioSource.PlayOneShot (m_matchLikeClip);
 				PlayerProfile.AddMatch ();
-			} else {
+                MatchManager.SaveMatch(MatchProfile.ms_currentMatch.gameObject);
+            } else {
 				this.m_audioSource.PlayOneShot (m_noMatchLikeClip);
 				Profile.HighLightConflicts (m_player, MatchProfile.ms_currentMatch);
 				PlayerProfile.RemoveMatch ();
+                MatchManager.SaveReject(MatchProfile.ms_currentMatch.gameObject);
+            }
 
-			}
-		}
+            MatchManager.DockMatch(MatchProfile.ms_currentMatch.gameObject);
+            MatchProfile.ms_currentMatch = (GameObject.Instantiate(m_match, position, rotation) as GameObject).GetComponent<MatchProfile>();
+        }
 
 	}
 }

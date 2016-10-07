@@ -13,8 +13,11 @@ public class Profile : MonoBehaviour {
 
 	[SerializeField]private Text m_text;
 	public IEnumerator m_highlightBodyPartsCoroutine;
-    private List<BodyPart> m_toHighlight;
+    private Dictionary<SpriteRenderer, Color> m_toHighlight;
     private Color m_highlightColor;
+
+    [SerializeField]
+    private Image m_polaroidGraphic;
 
     static protected Dictionary<BodyPart.ElementType,List<BodyPart.ElementType>> ms_strongAgainst;
 
@@ -38,18 +41,29 @@ public class Profile : MonoBehaviour {
 			if (ContainsConflict (bp, aList)) {
 				toHighlight.Remove (bp);
 			}
-		}
+        }
 
-		if (a.m_highlightBodyPartsCoroutine != null) {
-			a.StopCoroutine (a.m_highlightBodyPartsCoroutine);
-		}
+        a.SetSpritesToHighlight(toHighlight);
 
-		a.m_highlightBodyPartsCoroutine = a.HighLightBodyParts (toHighlight, Color.green);
-		a.StartCoroutine (a.m_highlightBodyPartsCoroutine);
+        a.m_highlightColor = Color.green;
+    }
 
-	}
+    public void SetSpritesToHighlight(List<BodyPart> toHighlight)
+    {
+        this.m_toHighlight = new Dictionary<SpriteRenderer, Color>();
 
-	public static void HighLightConflicts(Profile a, Profile b){
+        foreach (BodyPart bp in toHighlight)
+        {
+            SpriteRenderer sr = bp.GetSpriteRenderer();
+            if (!this.m_toHighlight.ContainsKey(sr))
+            {
+                this.m_toHighlight.Add(sr, bp.GetColor());
+            }
+        }
+
+    }
+
+    public static void HighLightConflicts(Profile a, Profile b){
 		List<BodyPart> toHighlight = new List<BodyPart> ();
 
 		List<BodyPart> aList = a.getAllBodyParts ();
@@ -67,38 +81,39 @@ public class Profile : MonoBehaviour {
 				toHighlight.Add (bp);
 			}
 		}
+     
+        a.SetSpritesToHighlight(toHighlight);
+        a.m_highlightColor = Color.red;
 
-		if (a.m_highlightBodyPartsCoroutine != null) {
-			a.StopCoroutine (a.m_highlightBodyPartsCoroutine);
-		}
+    }
 
-		a.m_highlightBodyPartsCoroutine = a.HighLightBodyParts (toHighlight, Color.red);
-		b.StartCoroutine (a.HighLightBodyParts (toHighlight,Color.red));
+    public Image GetPolaroidGraphic()
+    {
+        return m_polaroidGraphic;
+    }
 
-	}
+    public void ClearHighlighting()
+    {
+        this.m_toHighlight = new Dictionary<SpriteRenderer, Color>();
+        this.m_highlightColor = Color.white;
+    }
 
-	private IEnumerator HighLightBodyParts(List<BodyPart> toHighlight, Color c){
-        this.m_toHighlight = toHighlight;
-        this.m_highlightColor = c;
 
-		Dictionary<SpriteRenderer,Color> highlightSprites = new Dictionary<SpriteRenderer, Color> ();
-		foreach (BodyPart bp in m_toHighlight) {
-			SpriteRenderer sr = bp.GetSpriteRenderer();
-			if (!highlightSprites.ContainsKey (sr)) {
-				highlightSprites.Add (sr, bp.GetColor());
-			}
-		}
+    private IEnumerator HighLightBodyParts(){
+        this.m_toHighlight = new Dictionary<SpriteRenderer, Color>();
+        this.m_highlightColor = Color.white;
 
-        for (int i = 0; i < 10; i++)
+
+        while(true)
         {
             float g = 0.0f;
             //interpolate to green
             while (g < 1.0f)
             {
                 g += Time.deltaTime;
-                foreach (SpriteRenderer key in highlightSprites.Keys)
+                foreach (SpriteRenderer key in this.m_toHighlight.Keys)
                 {
-                    key.color = Color.Lerp(highlightSprites[key], m_highlightColor, g);
+                    key.color = Color.Lerp(this.m_toHighlight[key], m_highlightColor, g);
                 }
                 yield return new WaitForEndOfFrame();
             }
@@ -110,18 +125,14 @@ public class Profile : MonoBehaviour {
             while (g < 1.0f)
             {
                 g += Time.deltaTime;
-                foreach (SpriteRenderer key in highlightSprites.Keys)
+                foreach (SpriteRenderer key in this.m_toHighlight.Keys)
                 {
-                    key.color = Color.Lerp(m_highlightColor, highlightSprites[key], g);
+                    key.color = Color.Lerp(m_highlightColor, this.m_toHighlight[key], g);
                 }
                 yield return new WaitForEndOfFrame();
             }
             yield return new WaitForSeconds(1.0f);
         }
-
-		foreach (SpriteRenderer key in highlightSprites.Keys) {
-			key.color = highlightSprites [key];
-		}
 	}
 
 	public static bool ContainsConflict(BodyPart part, List<BodyPart> bps){
@@ -162,7 +173,9 @@ public class Profile : MonoBehaviour {
 		GenerateProfile ();
 
 		ResetScore ();
-	}
+
+        StartCoroutine(HighLightBodyParts());
+    }
 
 	public virtual void ResetScore(){
 
@@ -218,16 +231,17 @@ public class Profile : MonoBehaviour {
     }
 
 	public int GetPartsOfType(BodyPart.ElementType type){
-		return m_typeScores [(int)type];
+        int partsOfType = 0;
+        
+        partsOfType = m_typeScores[(int)type];
+
+        return partsOfType;
 	}
 
 	protected virtual void GenerateProfile(){
-		m_typeScores = new int[(int)BodyPart.ElementType.zCount];
+		m_typeScores = new int[BodyPart.ElementType.GetNames(typeof(BodyPart.ElementType)).Length];
 		//Pick a starting body
-
-
-
-
+        
 		BodyPart body = (GameObject.Instantiate(m_bodies[Random.Range(0,m_bodies.Length)],m_bodySlot.transform.position,m_bodySlot.transform.rotation) as GameObject).GetComponent(typeof(BodyPart)) as BodyPart;
 		body.transform.localScale = new Vector3 (.1f, .1f, .01f);
 		body.transform.parent = this.transform;

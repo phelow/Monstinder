@@ -215,7 +215,8 @@ MonoBehaviour:
   m_maxRotation: 30
   m_spriteRenderer: {fileID: 212000012135017760}
   m_origColor: {r: 0, g: 0, b: 0, a: 0}
-  m_bodyType: 7
+  m_setsprite: {fileID: 0}
+  m_bodyType: 1
 --- !u!114 &114000013715232494
 MonoBehaviour:
   m_ObjectHideFlags: 1

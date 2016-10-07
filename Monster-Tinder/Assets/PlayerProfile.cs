@@ -9,11 +9,6 @@ public class PlayerProfile : Profile {
 
 	[SerializeField]private SpriteRenderer m_matchRenderer;
 	[SerializeField]private GameObject m_NahButton;
-
-	[SerializeField]private Sprite m_match;
-
-	[SerializeField]private Sprite m_litMatch;
-	[SerializeField]private Sprite m_burntMatch;
 	[SerializeField]private GameObject m_spawnScoreTextHere;
 	[SerializeField]private GameObject m_plusPoint;
 	[SerializeField]private GameObject m_minusPoint;
@@ -33,7 +28,7 @@ public class PlayerProfile : Profile {
 	protected static PlayerProfile ms_instance;
 
 	void Awake(){
-		
+        DontDestroyOnLoad(this.gameObject);
 		ms_instance = this;
 	}
 
@@ -70,40 +65,55 @@ public class PlayerProfile : Profile {
 		return ms_strongAgainst [a.GetElementType ()].Contains (b.GetElementType ()) || ms_strongAgainst [b.GetElementType ()].Contains (a.GetElementType ());
 	}
 
+    public int GetSameParts(Profile potentialMatch)
+    {
+        int sameParts = 0;
+        for (int i = 0; i < BodyPart.ElementType.GetNames(typeof(BodyPart.ElementType)).Length; i++)
+        {
+            int newSameParts = Mathf.Min(GetPartsOfType((BodyPart.ElementType)i), potentialMatch.GetPartsOfType((BodyPart.ElementType)i));
+            sameParts += newSameParts;
+
+            if (newSameParts > 0)
+            {
+                DropTutorialText(BodyPart.GetElementTypeString((BodyPart.ElementType)i) + " loves other " + BodyPart.GetElementTypeString((BodyPart.ElementType)i), Color.green);
+            }
+        }
+        return sameParts;
+    }
+    
+    public int GetDifferentParts(Profile potentialMatch)
+    {
+
+        int differentParts = 0;
+        //calculate num typematched parts (likelihood of unmatch)
+        foreach (BodyPart.ElementType type in ms_strongAgainst.Keys)
+        {
+            foreach (BodyPart.ElementType strongAgainst in ms_strongAgainst[type])
+            {
+                int newDifferentParts = Mathf.Max(Mathf.Max(Mathf.Min(GetPartsOfType(type), potentialMatch.GetPartsOfType(strongAgainst)),
+                                        Mathf.Min(potentialMatch.GetPartsOfType(strongAgainst), GetPartsOfType(type))),
+                    Mathf.Max(Mathf.Min(potentialMatch.GetPartsOfType(type), GetPartsOfType(strongAgainst)),
+                        Mathf.Min(GetPartsOfType(strongAgainst), potentialMatch.GetPartsOfType(type))));
+
+                differentParts += newDifferentParts;
+
+                if (newDifferentParts > 0)
+                {
+                    DropTutorialText(BodyPart.GetElementTypeString(type) + " hates " + BodyPart.GetElementTypeString(strongAgainst), Color.red);
+                }
+            }
+        }
+
+        return differentParts;
+    }
+
 	public bool CheckForMatch(Profile potentialMatch){
-		//calculate num same parts (likelihood of match)
-		int sameParts = 0;
-		for (int i = 0; i < (int)BodyPart.ElementType.zCount; i++) {
-			int newSameParts = Mathf.Min (GetPartsOfType ((BodyPart.ElementType)i), potentialMatch.GetPartsOfType ((BodyPart.ElementType)i));
-			sameParts += newSameParts;
-
-			if (newSameParts > 0) {
-				DropTutorialText (BodyPart.GetElementTypeString ((BodyPart.ElementType)i) + " loves other " + BodyPart.GetElementTypeString ((BodyPart.ElementType)i), Color.green);
-			}
-
-		}
+        //calculate num same parts (likelihood of match)
+        int sameParts = GetSameParts(potentialMatch);
 
 
-		int differentParts = 0;
-		//calculate num typematched parts (likelihood of unmatch)
-		foreach (BodyPart.ElementType type in ms_strongAgainst.Keys) {
-			foreach (BodyPart.ElementType strongAgainst in ms_strongAgainst[type]) {
-
-
-				int newDifferentParts =  Mathf.Max(Mathf.Max(Mathf.Min (GetPartsOfType(type),potentialMatch.GetPartsOfType(strongAgainst)), 
-										Mathf.Min (potentialMatch.GetPartsOfType(strongAgainst),GetPartsOfType(type))),
-					Mathf.Max(Mathf.Min (potentialMatch.GetPartsOfType(type),GetPartsOfType(strongAgainst)), 
-						Mathf.Min (GetPartsOfType(strongAgainst),potentialMatch.GetPartsOfType(type))));
-
-				differentParts += newDifferentParts;
-
-				if (newDifferentParts > 0) {
-					DropTutorialText (BodyPart.GetElementTypeString (type) + " hates " + BodyPart.GetElementTypeString (strongAgainst), Color.red);
-				}
-			}
-		}
-
-		Debug.Log ("Same Parts:" + sameParts + " Different Prts:" + differentParts);
+        int differentParts = GetDifferentParts(potentialMatch);
+       
 		ms_instance.m_tipText.text = "Matching Parts:" + sameParts + " Clashing Parts:" + differentParts;
 		return sameParts >= differentParts;
 
@@ -119,21 +129,10 @@ public class PlayerProfile : Profile {
 
 		t.color = c;
 		t.text = text;
-
-
 	}
-
-	private IEnumerator Burn(){
-		while (true) {
-			m_matchRenderer.sprite = m_litMatch;
-			yield return new WaitForSeconds (.1f);
-			m_matchRenderer.sprite = m_match;
-			yield return new WaitForSeconds (.1f);
-		}
-	}
-
+    
 	protected override void GenerateProfile(){
-		m_typeScores = new int[(int)BodyPart.ElementType.zCount];
+		m_typeScores = new int[BodyPart.ElementType.GetNames(typeof(BodyPart.ElementType)).Length];
 		//Pick a starting body
 		//fill out limbs
 		StartCoroutine(GeneratePlayerBody());
@@ -147,8 +146,10 @@ public class PlayerProfile : Profile {
 		Stack<BodyPartSlot> frontier = new Stack<BodyPartSlot>();
 		m_bodySlot.GetComponent<BodyPartSlot> ().m_depth = 0;
 		frontier.Push (m_bodySlot.GetComponent<BodyPartSlot>());
-		while (frontier.Count > 0) {
 
+        HashSet<BodyPart.ElementType> elements = new HashSet<BodyPart.ElementType>();
+
+		while (frontier.Count > 0) {
 			m_NahButton.SetActive(false);
 			BodyPartSlot slot = frontier.Pop ();
 
@@ -160,10 +161,6 @@ public class PlayerProfile : Profile {
 				continue;
 			}
 
-			if (slot.m_depth >= 1 && isHead == false) {
-
-				m_NahButton.SetActive(true);
-			}
 
 
 			BodyPartSlot.BodyPartType bodyPartSlotType = slot.GetBodyPartType ();
@@ -177,7 +174,12 @@ public class PlayerProfile : Profile {
 				parts = BodyPart.GetUsableParts (slot.GetBodyPartType (), true, m_body.CountTypes (ref types));
 			}
 
-			bool shouldContinue = false;
+            if (slot.m_depth >= 1 && isHead == false && frontier.Count - elements.Count > Mathf.Max(PlayerPrefs.GetInt("Level", 0) / 3, 6))
+            {
+                m_NahButton.SetActive(true);
+            }
+
+            bool shouldContinue = false;
 
 			foreach (BodyPartDisplay display in m_bodyPartDisplays) {
 				BodyPart bp = null;
@@ -189,7 +191,6 @@ public class PlayerProfile : Profile {
 					shouldContinue = true;
 				} else {
 					display.Display (bp.gameObject, bp.MinRotation (), bp.MaxRotation ());
-
 				}
 			}
 
@@ -216,7 +217,10 @@ public class PlayerProfile : Profile {
 			//TODO:Add the choice to the body
 			m_choice = slot.AddPart(m_choice,slot.m_parentPart);
 
-			if (m_body == null) {
+            elements.Add(m_choice.GetElementType());
+
+
+            if (m_body == null) {
 				m_body = m_choice;
 			}
 
@@ -241,31 +245,25 @@ public class PlayerProfile : Profile {
 	}
 
 	public void OnLevelWasLoaded(){
-		if (SceneManager.GetActiveScene ().name == "CharacterCustomization") {
+        if (SceneManager.GetActiveScene().name == "PrototypeScene")
+        {
+            ms_instance.m_spawnScoreTextHere = GameObject.Find("ScoreTextSpawnPoint");
+            ms_instance.m_matchRenderer = GameObject.Find("match1").GetComponent<SpriteRenderer>();
+            ms_instance.m_tipText = GameObject.Find("TipText").GetComponent<Text>();
+        }
+        else if (SceneManager.GetActiveScene().name == "Main Menu")
+        {
+            Destroy(this.gameObject);
+        }
 
-		}
-		else if (SceneManager.GetActiveScene ().name == "PrototypeScene") {
-			ms_instance.m_spawnScoreTextHere = GameObject.Find ("ScoreTextSpawnPoint");
-			ms_instance.m_matchRenderer = GameObject.Find ("match1").GetComponent<SpriteRenderer> ();
-			ms_instance.m_tipText = GameObject.Find ("TipText").GetComponent<Text> ();
-		} else {
-			Destroy (this.gameObject);
-		}
-	}
+        this.ClearHighlighting();
+    }
 
 	public static void AddMatch(){
 		GameObject addPointsText = GameObject.Instantiate (ms_instance.m_plusPoint,ms_instance.m_spawnScoreTextHere.transform.position,ms_instance.m_spawnScoreTextHere.transform.rotation) as GameObject;
 		Rigidbody2D rb = addPointsText.GetComponent<Rigidbody2D> ();
 		rb.AddForce (new Vector2 (Random.Range (-10.0f, 10.0f), Random.Range (-10.0f, 10.0f)));
 		rb.AddTorque (Random.Range (-10.0f, 10.0f));
-
-		if (ms_instance.m_burningRoutine != null) {
-			ms_instance.StopCoroutine (ms_instance.m_burningRoutine);
-		}
-
-		ms_instance.m_burningRoutine = ms_instance.Burn ();
-
-		ms_instance.StartCoroutine (ms_instance.m_burningRoutine);
 
 		Text scoreText = GameObject.FindWithTag ("ScoreText").GetComponent<Text>() as Text;
 
@@ -281,10 +279,6 @@ public class PlayerProfile : Profile {
 		rb.AddForce (new Vector2 (Random.Range (-10.0f, 10.0f), Random.Range (-10.0f, 10.0f)));
 		rb.AddTorque (Random.Range (-10.0f, 10.0f));
 
-		if (ms_instance.m_burningRoutine != null) {
-			ms_instance.StopCoroutine (ms_instance.m_burningRoutine);
-		}
-		ms_instance.m_matchRenderer.sprite = ms_instance.m_burntMatch;
 		Text scoreText = GameObject.FindWithTag ("ScoreText").GetComponent<Text>() as Text;
 
 		ms_score--;

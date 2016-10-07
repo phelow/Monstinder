@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class MatchManager : MonoBehaviour {
 	private static MatchManager ms_instance;
@@ -7,12 +8,50 @@ public class MatchManager : MonoBehaviour {
 	[SerializeField]private GameObject m_matchDockingPoint;
 	[SerializeField]private GameObject m_dockedMatch;
 
-	private const float mc_seekMagnitude = 1000.0f;
+    public List<GameObject> m_rejectedMatches;
+    public List<GameObject> m_acceptedMatches;
+
+    private const float mc_seekMagnitude = 1000.0f;
 	private const float mc_distanceMaximum = 2.0f;
+
+    [SerializeField]
+    private GameObject m_originalMatch;
+
 	// Use this for initialization
 	void Start () {
 		ms_instance = this;
-	}
+        DontDestroyOnLoad(this.gameObject);
+
+        m_acceptedMatches = new List<GameObject>();
+        m_rejectedMatches = new List<GameObject>();
+        MatchProfile.ms_currentMatch = m_originalMatch.GetComponent<MatchProfile>();
+
+    }
+
+    public static int NumMatches()
+    {
+        if(ms_instance == null)
+        {
+            return -1;
+        }
+
+        return ms_instance.m_acceptedMatches.Count;
+    }
+
+    public static List<GameObject> GetMatches()
+    {
+        return ms_instance.m_acceptedMatches;
+    }
+
+    public static void SaveMatch(GameObject match)
+    {
+        ms_instance.m_acceptedMatches.Add(GameObject.Instantiate(match,ms_instance.gameObject.transform,false) as GameObject);
+    }
+
+    public static void SaveReject(GameObject match)
+    {
+        ms_instance.m_rejectedMatches.Add(GameObject.Instantiate(match, ms_instance.gameObject.transform, false) as GameObject);
+    }
 
 	private void ReleaseMatch(){
 		if (m_dockedMatch == null) {
@@ -29,7 +68,7 @@ public class MatchManager : MonoBehaviour {
 		rb.isKinematic = false;
 		rb.AddForce (new Vector2(Random.Range(-500.0f,500.0f),Random.Range(-500.0f,500.0f)));
 		rb.gravityScale = 10.0f;
-		yield return new WaitForSeconds (10.0f);
+		yield return new WaitForSeconds (2.0f);
 		Destroy (go);
 	}
 

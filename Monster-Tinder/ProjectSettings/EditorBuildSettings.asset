@@ -15,3 +15,5 @@ EditorBuildSettings:
     path: Assets/Success.unity
   - enabled: 1
     path: Assets/Failure.unity
+  - enabled: 1
+    path: Assets/MatchRejects.unity
