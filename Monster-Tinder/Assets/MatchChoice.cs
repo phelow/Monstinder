@@ -39,6 +39,15 @@ public class MatchChoice : MonoBehaviour {
     {
         m_monsterReference = choice;
 
+        foreach(BoxCollider2D collider in m_monsterReference.GetComponentsInChildren<BoxCollider2D>())
+        {
+            Destroy(collider);
+        }
+        foreach (SpriteRenderer sr in m_monsterReference.GetComponentsInChildren<SpriteRenderer>())
+        {
+            sr.color = Color.white;
+        }
+
         m_monsterProfile = m_monsterReference.GetComponent<Profile>();
         m_monster = choice;
         choice.transform.position = this.transform.position;

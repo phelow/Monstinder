@@ -25,6 +25,22 @@ public class Tutorializer : MonoBehaviour {
     [SerializeField]
     private Text m_hintText;
 
+    [SerializeField]
+    private AudioSource m_source;
+
+    [SerializeField]
+    private AudioClip m_countingSound;
+    [SerializeField]
+    private AudioClip m_alarm;
+    [SerializeField]
+    private AudioClip m_tick;
+    [SerializeField]
+    private AudioClip m_match;
+    [SerializeField]
+    private AudioClip m_fail;
+    [SerializeField]
+    private AudioClip m_completeSound;
+
     private Text m_scoreText;
 
     private int score;
@@ -67,9 +83,9 @@ public class Tutorializer : MonoBehaviour {
         Tutorializer.ms_playerChoice = choice;
     }
 
-    private void AddPoint()
+    private void AddPoint(int points)
     {
-
+        score += points;
         m_scoreText.text = "" + ++score;
     }
 
@@ -97,11 +113,21 @@ public class Tutorializer : MonoBehaviour {
 
             ms_playerChoice = null;
             //wait for player input
-            while(ms_playerChoice == null && timeLeft > 0.0f)
+            while (ms_playerChoice == null && timeLeft > 0.0f)
             {
-                timeLeft -= Time.deltaTime;
+                if (timeLeft < 1.0f)
+                {
+                    this.m_source.PlayOneShot(this.m_alarm);
+                }
+                else
+                {
+                    this.m_source.PlayOneShot(this.m_tick);
+
+                }
+
+                timeLeft -= 1;
                 m_timerText.text = "" + ((int)Mathf.Round(timeLeft));
-                yield return new WaitForEndOfFrame();
+            yield return new WaitForSeconds(1.0f);
             }
 
             bool success = true;
@@ -136,47 +162,102 @@ public class Tutorializer : MonoBehaviour {
                 otherChoice = m_leftChoice;
             }
 
+            int sameCount = ms_playerChoice.GetSamePartsAsPlayerCount();
+            int differentCount = ms_playerChoice.GetDifferentPartsFromPlayerCount();
 
-            m_hintText.text = "Matching Parts:" + ms_playerChoice.GetSamePartsAsPlayerCount();
-            m_hintText.text += "\nClashing Parts:" + ms_playerChoice.GetDifferentPartsFromPlayerCount();
+            int p = sameCount + differentCount;
 
+            m_hintText.text = "Matching Parts:" + 0;
+            m_hintText.text += "\nClashing Parts:" + 0;
+
+            Profile.HighLightMatchingParts(PlayerProfile.GetPlayer(), ms_playerChoice.GetMonster().GetComponent<Profile>());
             //compare the player and the choice made
-            while(displayTime > 0.0f)
-            {
-                Profile.HighLightMatchingParts(PlayerProfile.GetPlayer(), ms_playerChoice.GetMonster().GetComponent<Profile>());
-
+            for (int i = 0; i < sameCount; i++) {
+                this.m_source.Stop();
+                this.m_source.PlayOneShot(this.m_countingSound);
+                m_hintText.text = "Matching Parts:" + i;
+                m_hintText.text += "\nClashing Parts:" + 0;
+                AddPoint(1);
                 displayTime -= Time.deltaTime;
-                yield return new WaitForEndOfFrame();
+                yield return new WaitForSeconds(Mathf.Lerp(0.1f, 1.0f, ((float)i) / sameCount));
             }
+            this.m_source.PlayOneShot(this.m_completeSound);
+            yield return new WaitForSeconds(1.0f);
+
+            Profile.HighLightConflicts(PlayerProfile.GetPlayer(), ms_playerChoice.GetMonster().GetComponent<Profile>());
+
+            for (int i = 0; i < differentCount; i++)
+            {
+                this.m_source.Stop();
+                this.m_source.PlayOneShot(this.m_countingSound);
+                m_hintText.text = "Matching Parts:" + sameCount;
+                m_hintText.text += "\nClashing Parts:" + i;
+                AddPoint(1);
+                displayTime -= Time.deltaTime;
+                yield return new WaitForSeconds(Mathf.Lerp(0.1f, 1.0f, ((float)i) / differentCount));
+            }
+            this.m_source.PlayOneShot(this.m_completeSound);
+            yield return new WaitForSeconds(1.0f);
 
             displayTime = 5.0f;
 
-            m_hintText.text = "Matching Parts:" + otherChoice.GetSamePartsAsPlayerCount();
-            m_hintText.text += "\nClashing Parts:" + otherChoice.GetDifferentPartsFromPlayerCount();
 
-            //compare the player and the choice not made
-            while (displayTime > 0.0f)
+            sameCount = otherChoice.GetSamePartsAsPlayerCount();
+            differentCount = otherChoice.GetDifferentPartsFromPlayerCount();
+
+            p += sameCount + differentCount;
+
+            Profile.HighLightMatchingParts(PlayerProfile.GetPlayer(), otherChoice.GetMonster().GetComponent<Profile>());
+            //compare the player and the choice made
+            for (int i = 0; i < sameCount; i++)
             {
-                Profile.HighLightMatchingParts(PlayerProfile.GetPlayer(), otherChoice.GetMonster().GetComponent<Profile>());
+                this.m_source.Stop();
+                this.m_source.PlayOneShot(this.m_countingSound);
+                m_hintText.text = "Matching Parts:" + i;
+                m_hintText.text += "\nClashing Parts:" + 0;
+                AddPoint(1);
                 displayTime -= Time.deltaTime;
-                yield return new WaitForEndOfFrame();
+                yield return new WaitForSeconds(Mathf.Lerp(0.1f,1.0f, ((float)i) / sameCount));
             }
-            
+            this.m_source.PlayOneShot(this.m_completeSound);
+            yield return new WaitForSeconds(1.0f);
+
+
+            Profile.HighLightConflicts(PlayerProfile.GetPlayer(), otherChoice.GetMonster().GetComponent<Profile>());
+            for (int i = 0; i < differentCount; i++)
+            {
+                this.m_source.Stop();
+                this.m_source.PlayOneShot(this.m_countingSound);
+                m_hintText.text = "Matching Parts:" + sameCount;
+                m_hintText.text += "\nClashing Parts:" + i;
+                AddPoint(1);
+                displayTime -= Time.deltaTime;
+                yield return new WaitForSeconds(Mathf.Lerp(0.1f, 1.0f, ((float)i) / differentCount));
+            }
+            this.m_source.PlayOneShot(this.m_completeSound);
+            yield return new WaitForSeconds(1.0f);
+
             if (success)
             {
-                AddPoint();
+                AddPoint(p);
             }
             else
             {
+
+                this.m_source.PlayOneShot(this.m_fail);
+                yield return new WaitForSeconds(1.0f);
                 //FAILURE
                 TallyScore();
                 SceneManager.LoadScene("Failure");
             }
+            this.m_source.PlayOneShot(this.m_match);
+            yield return new WaitForSeconds(1.0f);
 
             m_leftChoice.HideCharacter();
             m_rightChoice.HideCharacter();
             //award points
         }
+
         TallyScore();
         SceneManager.LoadScene("Success");
     }
