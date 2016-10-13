@@ -17,15 +17,19 @@ public class SessionManager : MonoBehaviour {
 
 	[SerializeField]private GameObject [] m_endGameDestruction;
 
+    [SerializeField]
+    private int time;
 
 	// Use this for initialization
 	void Start () {
-		//calculate time
-		int curDifficulty = PlayerPrefs.GetInt ("Level",0);
-		int time = (int) ((curDifficulty) * (Mathf.Max(mc_timePerLevel - curDifficulty,0)) + mc_startingTime);
+        m_matchesNeededText = GameObject.Find("RequiredScoreText").GetComponent<Text>();
+
+        //calculate time
+        int curDifficulty = PlayerPrefs.GetInt ("Level",0);
+		time = (int) ((curDifficulty) * (Mathf.Max(mc_timePerLevel - curDifficulty,0)) + mc_startingTime);
 
 		//Kick off timer coroutine
-		StartCoroutine(TimeLevel(time));
+		StartCoroutine(TimeLevel());
 	}
 
 	public static List<BodyPart.ElementType> AvailableTypes(){
@@ -69,12 +73,12 @@ public class SessionManager : MonoBehaviour {
 	}
 
 
-	private IEnumerator TimeLevel(int time){
+	private IEnumerator TimeLevel(){
 		//Check for level unlocked
 		int curDifficulty = PlayerPrefs.GetInt ("Level",0);
 		int maxLevelUnlocked = PlayerPrefs.GetInt ("MaxLevel", 0);
 		int matchesNeeded = curDifficulty*3  + 5 / Mathf.Max ((5 - curDifficulty), 1) + 2;
-		m_matchesNeededText.text = "matches Needed:" +  matchesNeeded;
+		m_matchesNeededText.text = "Matches Needed:" +  matchesNeeded;
 		while (time > 0) {
 			yield return new WaitForSeconds (1.0f);
 			time--;
@@ -91,6 +95,7 @@ public class SessionManager : MonoBehaviour {
 		//Check for high score, save if you have one
 		int previousHighscore =  PlayerPrefs.GetInt ("HighScore",0);
 		int curScore = PlayerProfile.GetScore () * curDifficulty;
+        PlayerPrefs.SetInt("Score", PlayerProfile.GetScore());
 
 		if (curScore > previousHighscore) {
 			PlayerPrefs.SetInt ("HighScore",curScore );
@@ -119,6 +124,9 @@ public class SessionManager : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-	
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            time = 0;
+        }
 	}
 }

@@ -4,7 +4,7 @@ using System.Collections;
 public class MatchChoice : MonoBehaviour {
     private GameObject m_monster;
     private GameObject m_monsterReference;
-    private Profile m_monsterProfile;
+    public Profile m_monsterProfile;
     private static PlayerProfile ms_playerProfile;
 
     [SerializeField]
@@ -24,6 +24,12 @@ public class MatchChoice : MonoBehaviour {
 	
 	}
 
+    public void HideCharacter()
+    {
+        m_monsterReference.transform.position = new Vector3(1000000, 99999999999999, 9999999999);
+        m_monsterReference.transform.SetParent(null);
+    }
+
     public void SetPlayerChoice()
     {
         Tutorializer.SetPlayerChoice(this);
@@ -32,13 +38,28 @@ public class MatchChoice : MonoBehaviour {
     public void SetMonster(GameObject choice)
     {
         m_monsterReference = choice;
-        m_monster = GameObject.Instantiate(choice, transform.position, transform.rotation, transform) as GameObject;
+
+        m_monsterProfile = m_monsterReference.GetComponent<Profile>();
+        m_monster = choice;
+        choice.transform.position = this.transform.position;
+
+        m_monster.GetComponent<MatchProfile>().HidePolaroid();
     }
 
     public bool GetIsBetterChoiceThan(MatchChoice otherChoice)
     {
-        return ms_playerProfile.GetSameParts(m_monsterProfile) - ms_playerProfile.GetDifferentParts(m_monsterProfile) >= 
-            ms_playerProfile.GetSameParts(otherChoice.m_monsterProfile) - ms_playerProfile.GetDifferentParts(otherChoice.m_monsterProfile);
+        return GetSamePartsAsPlayerCount() - GetDifferentPartsFromPlayerCount() >=
+            otherChoice.GetSamePartsAsPlayerCount() - otherChoice.GetDifferentPartsFromPlayerCount();
+    }
+
+    public int GetSamePartsAsPlayerCount()
+    {
+        return ms_playerProfile.GetSameParts(m_monsterProfile);
+    }
+
+    public int GetDifferentPartsFromPlayerCount()
+    {
+        return ms_playerProfile.GetDifferentParts(m_monsterProfile);
     }
 
     public GameObject GetMonster()

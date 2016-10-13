@@ -27,7 +27,13 @@ public class PlayerProfile : Profile {
 
 	protected static PlayerProfile ms_instance;
 
-	void Awake(){
+    public static PlayerProfile GetPlayer()
+    {
+        return ms_instance;
+    }
+
+
+    void Awake(){
         DontDestroyOnLoad(this.gameObject);
 		ms_instance = this;
 	}
@@ -251,6 +257,11 @@ public class PlayerProfile : Profile {
             ms_instance.m_matchRenderer = GameObject.Find("match1").GetComponent<SpriteRenderer>();
             ms_instance.m_tipText = GameObject.Find("TipText").GetComponent<Text>();
         }
+        else if (SceneManager.GetActiveScene().name == "MatchRejects")
+        {
+            ms_instance.m_spawnScoreTextHere = GameObject.Find("ScoreTextSpawnPoint");
+            ms_instance.m_tipText = GameObject.Find("TipText").GetComponent<Text>();
+        }
         else if (SceneManager.GetActiveScene().name == "Main Menu")
         {
             Destroy(this.gameObject);
@@ -265,7 +276,7 @@ public class PlayerProfile : Profile {
 		rb.AddForce (new Vector2 (Random.Range (-10.0f, 10.0f), Random.Range (-10.0f, 10.0f)));
 		rb.AddTorque (Random.Range (-10.0f, 10.0f));
 
-		Text scoreText = GameObject.FindWithTag ("ScoreText").GetComponent<Text>() as Text;
+		Text scoreText = GameObject.Find ("CurrentScoreText").GetComponent<Text>() as Text;
 
 		ms_score++;
 		ms_correctChoices++;
@@ -279,7 +290,7 @@ public class PlayerProfile : Profile {
 		rb.AddForce (new Vector2 (Random.Range (-10.0f, 10.0f), Random.Range (-10.0f, 10.0f)));
 		rb.AddTorque (Random.Range (-10.0f, 10.0f));
 
-		Text scoreText = GameObject.FindWithTag ("ScoreText").GetComponent<Text>() as Text;
+		Text scoreText = GameObject.Find("CurrentScoreText").GetComponent<Text>() as Text;
 
 		ms_score--;
 		ms_incorrectChoices++;

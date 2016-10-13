@@ -17,13 +17,29 @@ public class Tutorializer : MonoBehaviour {
     private MatchChoice m_rightChoice;
 
     [SerializeField]
-    public MatchChoice m_playerChoice;
+    private static MatchChoice ms_playerChoice;
 
     [SerializeField]
     private Text m_timerText;
 
+    [SerializeField]
+    private Text m_hintText;
+
+    private Text m_scoreText;
+
+    private int score;
+    public List<GameObject> matches; //temporarily public
+
     // Use this for initialization
     void Start () {
+        PlayerProfile.GetPlayer().StartHighlighting();
+
+
+        m_scoreText = GameObject.Find("CurrentScoreText").GetComponent<Text>();
+        score = PlayerPrefs.GetInt("HighScore");
+
+        m_scoreText.text = "" + score;
+
         ms_instance = this;
         StartCoroutine(Tutorialize());
 	}
@@ -48,16 +64,27 @@ public class Tutorializer : MonoBehaviour {
 
     public static void SetPlayerChoice(MatchChoice choice)
     {
-        ms_instance.m_playerChoice = choice;
+        Tutorializer.ms_playerChoice = choice;
+    }
+
+    private void AddPoint()
+    {
+
+        m_scoreText.text = "" + ++score;
     }
 
     private IEnumerator PickOne()
     {
-        List<GameObject> matches = MatchManager.GetMatches();
+        foreach(SpriteRenderer sr in PlayerProfile.GetPlayer().GetComponentsInChildren<SpriteRenderer>())
+        {
+            sr.color = Color.white;
+        }
+
+        matches = MatchManager.GetMatches();
         while (matches.Count > 1)
         {
             //start a timer
-            float timeLeft = 5.0f;
+            float timeLeft = 15.0f;
 
             //randomly choose two matches
             GameObject leftMatch = matches[Random.Range(0, matches.Count)];
@@ -65,34 +92,107 @@ public class Tutorializer : MonoBehaviour {
             GameObject rightMatch = matches[Random.Range(0, matches.Count)];
             matches.Remove(rightMatch);
 
-            m_rightChoice.SetMonster(leftMatch);
-            m_leftChoice.SetMonster(rightMatch);
+            m_rightChoice.SetMonster(rightMatch);
+            m_leftChoice.SetMonster(leftMatch);
 
-            m_playerChoice = null;
+            ms_playerChoice = null;
             //wait for player input
-            while(m_playerChoice == null && timeLeft > 0.0f)
+            while(ms_playerChoice == null && timeLeft > 0.0f)
             {
                 timeLeft -= Time.deltaTime;
-                m_timerText.text = "" + timeLeft;
+                m_timerText.text = "" + ((int)Mathf.Round(timeLeft));
                 yield return new WaitForEndOfFrame();
             }
 
-
+            bool success = true;
             //see if the player picked the best match
             bool m_rightBest = m_rightChoice.GetIsBetterChoiceThan(m_leftChoice);
-            if ((!m_rightBest && m_playerChoice == m_leftChoice) ||(m_rightBest && m_playerChoice == m_rightChoice))
+            bool m_leftBest =  m_leftChoice.GetIsBetterChoiceThan(m_rightChoice);
+
+            if(ms_playerChoice == null)
             {
-                matches.Add(m_playerChoice.GetMonster());
+                //FAILURE
+                TallyScore();
+                SceneManager.LoadScene("Failure");
+
+            }
+
+            if ((m_rightBest && m_leftBest )|| (!m_rightBest && ms_playerChoice == m_leftChoice) ||(m_rightBest && ms_playerChoice == m_rightChoice))
+            {
+                success = true;
+                matches.Add(ms_playerChoice.GetMonster());
+            }
+            else
+            {
+                success = false;
+            }
+
+            float displayTime = 5.0f;
+
+            MatchChoice otherChoice = m_rightChoice;
+
+            if(otherChoice == ms_playerChoice)
+            {
+                otherChoice = m_leftChoice;
+            }
+
+
+            m_hintText.text = "Matching Parts:" + ms_playerChoice.GetSamePartsAsPlayerCount();
+            m_hintText.text += "\nClashing Parts:" + ms_playerChoice.GetDifferentPartsFromPlayerCount();
+
+            //compare the player and the choice made
+            while(displayTime > 0.0f)
+            {
+                Profile.HighLightMatchingParts(PlayerProfile.GetPlayer(), ms_playerChoice.GetMonster().GetComponent<Profile>());
+
+                displayTime -= Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+
+            displayTime = 5.0f;
+
+            m_hintText.text = "Matching Parts:" + otherChoice.GetSamePartsAsPlayerCount();
+            m_hintText.text += "\nClashing Parts:" + otherChoice.GetDifferentPartsFromPlayerCount();
+
+            //compare the player and the choice not made
+            while (displayTime > 0.0f)
+            {
+                Profile.HighLightMatchingParts(PlayerProfile.GetPlayer(), otherChoice.GetMonster().GetComponent<Profile>());
+                displayTime -= Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+            
+            if (success)
+            {
+                AddPoint();
             }
             else
             {
                 //FAILURE
+                TallyScore();
                 SceneManager.LoadScene("Failure");
             }
 
+            m_leftChoice.HideCharacter();
+            m_rightChoice.HideCharacter();
             //award points
         }
+        TallyScore();
         SceneManager.LoadScene("Success");
+    }
+
+    public void TallyScore()
+    {
+
+        int previousHighscore = PlayerPrefs.GetInt("HighScore", 0);
+        int curScore = PlayerProfile.GetScore() * PlayerPrefs.GetInt("Level");
+        PlayerPrefs.SetInt("Score", curScore);
+
+        if (curScore > previousHighscore)
+        {
+            PlayerPrefs.SetInt("HighScore", curScore);
+            PlayerPrefs.SetInt("HighScoreBeaten", 1);
+        }
     }
 
 }

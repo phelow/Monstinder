@@ -45,12 +45,18 @@ public class MatchManager : MonoBehaviour {
 
     public static void SaveMatch(GameObject match)
     {
-        ms_instance.m_acceptedMatches.Add(GameObject.Instantiate(match,ms_instance.gameObject.transform,false) as GameObject);
+        GameObject copy = GameObject.Instantiate(match, ms_instance.gameObject.transform, false) as GameObject;
+
+        copy.GetComponent<Profile>().TellNotToInit();
+        ms_instance.m_acceptedMatches.Add(copy);
     }
 
     public static void SaveReject(GameObject match)
     {
-        ms_instance.m_rejectedMatches.Add(GameObject.Instantiate(match, ms_instance.gameObject.transform, false) as GameObject);
+        GameObject copy = GameObject.Instantiate(match, ms_instance.gameObject.transform, false) as GameObject;
+
+        copy.GetComponent<Profile>().TellNotToInit();
+        ms_instance.m_rejectedMatches.Add(copy);
     }
 
 	private void ReleaseMatch(){

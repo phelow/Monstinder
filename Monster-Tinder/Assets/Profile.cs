@@ -15,11 +15,18 @@ public class Profile : MonoBehaviour {
 	public IEnumerator m_highlightBodyPartsCoroutine;
     private Dictionary<SpriteRenderer, Color> m_toHighlight;
     private Color m_highlightColor;
+    
+    private bool m_shouldInit = true;
 
     [SerializeField]
     private Image m_polaroidGraphic;
 
     static protected Dictionary<BodyPart.ElementType,List<BodyPart.ElementType>> ms_strongAgainst;
+
+    public void TellNotToInit()
+    {
+        m_shouldInit = false;
+    }
 
 	public static void HighLightMatchingParts(Profile a, Profile b){
 		List<BodyPart> toHighlight = new List<BodyPart> ();
@@ -100,6 +107,11 @@ public class Profile : MonoBehaviour {
 
 
     private IEnumerator HighLightBodyParts(){
+        foreach(SpriteRenderer sr in this.GetComponentsInChildren<SpriteRenderer>())
+        {
+            sr.color = Color.white;
+        }
+
         this.m_toHighlight = new Dictionary<SpriteRenderer, Color>();
         this.m_highlightColor = Color.white;
 
@@ -149,9 +161,17 @@ public class Profile : MonoBehaviour {
 		bps.Add (this.m_body);
 		return bps;
 	}
+    
+    public void Start()
+    {
+        if (m_shouldInit)
+        {
+            Init();
+        }
+    }
 
 	// Use this for initialization
-	void Start () {
+	public void Init () {
 		AssembleStrongAgainst ();
 		if (m_bodies == null) {
 			var bodies = Resources.LoadAll(BodyPartSlot.BodyPartType.Body.ToString(), typeof(GameObject)).Cast<GameObject>();
@@ -173,6 +193,13 @@ public class Profile : MonoBehaviour {
 		GenerateProfile ();
 
 		ResetScore ();
+
+        StartHighlighting();
+        m_shouldInit = false;
+    }
+
+    public void StartHighlighting()
+    {
 
         StartCoroutine(HighLightBodyParts());
     }
