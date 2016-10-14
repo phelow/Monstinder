@@ -86,6 +86,8 @@ public class Tutorializer : MonoBehaviour {
     private void AddPoint(int points)
     {
         score += points;
+        PlayerPrefs.SetInt("Score", score);
+
         m_scoreText.text = "" + ++score;
     }
 
@@ -257,6 +259,8 @@ public class Tutorializer : MonoBehaviour {
             m_rightChoice.HideCharacter();
             //award points
         }
+        matches[0].transform.name = "BestMatch";
+        DontDestroyOnLoad(matches[0]);
 
         TallyScore();
         SceneManager.LoadScene("Success");

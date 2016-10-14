@@ -6,6 +6,7 @@ TagManager:
   tags:
   - ScoreText
   - NextMatch
+  - DestroyMe
   layers:
   - Default
   - TransparentFX

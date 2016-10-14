@@ -66,6 +66,7 @@ public class SessionManager : MonoBehaviour {
         if (curDifficulty >= 5)
         {
             availableElements.Add(BodyPart.ElementType.Glitch);
+            availableElements.Add(BodyPart.ElementType.Psychic);
         }
 
         return availableElements;

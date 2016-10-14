@@ -228,7 +228,9 @@ MonoBehaviour:
   m_bodySlot: {fileID: 115092}
   m_typeScores: 
   m_text: {fileID: 0}
+  m_polaroidGraphic: {fileID: 0}
   m_nextMatch: {fileID: 151084}
+  m_polaroid: {fileID: 0}
 --- !u!114 &11435712
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -304,7 +306,7 @@ GameObject:
   - 212: {fileID: 212000010711838696}
   m_Layer: 0
   m_Name: Background
-  m_TagString: Untagged
+  m_TagString: DestroyMe
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

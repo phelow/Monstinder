@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Linq;
 
 public class Profile : MonoBehaviour {
@@ -28,7 +29,23 @@ public class Profile : MonoBehaviour {
         m_shouldInit = false;
     }
 
-	public static void HighLightMatchingParts(Profile a, Profile b){
+
+    public void OnLevelWasLoaded()
+    {
+        if (SceneManager.GetActiveScene().name == "Main Menu")
+        {
+            Destroy(this.gameObject);
+        }
+
+        if (SceneManager.GetActiveScene().name == "Failure" || SceneManager.GetActiveScene().name == "Success")
+        {
+            this.transform.localScale *= 100;
+        }
+
+        this.ClearHighlighting();
+    }
+
+    public static void HighLightMatchingParts(Profile a, Profile b){
 		List<BodyPart> toHighlight = new List<BodyPart> ();
 
 		List<BodyPart> aList = a.getAllBodyParts ();
@@ -234,6 +251,7 @@ public class Profile : MonoBehaviour {
 		ms_strongAgainst.Add (BodyPart.ElementType.Metal, new List<BodyPart.ElementType> ());
         ms_strongAgainst.Add(BodyPart.ElementType.Dragon, new List<BodyPart.ElementType>());
         ms_strongAgainst.Add(BodyPart.ElementType.Glitch, new List<BodyPart.ElementType>());
+        ms_strongAgainst.Add(BodyPart.ElementType.Psychic, new List<BodyPart.ElementType>());
 
 
         ms_strongAgainst [BodyPart.ElementType.Water].Add (BodyPart.ElementType.Fire);
@@ -255,6 +273,8 @@ public class Profile : MonoBehaviour {
         ms_strongAgainst[BodyPart.ElementType.Dragon].Add(BodyPart.ElementType.Earth);
         ms_strongAgainst[BodyPart.ElementType.Dragon].Add(BodyPart.ElementType.Metal);
         ms_strongAgainst[BodyPart.ElementType.Spirit].Add(BodyPart.ElementType.Dragon);
+        ms_strongAgainst[BodyPart.ElementType.Psychic].Add(BodyPart.ElementType.Spirit);
+        ms_strongAgainst[BodyPart.ElementType.Dark].Add(BodyPart.ElementType.Psychic);
     }
 
 	public int GetPartsOfType(BodyPart.ElementType type){

@@ -59,7 +59,8 @@ public class BodyPart : MonoBehaviour {
 		Bug,
 		Metal,
         Dragon,
-        Glitch
+        Glitch,
+        Psychic
 	}
 
 	public static string GetElementTypeString(ElementType et){

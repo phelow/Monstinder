@@ -251,6 +251,8 @@ public class PlayerProfile : Profile {
 	}
 
 	public void OnLevelWasLoaded(){
+
+
         if (SceneManager.GetActiveScene().name == "PrototypeScene")
         {
             ms_instance.m_spawnScoreTextHere = GameObject.Find("ScoreTextSpawnPoint");
@@ -265,6 +267,15 @@ public class PlayerProfile : Profile {
         else if (SceneManager.GetActiveScene().name == "Main Menu")
         {
             Destroy(this.gameObject);
+        }
+        else if (SceneManager.GetActiveScene().name == "Failure" || SceneManager.GetActiveScene().name == "Success")
+        {
+
+            foreach (GameObject go in GameObject.FindGameObjectsWithTag("DestroyMe"))
+            {
+                Destroy(go);
+            }
+            this.transform.localScale *= 100;
         }
 
         this.ClearHighlighting();

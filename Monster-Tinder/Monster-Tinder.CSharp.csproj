@@ -84,6 +84,7 @@
     <Compile Include="Assets\NoChoice.cs" />
     <Compile Include="Assets\PlayAfterThirtySeconds.cs" />
     <Compile Include="Assets\PlayerProfile.cs" />
+    <Compile Include="Assets\PositionBestMatch.cs" />
     <Compile Include="Assets\PositionPlayer.cs" />
     <Compile Include="Assets\Profile.cs" />
     <Compile Include="Assets\ReturnToMainMenuOnClick.cs" />

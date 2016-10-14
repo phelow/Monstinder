@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
 public class MatchManager : MonoBehaviour {
@@ -49,6 +51,14 @@ public class MatchManager : MonoBehaviour {
 
         copy.GetComponent<Profile>().TellNotToInit();
         ms_instance.m_acceptedMatches.Add(copy);
+    }
+
+    public void OnLevelWasLoaded()
+    {
+        if (SceneManager.GetActiveScene().name == "Failure" || SceneManager.GetActiveScene().name == "Success")
+        {
+            Destroy(gameObject);
+        }
     }
 
     public static void SaveReject(GameObject match)
