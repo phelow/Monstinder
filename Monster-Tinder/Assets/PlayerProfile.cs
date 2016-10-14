@@ -180,7 +180,7 @@ public class PlayerProfile : Profile {
 				parts = BodyPart.GetUsableParts (slot.GetBodyPartType (), true, m_body.CountTypes (ref types));
 			}
 
-            if (slot.m_depth >= 1 && isHead == false && frontier.Count - elements.Count > Mathf.Max(PlayerPrefs.GetInt("Level", 0) / 3, 6))
+            if (slot.m_depth >= 1 && isHead == false && frontier.Count - elements.Count >= Mathf.Max(PlayerPrefs.GetInt("Level", 0) / 3, 6))
             {
                 m_NahButton.SetActive(true);
             }

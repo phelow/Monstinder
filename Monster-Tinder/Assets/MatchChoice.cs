@@ -10,7 +10,7 @@ public class MatchChoice : MonoBehaviour {
     [SerializeField]
     private Button m_button;
 	// Use this for initialization
-	void Start () {
+	void OnLevelWasLoaded () {
         ms_playerProfile = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<PlayerProfile>();
 	}
 	

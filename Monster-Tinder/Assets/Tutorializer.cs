@@ -52,7 +52,7 @@ public class Tutorializer : MonoBehaviour {
 
 
         m_scoreText = GameObject.Find("CurrentScoreText").GetComponent<Text>();
-        score = PlayerPrefs.GetInt("HighScore");
+        score = PlayerPrefs.GetInt("Score");
 
         m_scoreText.text = "" + score;
 
@@ -154,9 +154,7 @@ public class Tutorializer : MonoBehaviour {
             {
                 success = false;
             }
-
-            float displayTime = 5.0f;
-
+            
             MatchChoice otherChoice = m_rightChoice;
 
             if(otherChoice == ms_playerChoice)
@@ -174,13 +172,12 @@ public class Tutorializer : MonoBehaviour {
 
             Profile.HighLightMatchingParts(PlayerProfile.GetPlayer(), ms_playerChoice.GetMonster().GetComponent<Profile>());
             //compare the player and the choice made
-            for (int i = 0; i < sameCount; i++) {
+            for (int i = 1; i <= sameCount; i++) {
                 this.m_source.Stop();
                 this.m_source.PlayOneShot(this.m_countingSound);
                 m_hintText.text = "Matching Parts:" + i;
                 m_hintText.text += "\nClashing Parts:" + 0;
                 AddPoint(1);
-                displayTime -= Time.deltaTime;
                 yield return new WaitForSeconds(Mathf.Lerp(0.1f, 1.0f, ((float)i) / sameCount));
             }
             this.m_source.PlayOneShot(this.m_completeSound);
@@ -188,22 +185,18 @@ public class Tutorializer : MonoBehaviour {
 
             Profile.HighLightConflicts(PlayerProfile.GetPlayer(), ms_playerChoice.GetMonster().GetComponent<Profile>());
 
-            for (int i = 0; i < differentCount; i++)
+            for (int i = 1; i <= differentCount; i++)
             {
                 this.m_source.Stop();
                 this.m_source.PlayOneShot(this.m_countingSound);
                 m_hintText.text = "Matching Parts:" + sameCount;
                 m_hintText.text += "\nClashing Parts:" + i;
                 AddPoint(1);
-                displayTime -= Time.deltaTime;
                 yield return new WaitForSeconds(Mathf.Lerp(0.1f, 1.0f, ((float)i) / differentCount));
             }
             this.m_source.PlayOneShot(this.m_completeSound);
             yield return new WaitForSeconds(1.0f);
-
-            displayTime = 5.0f;
-
-
+            
             sameCount = otherChoice.GetSamePartsAsPlayerCount();
             differentCount = otherChoice.GetDifferentPartsFromPlayerCount();
 
@@ -211,14 +204,13 @@ public class Tutorializer : MonoBehaviour {
 
             Profile.HighLightMatchingParts(PlayerProfile.GetPlayer(), otherChoice.GetMonster().GetComponent<Profile>());
             //compare the player and the choice made
-            for (int i = 0; i < sameCount; i++)
+            for (int i = 1; i <= sameCount; i++)
             {
                 this.m_source.Stop();
                 this.m_source.PlayOneShot(this.m_countingSound);
                 m_hintText.text = "Matching Parts:" + i;
                 m_hintText.text += "\nClashing Parts:" + 0;
                 AddPoint(1);
-                displayTime -= Time.deltaTime;
                 yield return new WaitForSeconds(Mathf.Lerp(0.1f,1.0f, ((float)i) / sameCount));
             }
             this.m_source.PlayOneShot(this.m_completeSound);
@@ -226,14 +218,13 @@ public class Tutorializer : MonoBehaviour {
 
 
             Profile.HighLightConflicts(PlayerProfile.GetPlayer(), otherChoice.GetMonster().GetComponent<Profile>());
-            for (int i = 0; i < differentCount; i++)
+            for (int i = 1; i <= differentCount; i++)
             {
                 this.m_source.Stop();
                 this.m_source.PlayOneShot(this.m_countingSound);
                 m_hintText.text = "Matching Parts:" + sameCount;
                 m_hintText.text += "\nClashing Parts:" + i;
                 AddPoint(1);
-                displayTime -= Time.deltaTime;
                 yield return new WaitForSeconds(Mathf.Lerp(0.1f, 1.0f, ((float)i) / differentCount));
             }
             this.m_source.PlayOneShot(this.m_completeSound);
@@ -245,7 +236,6 @@ public class Tutorializer : MonoBehaviour {
             }
             else
             {
-
                 this.m_source.PlayOneShot(this.m_fail);
                 yield return new WaitForSeconds(1.0f);
                 //FAILURE
@@ -263,6 +253,12 @@ public class Tutorializer : MonoBehaviour {
         DontDestroyOnLoad(matches[0]);
 
         TallyScore();
+        int curDifficulty = PlayerPrefs.GetInt("Level", 0);
+        int maxLevelUnlocked = PlayerPrefs.GetInt("MaxLevel", 0);
+        if (maxLevelUnlocked < curDifficulty + 1)
+        {
+            PlayerPrefs.SetInt("MaxLevel", curDifficulty + 1);
+        }
         SceneManager.LoadScene("Success");
     }
 
@@ -270,13 +266,17 @@ public class Tutorializer : MonoBehaviour {
     {
 
         int previousHighscore = PlayerPrefs.GetInt("HighScore", 0);
-        int curScore = PlayerProfile.GetScore() * PlayerPrefs.GetInt("Level");
-        PlayerPrefs.SetInt("Score", curScore);
+        PlayerPrefs.SetInt("Score", score);
 
-        if (curScore > previousHighscore)
+        if (score > previousHighscore)
         {
-            PlayerPrefs.SetInt("HighScore", curScore);
+            PlayerPrefs.SetInt("HighScore", score);
             PlayerPrefs.SetInt("HighScoreBeaten", 1);
+        }
+        else
+        {
+            PlayerPrefs.SetInt("HighScoreBeaten", 0);
+
         }
     }
 
