@@ -16,16 +16,19 @@ public class PlayerProfile : Profile {
 	[SerializeField]private BodyPartDisplay [] m_bodyPartDisplays;
 
 	[SerializeField]private static BodyPart m_choice = null;
+    [SerializeField]
+    private float m_dropTextOffset = 3.0f;
 
-	[SerializeField]private GameObject m_spawnIndicator;
+    [SerializeField]private GameObject m_spawnIndicator;
 	private static bool skip = false;
 	private IEnumerator m_burningRoutine;
 	private static int ms_score = 0;
 	private Text m_tipText;
 	private static int ms_correctChoices = 0;
 	private static int ms_incorrectChoices = 0;
+    private List<GameObject> textsToDrop;
 
-	protected static PlayerProfile ms_instance;
+    protected static PlayerProfile ms_instance;
 
     public static PlayerProfile GetPlayer()
     {
@@ -71,8 +74,25 @@ public class PlayerProfile : Profile {
 		return ms_strongAgainst [a.GetElementType ()].Contains (b.GetElementType ()) || ms_strongAgainst [b.GetElementType ()].Contains (a.GetElementType ());
 	}
 
+    public void DropAllText()
+    {
+        if (textsToDrop != null)
+        {
+            foreach (GameObject textToDrop in textsToDrop)
+            {
+                Rigidbody2D rb = textToDrop.GetComponent<Rigidbody2D>();
+                rb.gravityScale = 0.1f;
+                rb.AddForce(new Vector2(Random.Range(-100.0f, 100.0f), Random.Range(-100.0f, 100.0f)));
+                rb.AddTorque(Random.Range(-10.0f, 10.0f));
+            }
+        }
+        textsToDrop = new List<GameObject>();
+    }
+
     public int GetSameParts(Profile potentialMatch)
     {
+        DropAllText();
+
         int sameParts = 0;
         for (int i = 0; i < BodyPart.ElementType.GetNames(typeof(BodyPart.ElementType)).Length; i++)
         {
@@ -81,7 +101,7 @@ public class PlayerProfile : Profile {
 
             if (newSameParts > 0)
             {
-                DropTutorialText(BodyPart.GetElementTypeString((BodyPart.ElementType)i) + " loves other " + BodyPart.GetElementTypeString((BodyPart.ElementType)i), Color.green);
+                textsToDrop.Add(DropTutorialText(BodyPart.GetElementTypeString((BodyPart.ElementType)i) + " loves other " + BodyPart.GetElementTypeString((BodyPart.ElementType)i), Color.green));
             }
         }
         return sameParts;
@@ -89,7 +109,7 @@ public class PlayerProfile : Profile {
     
     public int GetDifferentParts(Profile potentialMatch)
     {
-
+        DropAllText();
         int differentParts = 0;
         //calculate num typematched parts (likelihood of unmatch)
         foreach (BodyPart.ElementType type in ms_strongAgainst.Keys)
@@ -105,7 +125,7 @@ public class PlayerProfile : Profile {
 
                 if (newDifferentParts > 0)
                 {
-                    DropTutorialText(BodyPart.GetElementTypeString(type) + " hates " + BodyPart.GetElementTypeString(strongAgainst), Color.red);
+                    textsToDrop.Add(DropTutorialText(BodyPart.GetElementTypeString(type) + " hates " + BodyPart.GetElementTypeString(strongAgainst), Color.red));
                 }
             }
         }
@@ -125,16 +145,18 @@ public class PlayerProfile : Profile {
 
 	}
 
-	public void DropTutorialText(string text, Color c){
-		GameObject addPointsText = GameObject.Instantiate (ms_instance.m_plusPoint,ms_instance.m_spawnScoreTextHere.transform.position,ms_instance.m_spawnScoreTextHere.transform.rotation) as GameObject;
-		Rigidbody2D rb = addPointsText.GetComponent<Rigidbody2D> ();
-		rb.AddForce (new Vector2 (Random.Range (-100.0f, 100.0f), Random.Range (-100.0f, 100.0f)));
-		rb.AddTorque (Random.Range (-10.0f, 10.0f));
+    public GameObject DropTutorialText(string text, Color c){
 
-		Text t = addPointsText.GetComponentInChildren<Text> ();
 
-		t.color = c;
-		t.text = text;
+		GameObject addPointsText = GameObject.Instantiate (ms_instance.m_plusPoint,new Vector3(ms_instance.m_spawnScoreTextHere.transform.position.x + Random.Range(-m_dropTextOffset, m_dropTextOffset), 
+            ms_instance.m_spawnScoreTextHere.transform.position.y + Random.Range(-m_dropTextOffset, m_dropTextOffset),0.0f), ms_instance.m_spawnScoreTextHere.transform.rotation) as GameObject;
+
+        Text t = addPointsText.GetComponentInChildren<Text>();
+
+        t.color = c;
+        t.text = text;
+
+        return addPointsText;
 	}
     
 	protected override void GenerateProfile(){
@@ -251,7 +273,7 @@ public class PlayerProfile : Profile {
 	}
 
 	public void OnLevelWasLoaded(){
-
+        textsToDrop = null;
 
         if (SceneManager.GetActiveScene().name == "PrototypeScene")
         {
@@ -286,6 +308,7 @@ public class PlayerProfile : Profile {
 		Rigidbody2D rb = addPointsText.GetComponent<Rigidbody2D> ();
 		rb.AddForce (new Vector2 (Random.Range (-10.0f, 10.0f), Random.Range (-10.0f, 10.0f)));
 		rb.AddTorque (Random.Range (-10.0f, 10.0f));
+        rb.gravityScale = 1.0f;
 
 		Text scoreText = GameObject.Find ("CurrentScoreText").GetComponent<Text>() as Text;
 

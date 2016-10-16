@@ -3,9 +3,12 @@ using System.Collections;
 
 public class DestroyAfterTime : MonoBehaviour {
 	private float m_timeUntilDestroy = 5.0f;
+    [SerializeField]
+    private Rigidbody2D m_rigidbody;
+    private bool activated = false;
+
 	// Use this for initialization
 	void Start () {
-		StartCoroutine (DestroyLater (m_timeUntilDestroy));
 	}
 
 	private IEnumerator DestroyLater(float time){
@@ -15,6 +18,10 @@ public class DestroyAfterTime : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-	
+	    if(activated == false && (m_rigidbody == null || m_rigidbody.gravityScale != 0))
+        {
+            activated = true;
+            StartCoroutine(DestroyLater(m_timeUntilDestroy));
+        }
 	}
 }

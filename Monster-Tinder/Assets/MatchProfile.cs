@@ -8,6 +8,19 @@ public class MatchProfile : Profile {
     [SerializeField]
     private SpriteRenderer m_polaroid;
 
+    private bool m_isMatch;
+    
+    public bool GetIsMatch()
+    {
+        return m_isMatch;
+    }
+
+    public void SetIsMatch(bool matchStatus)
+    {
+        m_isMatch = matchStatus;
+    }
+
+
     public void HidePolaroid()
     {
         Destroy(m_polaroid);

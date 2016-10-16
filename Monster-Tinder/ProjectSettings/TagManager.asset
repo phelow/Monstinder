@@ -7,6 +7,7 @@ TagManager:
   - ScoreText
   - NextMatch
   - DestroyMe
+  - TutorialText
   layers:
   - Default
   - TransparentFX
@@ -43,4 +44,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: TutorialText
+    uniqueID: 1970795567
+    locked: 0
+  - name: Buttons
+    uniqueID: 1478664595
     locked: 0

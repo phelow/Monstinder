@@ -30,6 +30,23 @@ public class Profile : MonoBehaviour {
     }
 
 
+    public IEnumerator LerpToClear()
+    {
+        float t = 1.0f;
+        while (t > 0.0f)
+        {
+            foreach (SpriteRenderer sr in this.GetComponentsInChildren<SpriteRenderer>())
+            {
+                sr.color = Color.Lerp(Color.clear, Color.white, t);
+            }
+            t -= Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+
+        this.transform.position = new Vector3(100, 999, 999);
+    }
+
+
     public void OnLevelWasLoaded()
     {
         if (SceneManager.GetActiveScene().name == "Main Menu")
@@ -43,6 +60,62 @@ public class Profile : MonoBehaviour {
         }
 
         this.ClearHighlighting();
+    }
+
+    public static List<KeyValuePair<SpriteRenderer, SpriteRenderer>> GetMatchingPairs(Profile a, Profile b)
+    {
+        List<KeyValuePair<SpriteRenderer, SpriteRenderer>> matchingPairs = new List<KeyValuePair<SpriteRenderer, SpriteRenderer>>();
+
+
+        List<BodyPart> aList = a.getAllBodyParts();
+        List<BodyPart> bList = b.getAllBodyParts();
+
+
+        foreach (BodyPart abp in aList)
+        {
+            BodyPart toRemove = null;
+            //find the first matching pair in blist. remove that spriteREnderer from blist
+            foreach (BodyPart bbp in bList)
+            {
+                if (abp.GetElementType() == bbp.GetElementType())
+                {
+                    matchingPairs.Add(new KeyValuePair<SpriteRenderer, SpriteRenderer>(abp.GetSpriteRenderer(), bbp.GetSpriteRenderer()));
+                    toRemove = bbp;
+                    break;
+                }
+            }
+            bList.Remove(toRemove);
+        }
+
+        return matchingPairs;
+    }
+
+    public static List<KeyValuePair<SpriteRenderer, SpriteRenderer>> GetClashingPairs(Profile a, Profile b)
+    {
+        List<KeyValuePair<SpriteRenderer, SpriteRenderer>> matchingPairs = new List<KeyValuePair<SpriteRenderer, SpriteRenderer>>();
+
+
+        List<BodyPart> aList = a.getAllBodyParts();
+        List<BodyPart> bList = b.getAllBodyParts();
+
+
+        foreach (BodyPart abp in aList)
+        {
+            BodyPart toRemove = null;
+            //find the first matching pair in blist. remove that spriteREnderer from blist
+            foreach (BodyPart bbp in bList)
+            {
+                if (PlayerProfile.Conflicts(abp,bbp))
+                {
+                    matchingPairs.Add(new KeyValuePair<SpriteRenderer, SpriteRenderer>(abp.GetSpriteRenderer(), bbp.GetSpriteRenderer()));
+                    toRemove = bbp;
+                    break;
+                }
+            }
+            bList.Remove(toRemove);
+        }
+
+        return matchingPairs;
     }
 
     public static void HighLightMatchingParts(Profile a, Profile b){
@@ -136,13 +209,15 @@ public class Profile : MonoBehaviour {
         while(true)
         {
             float g = 0.0f;
+
+            float timeToLerp = .1f;
             //interpolate to green
-            while (g < 1.0f)
+            while (g < timeToLerp)
             {
                 g += Time.deltaTime;
                 foreach (SpriteRenderer key in this.m_toHighlight.Keys)
                 {
-                    key.color = Color.Lerp(this.m_toHighlight[key], m_highlightColor, g);
+                    key.color = Color.Lerp(this.m_toHighlight[key], m_highlightColor, g/timeToLerp);
                 }
                 yield return new WaitForEndOfFrame();
             }
@@ -151,12 +226,12 @@ public class Profile : MonoBehaviour {
             //interpolate back to base
             g = 0.0f;
             //interpolate to green
-            while (g < 1.0f)
+            while (g < timeToLerp)
             {
                 g += Time.deltaTime;
                 foreach (SpriteRenderer key in this.m_toHighlight.Keys)
                 {
-                    key.color = Color.Lerp(m_highlightColor, this.m_toHighlight[key], g);
+                    key.color = Color.Lerp(m_highlightColor, this.m_toHighlight[key], g/timeToLerp);
                 }
                 yield return new WaitForEndOfFrame();
             }

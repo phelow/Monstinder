@@ -3,6 +3,9 @@ using System.Collections;
 
 public class BodyPartDisplay : MonoBehaviour {
 	private GameObject m_displayedPart;
+
+    [SerializeField]
+    private UnityEngine.UI.Text m_text;
 	// Use this for initialization
 	void Start () {
 	
@@ -32,5 +35,8 @@ public class BodyPartDisplay : MonoBehaviour {
 		m_displayedPart = GameObject.Instantiate (go, transform.position + transform.forward * -10, transform.rotation) as GameObject;
 		m_displayedPart.transform.localScale = m_displayedPart.transform.localScale * 4.0f;
 		m_displayedPart.transform.Rotate(new Vector3(0,0,Random.Range(minRotation,maxRotation)));
-	}
+
+        m_text.text = go.GetComponent<BodyPart>().GetElementType().ToString();
+
+    }
 }

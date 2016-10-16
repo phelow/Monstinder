@@ -73,11 +73,52 @@ public class MatchManager : MonoBehaviour {
 		if (m_dockedMatch == null) {
 			return;
 		}
-		StartCoroutine (DestroyMatch (m_dockedMatch));
+
+        if (m_dockedMatch.GetComponent<MatchProfile>().GetIsMatch() == false)
+        {
+            StartCoroutine(DestroyMatch(m_dockedMatch));
+        }
+        else
+        {
+            StartCoroutine(HideMatch(m_dockedMatch));
+        }
 		m_dockedMatch = null;
 	}
 
-	private IEnumerator DestroyMatch(GameObject go){
+    private IEnumerator HideMatch(GameObject go)
+    {
+
+        Rigidbody2D rb = go.GetComponent<Rigidbody2D>();
+
+        rb.isKinematic = false;
+        rb.AddForce(new Vector2(Mathf.Clamp(Random.Range(-1000.0f, 1000.0f),-75.0f,50.0f), Mathf.Clamp(Random.Range(-1000.0f, 1000.0f), -150.0f, 150.0f)));
+
+
+
+        go.transform.position = new Vector3(go.transform.position.x, go.transform.position.y, go.transform.position.z - Random.Range(-1000.0f, -2000.0f));
+        rb.gravityScale = 0.0f;
+        Vector3 origScale = go.transform.localScale;
+        Vector3 origPosition = go.transform.position;
+        Vector3 shrunkScale = go.transform.localScale *= Random.Range(0.7f, 0.3f);
+
+        float scaleTime = Random.Range(0.5f, 3.0f);
+        float t = scaleTime;
+        while(t > 0.0f)
+        {
+            rb.drag = Vector3.Distance(origPosition, transform.position)/ 850.0f;
+
+            t -= Time.deltaTime;
+
+            go.transform.localScale = Vector3.Lerp(shrunkScale, origScale, t/scaleTime);
+
+            yield return new WaitForEndOfFrame();
+        }
+
+
+        yield return new WaitForSeconds(2.0f);
+    }
+
+    private IEnumerator DestroyMatch(GameObject go){
 
 		Rigidbody2D rb = go.GetComponent<Rigidbody2D> ();
 
@@ -114,9 +155,10 @@ public class MatchManager : MonoBehaviour {
 
 		rb.isKinematic = false;
 		rb.AddForce (new Vector2(Random.Range(-50.0f,50.0f),Random.Range(-50.0f,50.0f)));
+        match.transform.position = new Vector3(match.transform.position.x, match.transform.position.y, m_matchDockingPoint.transform.position.z);
 
-		//seek the docking point until within a current range of it.
-		while (match != null && Vector2.Distance (new Vector2(match.transform.position.x,match.transform.position.y), 
+        //seek the docking point until within a current range of it.
+        while (match != null && Vector2.Distance (new Vector2(match.transform.position.x,match.transform.position.y), 
 			new Vector2(m_matchDockingPoint.transform.position.x,m_matchDockingPoint.transform.position.y)) > mc_distanceMaximum) {
 			Vector2 force = (new Vector2 (m_matchDockingPoint.transform.position.x, m_matchDockingPoint.transform.position.y)
 				- new Vector2 (match.transform.position.x, match.transform.position.y)).normalized * mc_seekMagnitude * Time.deltaTime;
@@ -131,9 +173,13 @@ public class MatchManager : MonoBehaviour {
 		rb.isKinematic = true;
 	}
 
-	public static void DockMatch(GameObject match){
-		//release previously docked match
-		ms_instance.ReleaseMatch();
+	public static void DockMatch(GameObject match, bool isMatch = false){
+
+        match.GetComponent<MatchProfile>().SetIsMatch(isMatch);
+
+
+        //release previously docked match
+        ms_instance.ReleaseMatch();
 
 		//Dock the new match
 		ms_instance.StartCoroutine (ms_instance.DockMatchCoroutine (match));

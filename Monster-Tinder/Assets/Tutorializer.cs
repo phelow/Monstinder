@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class Tutorializer : MonoBehaviour {
+public class Tutorializer : MonoBehaviour
+{
     public static Tutorializer ms_instance;
 
     [SerializeField]
@@ -41,13 +42,16 @@ public class Tutorializer : MonoBehaviour {
     [SerializeField]
     private AudioClip m_completeSound;
 
+    [SerializeField]
+    private Text m_TutorialText;
     private Text m_scoreText;
 
     private int score;
     public List<GameObject> matches; //temporarily public
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         PlayerProfile.GetPlayer().StartHighlighting();
 
 
@@ -58,8 +62,8 @@ public class Tutorializer : MonoBehaviour {
 
         ms_instance = this;
         StartCoroutine(Tutorialize());
-	}
-	
+    }
+
     private IEnumerator Tutorialize()
     {
         Fader.Instance.FadeOut(1.0f);
@@ -93,14 +97,16 @@ public class Tutorializer : MonoBehaviour {
 
     private IEnumerator PickOne()
     {
-        foreach(SpriteRenderer sr in PlayerProfile.GetPlayer().GetComponentsInChildren<SpriteRenderer>())
-        {
-            sr.color = Color.white;
-        }
+
+        float interpolateTime = .1f;
 
         matches = MatchManager.GetMatches();
         while (matches.Count > 1)
         {
+            foreach (SpriteRenderer sr in PlayerProfile.GetPlayer().GetComponentsInChildren<SpriteRenderer>())
+            {
+                sr.color = Color.white;
+            }
             //start a timer
             float timeLeft = 15.0f;
 
@@ -115,6 +121,7 @@ public class Tutorializer : MonoBehaviour {
 
             ms_playerChoice = null;
             //wait for player input
+            EnableInput();
             while (ms_playerChoice == null && timeLeft > 0.0f)
             {
                 if (timeLeft < 1.0f)
@@ -129,15 +136,17 @@ public class Tutorializer : MonoBehaviour {
 
                 timeLeft -= 1;
                 m_timerText.text = "" + ((int)Mathf.Round(timeLeft));
-            yield return new WaitForSeconds(1.0f);
+                yield return new WaitForSeconds(1.0f);
             }
+
+            DisableInput();
 
             bool success = true;
             //see if the player picked the best match
             bool m_rightBest = m_rightChoice.GetIsBetterChoiceThan(m_leftChoice);
-            bool m_leftBest =  m_leftChoice.GetIsBetterChoiceThan(m_rightChoice);
+            bool m_leftBest = m_leftChoice.GetIsBetterChoiceThan(m_rightChoice);
 
-            if(ms_playerChoice == null)
+            if (ms_playerChoice == null)
             {
                 //FAILURE
                 TallyScore();
@@ -145,7 +154,7 @@ public class Tutorializer : MonoBehaviour {
 
             }
 
-            if ((m_rightBest && m_leftBest )|| (!m_rightBest && ms_playerChoice == m_leftChoice) ||(m_rightBest && ms_playerChoice == m_rightChoice))
+            if ((m_rightBest && m_leftBest) || (!m_rightBest && ms_playerChoice == m_leftChoice) || (m_rightBest && ms_playerChoice == m_rightChoice))
             {
                 success = true;
                 matches.Add(ms_playerChoice.GetMonster());
@@ -154,10 +163,10 @@ public class Tutorializer : MonoBehaviour {
             {
                 success = false;
             }
-            
+
             MatchChoice otherChoice = m_rightChoice;
 
-            if(otherChoice == ms_playerChoice)
+            if (otherChoice == ms_playerChoice)
             {
                 otherChoice = m_leftChoice;
             }
@@ -170,39 +179,21 @@ public class Tutorializer : MonoBehaviour {
             m_hintText.text = "Matching Parts:" + 0;
             m_hintText.text += "\nClashing Parts:" + 0;
 
-            Profile.HighLightMatchingParts(PlayerProfile.GetPlayer(), ms_playerChoice.GetMonster().GetComponent<Profile>());
-            //compare the player and the choice made
-            for (int i = 1; i <= sameCount; i++) {
-                this.m_source.Stop();
-                this.m_source.PlayOneShot(this.m_countingSound);
-                m_hintText.text = "Matching Parts:" + i;
-                m_hintText.text += "\nClashing Parts:" + 0;
-                AddPoint(1);
-                yield return new WaitForSeconds(Mathf.Lerp(0.1f, 1.0f, ((float)i) / sameCount));
-            }
-            this.m_source.PlayOneShot(this.m_completeSound);
-            yield return new WaitForSeconds(1.0f);
-
-            Profile.HighLightConflicts(PlayerProfile.GetPlayer(), ms_playerChoice.GetMonster().GetComponent<Profile>());
-
-            for (int i = 1; i <= differentCount; i++)
+            List<KeyValuePair<SpriteRenderer, SpriteRenderer>> spritePairs = Profile.GetMatchingPairs(PlayerProfile.GetPlayer(), ms_playerChoice.GetMonster().GetComponent<Profile>());
+            foreach (SpriteRenderer sr in PlayerProfile.GetPlayer().GetComponentsInChildren<SpriteRenderer>())
             {
-                this.m_source.Stop();
-                this.m_source.PlayOneShot(this.m_countingSound);
-                m_hintText.text = "Matching Parts:" + sameCount;
-                m_hintText.text += "\nClashing Parts:" + i;
-                AddPoint(1);
-                yield return new WaitForSeconds(Mathf.Lerp(0.1f, 1.0f, ((float)i) / differentCount));
+                sr.color = Color.grey;
             }
-            this.m_source.PlayOneShot(this.m_completeSound);
-            yield return new WaitForSeconds(1.0f);
-            
-            sameCount = otherChoice.GetSamePartsAsPlayerCount();
-            differentCount = otherChoice.GetDifferentPartsFromPlayerCount();
+            foreach (SpriteRenderer sr in ms_playerChoice.GetComponentsInChildren<SpriteRenderer>())
+            {
+                sr.color = Color.grey;
+            }
+            foreach (SpriteRenderer sr in otherChoice.GetComponentsInChildren<SpriteRenderer>())
+            {
+                sr.color = Color.grey;
+            }
 
-            p += sameCount + differentCount;
-
-            Profile.HighLightMatchingParts(PlayerProfile.GetPlayer(), otherChoice.GetMonster().GetComponent<Profile>());
+            //Profile.HighLightMatchingParts(PlayerProfile.GetPlayer(), ms_playerChoice.GetMonster().GetComponent<Profile>());
             //compare the player and the choice made
             for (int i = 1; i <= sameCount; i++)
             {
@@ -211,13 +202,42 @@ public class Tutorializer : MonoBehaviour {
                 m_hintText.text = "Matching Parts:" + i;
                 m_hintText.text += "\nClashing Parts:" + 0;
                 AddPoint(1);
-                yield return new WaitForSeconds(Mathf.Lerp(0.1f,1.0f, ((float)i) / sameCount));
+                for (int j = 0; j < 3; j++)
+                {
+                    float tLeft = interpolateTime;
+                    while (tLeft > 0.0f)
+                    {
+                        spritePairs[i - 1].Key.color = Color.Lerp(Color.white, Color.green, tLeft);
+                        spritePairs[i - 1].Value.color = Color.Lerp(Color.white, Color.green, tLeft);
+                        tLeft -= Time.deltaTime;
+                        yield return new WaitForEndOfFrame();
+                    }
+                    tLeft = interpolateTime;
+                    while (tLeft > 0.0f)
+                    {
+                        spritePairs[i - 1].Key.color = Color.Lerp(Color.green, Color.white, tLeft);
+                        spritePairs[i - 1].Value.color = Color.Lerp(Color.green, Color.white, tLeft);
+                        tLeft -= Time.deltaTime;
+                        yield return new WaitForEndOfFrame();
+                    }
+                }
+
+                yield return new WaitForSeconds(Mathf.Lerp(0.1f, 1.0f, ((float)i) / sameCount));
             }
             this.m_source.PlayOneShot(this.m_completeSound);
             yield return new WaitForSeconds(1.0f);
 
+            //Profile.HighLightConflicts(PlayerProfile.GetPlayer(), ms_playerChoice.GetMonster().GetComponent<Profile>());
 
-            Profile.HighLightConflicts(PlayerProfile.GetPlayer(), otherChoice.GetMonster().GetComponent<Profile>());
+            spritePairs = Profile.GetClashingPairs(PlayerProfile.GetPlayer(), ms_playerChoice.GetMonster().GetComponent<Profile>());
+            foreach (SpriteRenderer sr in ms_playerChoice.GetComponentsInChildren<SpriteRenderer>())
+            {
+                sr.color = Color.grey;
+            }
+            foreach (SpriteRenderer sr in otherChoice.GetComponentsInChildren<SpriteRenderer>())
+            {
+                sr.color = Color.grey;
+            }
             for (int i = 1; i <= differentCount; i++)
             {
                 this.m_source.Stop();
@@ -225,6 +245,124 @@ public class Tutorializer : MonoBehaviour {
                 m_hintText.text = "Matching Parts:" + sameCount;
                 m_hintText.text += "\nClashing Parts:" + i;
                 AddPoint(1);
+                for (int j = 0; j < 3; j++)
+                {
+                    float tLeft = interpolateTime;
+                    while (tLeft > 0.0f)
+                    {
+                        spritePairs[i - 1].Key.color = Color.Lerp(Color.white, Color.red, tLeft);
+                        spritePairs[i - 1].Value.color = Color.Lerp(Color.white, Color.red, tLeft);
+                        tLeft -= Time.deltaTime;
+                        yield return new WaitForEndOfFrame();
+                    }
+                    tLeft = interpolateTime;
+                    while (tLeft > 0.0f)
+                    {
+                        spritePairs[i - 1].Key.color = Color.Lerp(Color.red, Color.white, tLeft);
+                        spritePairs[i - 1].Value.color = Color.Lerp(Color.red, Color.white, tLeft);
+                        tLeft -= Time.deltaTime;
+                        yield return new WaitForEndOfFrame();
+                    }
+                }
+                yield return new WaitForSeconds(Mathf.Lerp(0.1f, 1.0f, ((float)i) / differentCount));
+            }
+
+            this.m_source.PlayOneShot(this.m_completeSound);
+            yield return new WaitForSeconds(1.0f);
+
+            sameCount = otherChoice.GetSamePartsAsPlayerCount();
+            differentCount = otherChoice.GetDifferentPartsFromPlayerCount();
+
+            p += sameCount + differentCount;
+
+            //Profile.HighLightMatchingParts(PlayerProfile.GetPlayer(), otherChoice.GetMonster().GetComponent<Profile>());
+            spritePairs = Profile.GetMatchingPairs(PlayerProfile.GetPlayer(), otherChoice.GetMonster().GetComponent<Profile>());
+            foreach (SpriteRenderer sr in PlayerProfile.GetPlayer().GetComponentsInChildren<SpriteRenderer>())
+            {
+                sr.color = Color.grey;
+            }
+            foreach (SpriteRenderer sr in ms_playerChoice.GetComponentsInChildren<SpriteRenderer>())
+            {
+                sr.color = Color.grey;
+            }
+            foreach (SpriteRenderer sr in otherChoice.GetComponentsInChildren<SpriteRenderer>())
+            {
+                sr.color = Color.grey;
+            }
+
+            //compare the player and the choice made
+            for (int i = 1; i <= sameCount; i++)
+            {
+                this.m_source.Stop();
+                this.m_source.PlayOneShot(this.m_countingSound);
+                m_hintText.text = "Matching Parts:" + i;
+                m_hintText.text += "\nClashing Parts:" + 0;
+                AddPoint(1);
+                for (int j = 0; j < 3; j++)
+                {
+                    float tLeft = interpolateTime;
+                    while (tLeft > 0.0f)
+                    {
+                        spritePairs[i - 1].Key.color = Color.Lerp(Color.grey, Color.green, tLeft);
+                        spritePairs[i - 1].Value.color = Color.Lerp(Color.grey, Color.green, tLeft);
+                        tLeft -= Time.deltaTime;
+                        yield return new WaitForEndOfFrame();
+                    }
+                    tLeft = interpolateTime;
+                    while (tLeft > 0.0f)
+                    {
+                        spritePairs[i - 1].Key.color = Color.Lerp(Color.green, Color.grey, tLeft);
+                        spritePairs[i - 1].Value.color = Color.Lerp(Color.green, Color.grey, tLeft);
+                        tLeft -= Time.deltaTime;
+                        yield return new WaitForEndOfFrame();
+                    }
+                }
+                yield return new WaitForSeconds(Mathf.Lerp(0.1f, 1.0f, ((float)i) / sameCount));
+            }
+            this.m_source.PlayOneShot(this.m_completeSound);
+            yield return new WaitForSeconds(1.0f);
+
+
+            spritePairs = Profile.GetClashingPairs(PlayerProfile.GetPlayer(), otherChoice.GetMonster().GetComponent<Profile>());
+            foreach (SpriteRenderer sr in PlayerProfile.GetPlayer().GetComponentsInChildren<SpriteRenderer>())
+            {
+                sr.color = Color.grey;
+            }
+            foreach (SpriteRenderer sr in ms_playerChoice.GetComponentsInChildren<SpriteRenderer>())
+            {
+                sr.color = Color.grey;
+            }
+            foreach (SpriteRenderer sr in otherChoice.GetComponentsInChildren<SpriteRenderer>())
+            {
+                sr.color = Color.grey;
+            }
+            //Profile.HighLightConflicts(PlayerProfile.GetPlayer(), otherChoice.GetMonster().GetComponent<Profile>());
+            for (int i = 1; i <= differentCount; i++)
+            {
+                this.m_source.Stop();
+                this.m_source.PlayOneShot(this.m_countingSound);
+                m_hintText.text = "Matching Parts:" + sameCount;
+                m_hintText.text += "\nClashing Parts:" + i;
+                AddPoint(1);
+                for (int j = 0; j < 3; j++)
+                {
+                    float tLeft = interpolateTime;
+                    while (tLeft > 0.0f)
+                    {
+                        spritePairs[i - 1].Key.color = Color.Lerp(Color.grey, Color.red, tLeft);
+                        spritePairs[i - 1].Value.color = Color.Lerp(Color.grey, Color.red, tLeft);
+                        tLeft -= Time.deltaTime;
+                        yield return new WaitForEndOfFrame();
+                    }
+                    tLeft = interpolateTime;
+                    while (tLeft > 0.0f)
+                    {
+                        spritePairs[i - 1].Key.color = Color.Lerp(Color.red, Color.grey, tLeft);
+                        spritePairs[i - 1].Value.color = Color.Lerp(Color.red, Color.grey, tLeft);
+                        tLeft -= Time.deltaTime;
+                        yield return new WaitForEndOfFrame();
+                    }
+                }
                 yield return new WaitForSeconds(Mathf.Lerp(0.1f, 1.0f, ((float)i) / differentCount));
             }
             this.m_source.PlayOneShot(this.m_completeSound);
@@ -245,9 +383,23 @@ public class Tutorializer : MonoBehaviour {
             this.m_source.PlayOneShot(this.m_match);
             yield return new WaitForSeconds(1.0f);
 
-            m_leftChoice.HideCharacter();
-            m_rightChoice.HideCharacter();
+            ms_playerChoice.HideCharacter();
+            otherChoice.ExplodeCharacter();
+            yield return new WaitForSeconds(1.0f);
             //award points
+
+            foreach (SpriteRenderer sr in PlayerProfile.GetPlayer().GetComponentsInChildren<SpriteRenderer>())
+            {
+                sr.color = Color.white;
+            }
+            foreach (SpriteRenderer sr in ms_playerChoice.GetComponentsInChildren<SpriteRenderer>())
+            {
+                sr.color = Color.white;
+            }
+            foreach (SpriteRenderer sr in otherChoice.GetComponentsInChildren<SpriteRenderer>())
+            {
+                sr.color = Color.white;
+            }
         }
         matches[0].transform.name = "BestMatch";
         DontDestroyOnLoad(matches[0]);
@@ -255,11 +407,70 @@ public class Tutorializer : MonoBehaviour {
         TallyScore();
         int curDifficulty = PlayerPrefs.GetInt("Level", 0);
         int maxLevelUnlocked = PlayerPrefs.GetInt("MaxLevel", 0);
+        foreach (SpriteRenderer sr in PlayerProfile.GetPlayer().GetComponentsInChildren<SpriteRenderer>())
+        {
+            sr.color = Color.white;
+        }
         if (maxLevelUnlocked < curDifficulty + 1)
         {
             PlayerPrefs.SetInt("MaxLevel", curDifficulty + 1);
         }
         SceneManager.LoadScene("Success");
+    }
+
+    public void EnableInput()
+    {
+        UnityEngine.Cursor.visible = true;
+        this.m_leftChoice.GetButton().enabled = true;
+        this.m_rightChoice.GetButton().enabled = true;
+
+        //lerp the buttons color
+        StartCoroutine(CallAttentionToButtons());
+
+        m_TutorialText.text = "Pick the best match";
+    }
+
+    private IEnumerator CallAttentionToButtons()
+    {
+        List<Image> colorAbleSprites = new List<Image>();
+
+        colorAbleSprites.AddRange(this.m_leftChoice.GetButton().GetComponentsInChildren<Image>());
+        colorAbleSprites.AddRange(this.m_rightChoice.GetButton().GetComponentsInChildren<Image>());
+
+        float maxT = .5f;
+        float t = maxT;
+        while (t > 0.0f)
+        {
+            t -= Time.deltaTime;
+
+            foreach (Image image in colorAbleSprites)
+            {
+                image.color = Color.Lerp(Color.yellow, Color.white, t / maxT);
+            }
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        t = maxT;
+        while (t > 0.0f)
+        {
+            t -= Time.deltaTime;
+
+            foreach (Image image in colorAbleSprites)
+            {
+                image.color = Color.Lerp(Color.white, Color.yellow, t / maxT);
+            }
+            yield return new WaitForEndOfFrame();
+        }
+
+    }
+
+    public void DisableInput()
+    {
+        m_TutorialText.text = "Pick the best match";
+        UnityEngine.Cursor.visible = false;
+        this.m_leftChoice.GetButton().enabled = false;
+        this.m_rightChoice.GetButton().enabled = false;
     }
 
     public void TallyScore()

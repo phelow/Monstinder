@@ -14,7 +14,11 @@ public class LikeButton : Button {
 	// Update is called once per frame
 	void Update () {
 
-	}
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            ButtonPress();
+        }
+    }
 
 	public void ButtonPress(){
 		if (Button.ms_active) {
@@ -26,19 +30,25 @@ public class LikeButton : Button {
 
 			Debug.Log ("Like");
 
+            bool isMatch;
+
 			if (m_player.CheckForMatch (MatchProfile.ms_currentMatch)) {
-				Profile.HighLightMatchingParts (m_player, MatchProfile.ms_currentMatch);
+                isMatch = true;
+
+                Profile.HighLightMatchingParts (m_player, MatchProfile.ms_currentMatch);
 				this.m_audioSource.PlayOneShot (m_matchLikeClip);
 				PlayerProfile.AddMatch ();
                 MatchManager.SaveMatch(MatchProfile.ms_currentMatch.gameObject);
             } else {
-				this.m_audioSource.PlayOneShot (m_noMatchLikeClip);
+                isMatch = false;
+
+                this.m_audioSource.PlayOneShot (m_noMatchLikeClip);
 				Profile.HighLightConflicts (m_player, MatchProfile.ms_currentMatch);
 				PlayerProfile.RemoveMatch ();
                 MatchManager.SaveReject(MatchProfile.ms_currentMatch.gameObject);
             }
 
-            MatchManager.DockMatch(MatchProfile.ms_currentMatch.gameObject);
+            MatchManager.DockMatch(MatchProfile.ms_currentMatch.gameObject, isMatch);
             MatchProfile.ms_currentMatch = (GameObject.Instantiate(m_match, position, rotation) as GameObject).GetComponent<MatchProfile>();
         }
 

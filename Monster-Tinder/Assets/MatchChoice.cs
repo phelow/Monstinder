@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class MatchChoice : MonoBehaviour {
@@ -8,7 +9,13 @@ public class MatchChoice : MonoBehaviour {
     private static PlayerProfile ms_playerProfile;
 
     [SerializeField]
-    private Button m_button;
+    private UnityEngine.UI.Button m_button;
+    void Awake()
+    {
+        m_button = this.GetComponentInChildren<UnityEngine.UI.Button>();
+        m_button.enabled = true;
+    }
+
 	// Use this for initialization
 	void OnLevelWasLoaded () {
         ms_playerProfile = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<PlayerProfile>();
@@ -24,9 +31,30 @@ public class MatchChoice : MonoBehaviour {
 	
 	}
 
+    public UnityEngine.UI.Button GetButton()
+    {
+        return m_button;
+    }
+
+
     public void HideCharacter()
     {
-        m_monsterReference.transform.position = new Vector3(1000000, 99999999999999, 9999999999);
+        StartCoroutine(m_monsterProfile.LerpToClear());
+
+        m_monsterReference.transform.SetParent(null);
+    }
+
+    public void ExplodeCharacter()
+    {
+        foreach (SpriteRenderer sr in m_monsterReference.GetComponentsInChildren<SpriteRenderer>())
+        {
+            sr.color = Color.white;
+            Rigidbody2D rb = sr.gameObject.AddComponent<Rigidbody2D>();
+            rb.AddForce(new Vector2(Random.Range(-500, 500), Random.Range(-500, 500)));
+            rb.gravityScale = 1.0f;
+        }
+
+
         m_monsterReference.transform.SetParent(null);
     }
 
