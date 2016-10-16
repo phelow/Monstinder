@@ -245,7 +245,8 @@ public class BodyPart : MonoBehaviour {
 
 	public static List<GameObject> GetUsableParts(BodyPartSlot.BodyPartType bodyPartSlot,bool isPlayer = false, HashSet<BodyPart.ElementType> types = null){
 
-		List<GameObject> parts = usableBodyParts [bodyPartSlot];
+        List<GameObject> parts = new List<GameObject>();
+        parts.AddRange(usableBodyParts [bodyPartSlot]);
 
 		if (bodyPartSlot == BodyPartSlot.BodyPartType.LeftArm || bodyPartSlot == BodyPartSlot.BodyPartType.RightArm) {
 			parts.AddRange (usableBodyParts [BodyPartSlot.BodyPartType.Arm]);
@@ -265,6 +266,23 @@ public class BodyPart : MonoBehaviour {
 			foreach(BodyPart.ElementType type in types){
 				parts = RemoveAllOfType(parts,type);
 			}
+
+            if(parts.Count == 0)
+            {
+                parts = usableBodyParts[bodyPartSlot];
+                if (bodyPartSlot == BodyPartSlot.BodyPartType.LeftArm || bodyPartSlot == BodyPartSlot.BodyPartType.RightArm)
+                {
+                    parts.AddRange(usableBodyParts[BodyPartSlot.BodyPartType.Arm]);
+                }
+                else if (bodyPartSlot == BodyPartSlot.BodyPartType.LeftLeg || bodyPartSlot == BodyPartSlot.BodyPartType.RightLeg)
+                {
+                    parts.AddRange(usableBodyParts[BodyPartSlot.BodyPartType.Leg]);
+                }
+                else if (bodyPartSlot == BodyPartSlot.BodyPartType.LeftEar || bodyPartSlot == BodyPartSlot.BodyPartType.RightEar)
+                {
+                    parts.AddRange(usableBodyParts[BodyPartSlot.BodyPartType.Ear]);
+                }
+            }
 		}
 
 		return parts;

@@ -378,6 +378,7 @@ public class Tutorializer : MonoBehaviour
                 yield return new WaitForSeconds(1.0f);
                 //FAILURE
                 TallyScore();
+                EnableInput();
                 SceneManager.LoadScene("Failure");
             }
             this.m_source.PlayOneShot(this.m_match);
@@ -401,6 +402,7 @@ public class Tutorializer : MonoBehaviour
                 sr.color = Color.white;
             }
         }
+        EnableInput();
         matches[0].transform.name = "BestMatch";
         DontDestroyOnLoad(matches[0]);
 
@@ -415,6 +417,7 @@ public class Tutorializer : MonoBehaviour
         {
             PlayerPrefs.SetInt("MaxLevel", curDifficulty + 1);
         }
+        EnableInput();
         SceneManager.LoadScene("Success");
     }
 
