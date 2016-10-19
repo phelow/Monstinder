@@ -16,8 +16,7 @@ public class PlayerProfile : Profile {
 	[SerializeField]private BodyPartDisplay [] m_bodyPartDisplays;
 
 	[SerializeField]private static BodyPart m_choice = null;
-    [SerializeField]
-    private float m_dropTextOffset = 3.0f;
+    private const float mc_dropTextOffset = 1.5f;
 
     [SerializeField]private GameObject m_spawnIndicator;
 	private static bool skip = false;
@@ -35,6 +34,48 @@ public class PlayerProfile : Profile {
         return ms_instance;
     }
 
+
+    public static void HighLightPlayerAndMatch()
+    {
+        List<SpriteRenderer> sprites = new List<SpriteRenderer>();
+
+        sprites.AddRange(MatchProfile.ms_currentMatch.GetComponentsInChildren<SpriteRenderer>());
+        sprites.AddRange(PlayerProfile.GetPlayer().GetComponentsInChildren<SpriteRenderer>());
+
+        ms_instance.StartCoroutine(ms_instance.FlashYellow(sprites));
+    }
+
+    private IEnumerator FlashYellow(List<SpriteRenderer> sprites)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            float lerpTime = .2f;
+            float t = lerpTime;
+            while (t > 0.0f)
+            {
+                t -= Time.deltaTime;
+                foreach (SpriteRenderer sr in sprites)
+                {
+                    sr.color = Color.Lerp(Color.yellow, Color.white, t / lerpTime);
+                }
+
+                yield return new WaitForEndOfFrame();
+            }
+
+            t = lerpTime;
+            while (t > 0.0f)
+            {
+                t -= Time.deltaTime;
+                foreach (SpriteRenderer sr in sprites)
+                {
+                    sr.color = Color.Lerp(Color.white, Color.yellow, t / lerpTime);
+                }
+
+                yield return new WaitForEndOfFrame();
+            }
+        }
+
+    }
 
     void Awake(){
         DontDestroyOnLoad(this.gameObject);
@@ -66,13 +107,15 @@ public class PlayerProfile : Profile {
 		return ms_score;
 	}
 
-	public static bool Conflicts(BodyPart a, BodyPart b){
-		if (a == null || b == null) {
-			return false;
-		}
+    public static bool Conflicts(BodyPart a, BodyPart b)
+    {
+        if (a == null || b == null)
+        {
+            return false;
+        }
 
-		return ms_strongAgainst [a.GetElementType ()].Contains (b.GetElementType ()) || ms_strongAgainst [b.GetElementType ()].Contains (a.GetElementType ());
-	}
+        return ms_strongAgainst[a.GetElementType()].Contains(b.GetElementType()) || ms_strongAgainst[b.GetElementType()].Contains(a.GetElementType());
+    }
 
     public void DropAllText()
     {
@@ -98,11 +141,6 @@ public class PlayerProfile : Profile {
         {
             int newSameParts = Mathf.Min(GetPartsOfType((BodyPart.ElementType)i), potentialMatch.GetPartsOfType((BodyPart.ElementType)i));
             sameParts += newSameParts;
-
-            if (newSameParts > 0)
-            {
-                textsToDrop.Add(DropTutorialText(BodyPart.GetElementTypeString((BodyPart.ElementType)i) + " loves other " + BodyPart.GetElementTypeString((BodyPart.ElementType)i), Color.green));
-            }
         }
         return sameParts;
     }
@@ -122,25 +160,86 @@ public class PlayerProfile : Profile {
                         Mathf.Min(GetPartsOfType(strongAgainst), potentialMatch.GetPartsOfType(type))));
 
                 differentParts += newDifferentParts;
-
-                if (newDifferentParts > 0)
-                {
-                    textsToDrop.Add(DropTutorialText(BodyPart.GetElementTypeString(type) + " hates " + BodyPart.GetElementTypeString(strongAgainst), Color.red));
-                }
             }
         }
 
         return differentParts;
     }
 
-	public bool CheckForMatch(Profile potentialMatch){
+    public void DropNoMatchCorrections(Profile failedMatch)
+    {
+        DropAllText();
+        foreach (BodyPart.ElementType type in ms_strongAgainst.Keys)
+        {
+            bool shouldDrop = false;
+            if(this.GetPartsOfType(type) > 0 && failedMatch.GetPartsOfType(type) > 0)
+            {
+                shouldDrop = true;
+            }
+
+            if (shouldDrop)
+            {
+                textsToDrop.Add(DropTutorialText(BodyPart.GetElementTypeString((BodyPart.ElementType)type) + " loves other " + BodyPart.GetElementTypeString((BodyPart.ElementType)type), Color.red));
+            }
+        }
+    }
+
+
+    public void DropMatchCorrections(Profile successfulMatch)
+    {
+        DropAllText();
+        foreach (BodyPart.ElementType type in ms_strongAgainst.Keys)
+        {
+            bool shouldDrop = false;
+            List<BodyPart.ElementType> hateArray = new List<BodyPart.ElementType>();
+
+            foreach (BodyPart.ElementType strongAgainst in ms_strongAgainst[type])
+            {
+                if (successfulMatch.GetPartsOfType(strongAgainst) > 0 && this.GetPartsOfType(type) > 0)
+                {
+
+                    hateArray.Add(strongAgainst);
+                }
+            }
+
+            foreach(BodyPart.ElementType t in hateArray)
+            {
+                textsToDrop.Add(DropTutorialText(BodyPart.GetElementTypeString((BodyPart.ElementType)type) + " hates  " + BodyPart.GetElementTypeString((BodyPart.ElementType)t), Color.red));
+            }
+        }
+
+        StartCoroutine(DelayedDrop());
+    }
+
+    private IEnumerator DelayedDrop()
+    {
+        yield return new WaitForSeconds(.3f);
+        DropAllText();
+    }
+
+    public static void PrintMatchText()
+    {
+
+        int sameParts = PlayerProfile.GetPlayer().GetSameParts(MatchProfile.ms_currentMatch);
+
+
+        int differentParts = PlayerProfile.GetPlayer().GetDifferentParts(MatchProfile.ms_currentMatch);
+
+        ms_instance.m_tipText.text = "Matching Parts:" + sameParts + " Clashing Parts:" + differentParts;
+    }
+
+    public static void ClearMatchText()
+    {
+        ms_instance.m_tipText.text = "";
+    }
+
+    public bool CheckForMatch(Profile potentialMatch){
         //calculate num same parts (likelihood of match)
         int sameParts = GetSameParts(potentialMatch);
 
 
         int differentParts = GetDifferentParts(potentialMatch);
-       
-		ms_instance.m_tipText.text = "Matching Parts:" + sameParts + " Clashing Parts:" + differentParts;
+
 		return sameParts >= differentParts;
 
 	}
@@ -148,14 +247,13 @@ public class PlayerProfile : Profile {
     public GameObject DropTutorialText(string text, Color c){
 
 
-		GameObject addPointsText = GameObject.Instantiate (ms_instance.m_plusPoint,new Vector3(ms_instance.m_spawnScoreTextHere.transform.position.x + Random.Range(-m_dropTextOffset, m_dropTextOffset), 
-            ms_instance.m_spawnScoreTextHere.transform.position.y + Random.Range(-m_dropTextOffset, m_dropTextOffset),0.0f), ms_instance.m_spawnScoreTextHere.transform.rotation) as GameObject;
+		GameObject addPointsText = GameObject.Instantiate (ms_instance.m_plusPoint,new Vector3(ms_instance.m_spawnScoreTextHere.transform.position.x + Random.Range(-mc_dropTextOffset, mc_dropTextOffset), 
+            ms_instance.m_spawnScoreTextHere.transform.position.y + Random.Range(-0.5f, mc_dropTextOffset),0.0f), ms_instance.m_spawnScoreTextHere.transform.rotation) as GameObject;
 
         Text t = addPointsText.GetComponentInChildren<Text>();
 
         t.color = c;
         t.text = text;
-
         return addPointsText;
 	}
     

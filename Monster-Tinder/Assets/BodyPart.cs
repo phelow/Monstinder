@@ -60,7 +60,8 @@ public class BodyPart : MonoBehaviour {
 		Metal,
         Dragon,
         Glitch,
-        Psychic
+        Psychic,
+        Ice
 	}
 
 	public static string GetElementTypeString(ElementType et){

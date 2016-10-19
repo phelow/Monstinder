@@ -230,7 +230,7 @@ MonoBehaviour:
   m_text: {fileID: 0}
   m_polaroidGraphic: {fileID: 0}
   m_nextMatch: {fileID: 151084}
-  m_polaroid: {fileID: 0}
+  m_polaroid: {fileID: 212000010711838696}
 --- !u!114 &11435712
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -260,7 +260,7 @@ Canvas:
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
-  m_OverrideSorting: 0
+  m_OverrideSorting: 1
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_SortingLayerID: 0

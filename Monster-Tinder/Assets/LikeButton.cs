@@ -30,26 +30,29 @@ public class LikeButton : Button {
 
 			Debug.Log ("Like");
 
+            Profile.StopHighlightingParts(m_player, MatchProfile.ms_currentMatch);
             bool isMatch;
 
 			if (m_player.CheckForMatch (MatchProfile.ms_currentMatch)) {
                 isMatch = true;
 
-                Profile.HighLightMatchingParts (m_player, MatchProfile.ms_currentMatch);
+                //Profile.HighLightMatchingParts (m_player, MatchProfile.ms_currentMatch);
 				this.m_audioSource.PlayOneShot (m_matchLikeClip);
 				PlayerProfile.AddMatch ();
                 MatchManager.SaveMatch(MatchProfile.ms_currentMatch.gameObject);
-            } else {
+
+                MatchManager.InstantiateNewMatch(true);
+            } else
+            {
+                this.m_player.DropMatchCorrections(MatchProfile.ms_currentMatch);
                 isMatch = false;
 
                 this.m_audioSource.PlayOneShot (m_noMatchLikeClip);
-				Profile.HighLightConflicts (m_player, MatchProfile.ms_currentMatch);
+				//Profile.HighLightConflicts (m_player, MatchProfile.ms_currentMatch);
 				PlayerProfile.RemoveMatch ();
                 MatchManager.SaveReject(MatchProfile.ms_currentMatch.gameObject);
+                MatchManager.ShowWhyYouFailed(false);
             }
-
-            MatchManager.DockMatch(MatchProfile.ms_currentMatch.gameObject, isMatch);
-            MatchProfile.ms_currentMatch = (GameObject.Instantiate(m_match, position, rotation) as GameObject).GetComponent<MatchProfile>();
         }
 
 	}

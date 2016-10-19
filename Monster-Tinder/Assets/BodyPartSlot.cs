@@ -49,9 +49,11 @@ public class BodyPartSlot : MonoBehaviour {
 			parentPart.AddChildPart (part);
 		}
 
+        part.transform.position = new Vector3(part.transform.position.x, part.transform.position.y, part.transform.position.z - 1.0f);
 
 
-		part.transform.parent = this.transform;
+
+        part.transform.parent = this.transform;
 		part.transform.localScale = part.transform.localScale * 4.0f;
 
 

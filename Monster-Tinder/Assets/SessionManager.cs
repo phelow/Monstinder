@@ -41,6 +41,7 @@ public class SessionManager : MonoBehaviour {
             availableElements.Add(BodyPart.ElementType.Spirit);
             availableElements.Add(BodyPart.ElementType.Water);
             availableElements.Add(BodyPart.ElementType.Earth);
+            availableElements.Add(BodyPart.ElementType.Ice);
         } else if (curDifficulty == 1)
         {
             availableElements.Add(BodyPart.ElementType.Fire);
@@ -82,6 +83,18 @@ public class SessionManager : MonoBehaviour {
             availableElements.Add(BodyPart.ElementType.Glitch);
             availableElements.Add(BodyPart.ElementType.Psychic);
         }
+        else if (curDifficulty == 6)
+        {
+            availableElements.Add(BodyPart.ElementType.Plant);
+            availableElements.Add(BodyPart.ElementType.Light);
+            availableElements.Add(BodyPart.ElementType.Bug);
+            availableElements.Add(BodyPart.ElementType.Metal);
+            availableElements.Add(BodyPart.ElementType.Dragon);
+            availableElements.Add(BodyPart.ElementType.Fire);
+            availableElements.Add(BodyPart.ElementType.Glitch);
+            availableElements.Add(BodyPart.ElementType.Psychic);
+            availableElements.Add(BodyPart.ElementType.Ice);
+        }
         else
         {
             availableElements.Add(BodyPart.ElementType.Fire);
@@ -100,6 +113,7 @@ public class SessionManager : MonoBehaviour {
             availableElements.Add(BodyPart.ElementType.Fire);
             availableElements.Add(BodyPart.ElementType.Water);
             availableElements.Add(BodyPart.ElementType.Plant);
+            availableElements.Add(BodyPart.ElementType.Ice);
 
         }
 

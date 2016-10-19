@@ -23,6 +23,10 @@ public class MatchProfile : Profile {
 
     public void HidePolaroid()
     {
+        if(m_polaroid == null)
+        {
+            return;
+        }
         Destroy(m_polaroid);
     }
 

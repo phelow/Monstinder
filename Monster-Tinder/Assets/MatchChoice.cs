@@ -10,6 +10,7 @@ public class MatchChoice : MonoBehaviour {
 
     [SerializeField]
     private UnityEngine.UI.Button m_button;
+
     void Awake()
     {
         m_button = this.GetComponentInChildren<UnityEngine.UI.Button>();
@@ -39,6 +40,7 @@ public class MatchChoice : MonoBehaviour {
 
     public void HideCharacter()
     {
+        m_monster.GetComponent<MatchProfile>().HidePolaroid();
         StartCoroutine(m_monsterProfile.LerpToClear());
 
         m_monsterReference.transform.SetParent(null);
@@ -78,7 +80,7 @@ public class MatchChoice : MonoBehaviour {
 
         m_monsterProfile = m_monsterReference.GetComponent<Profile>();
         m_monster = choice;
-        choice.transform.position = this.transform.position;
+        choice.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z - .1f);
 
         m_monster.GetComponent<MatchProfile>().HidePolaroid();
     }

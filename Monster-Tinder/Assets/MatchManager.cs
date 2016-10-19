@@ -4,8 +4,11 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
-public class MatchManager : MonoBehaviour {
-	private static MatchManager ms_instance;
+public class MatchManager : MonoBehaviour
+{
+    [SerializeField]
+    private GameObject m_match;
+    private static MatchManager ms_instance;
 
 	[SerializeField]private GameObject m_matchDockingPoint;
 	[SerializeField]private GameObject m_dockedMatch;
@@ -19,8 +22,17 @@ public class MatchManager : MonoBehaviour {
     [SerializeField]
     private GameObject m_originalMatch;
 
-	// Use this for initialization
-	void Start () {
+    private const float mc_thrownScaleFactor = 150.0f;
+
+    private const float mc_randomFactor = 200.0f;
+
+    [SerializeField]
+    private UnityEngine.UI.Button m_matchButton;
+    [SerializeField]
+    private UnityEngine.UI.Button m_noButton;
+
+    // Use this for initialization
+    void Start () {
 		ms_instance = this;
         DontDestroyOnLoad(this.gameObject);
 
@@ -53,6 +65,16 @@ public class MatchManager : MonoBehaviour {
         ms_instance.m_acceptedMatches.Add(copy);
     }
 
+    public static void InstantiateNewMatch(bool isMatch)
+    {
+        GameObject go = MatchProfile.ms_currentMatch.NextMatchPostion();
+        Vector3 position = go.transform.position;
+        Quaternion rotation = go.transform.rotation;
+
+        MatchManager.DockMatch(MatchProfile.ms_currentMatch.gameObject, isMatch);
+        MatchProfile.ms_currentMatch = (GameObject.Instantiate(ms_instance.m_match, position, rotation) as GameObject).GetComponent<MatchProfile>();
+    }
+
     public void OnLevelWasLoaded()
     {
         if (SceneManager.GetActiveScene().name == "Failure" || SceneManager.GetActiveScene().name == "Success")
@@ -67,6 +89,36 @@ public class MatchManager : MonoBehaviour {
 
         copy.GetComponent<Profile>().TellNotToInit();
         ms_instance.m_rejectedMatches.Add(copy);
+        //Flash issues
+    }
+
+    public static void ShowWhyYouFailed(bool isMatch)
+    {
+        ms_instance.StartCoroutine(ms_instance.TutorializeFailure(isMatch));
+    }
+
+    public IEnumerator TutorializeFailure(bool isMatch)
+    {
+        this.m_noButton.interactable = false;
+        this.m_matchButton.interactable = false;
+        UnityEngine.Cursor.visible = false;
+        if (isMatch)
+        {
+            Profile.HighLightMatchingParts(PlayerProfile.GetPlayer(), MatchProfile.ms_currentMatch);
+
+        }
+        else {
+            Profile.HighLightConflicts(PlayerProfile.GetPlayer(), MatchProfile.ms_currentMatch);
+        }
+        PlayerProfile.PrintMatchText();
+        yield return new WaitForSeconds(3.0f);
+        PlayerProfile.ClearMatchText();
+        PlayerProfile.RemoveMatch();
+        Profile.StopHighlightingParts(PlayerProfile.GetPlayer(), MatchProfile.ms_currentMatch);
+        UnityEngine.Cursor.visible = true;
+        InstantiateNewMatch(isMatch);
+        this.m_noButton.interactable = true;
+        this.m_matchButton.interactable = true;
     }
 
 	private void ReleaseMatch(){
@@ -90,11 +142,16 @@ public class MatchManager : MonoBehaviour {
 
         Rigidbody2D rb = go.GetComponent<Rigidbody2D>();
 
+
+        SpriteRenderer[] sprites = go.GetComponentsInChildren<SpriteRenderer>();
+        
+        Color halfClear;
+
+        halfClear = new Color(Color.white.r, Color.white.g, Color.white.b, Color.clear.a + Random.Range(0.3f, 0.7f));
+
         rb.isKinematic = false;
-        rb.AddForce(new Vector2(Mathf.Clamp(Random.Range(-1000.0f, 1000.0f),-75.0f,50.0f), Mathf.Clamp(Random.Range(-1000.0f, 1000.0f), -150.0f, 150.0f)));
-
-
-
+        rb.AddForce(new Vector2(Mathf.Clamp(Random.Range(-mc_randomFactor, mc_randomFactor),-mc_thrownScaleFactor, mc_thrownScaleFactor), Mathf.Clamp(Random.Range(-mc_randomFactor, mc_randomFactor), -mc_thrownScaleFactor, mc_thrownScaleFactor)));
+                
         go.transform.position = new Vector3(go.transform.position.x, go.transform.position.y, go.transform.position.z - Random.Range(-1000.0f, -2000.0f));
         rb.gravityScale = 0.0f;
         Vector3 origScale = go.transform.localScale;
@@ -108,6 +165,11 @@ public class MatchManager : MonoBehaviour {
             rb.drag = Vector3.Distance(origPosition, transform.position)/ 850.0f;
 
             t -= Time.deltaTime;
+
+            foreach(SpriteRenderer sprite in sprites)
+            {
+                sprite.color = Color.Lerp(halfClear, Color.white, t / scaleTime);
+            }
 
             go.transform.localScale = Vector3.Lerp(shrunkScale, origScale, t/scaleTime);
 
@@ -143,46 +205,57 @@ public class MatchManager : MonoBehaviour {
     }
 
 
-    private IEnumerator DockMatchCoroutine(GameObject match){
-		m_dockedMatch = match;
-		Rigidbody2D rb = match.GetComponent<Rigidbody2D> ();
-		BoxCollider2D [] colliders = match.GetComponentsInChildren<BoxCollider2D> ();
+    private IEnumerator DockMatchCoroutine(GameObject match,bool isMatch)
+    {
+        m_dockedMatch = match;
+        Rigidbody2D rb = match.GetComponent<Rigidbody2D>();
+        BoxCollider2D[] colliders = match.GetComponentsInChildren<BoxCollider2D>();
 
-		for(int i = 0; i < colliders.Length; i++){
-			Destroy (colliders[i]);
-		}
-		//Add a random force to the match
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            Destroy(colliders[i]);
+        }
+        //Add a random force to the match
 
-		rb.isKinematic = false;
-		rb.AddForce (new Vector2(Random.Range(-50.0f,50.0f),Random.Range(-50.0f,50.0f)));
+        rb.isKinematic = false;
+        rb.AddForce(new Vector2(Random.Range(-50.0f, 50.0f), Random.Range(-50.0f, 50.0f)));
         match.transform.position = new Vector3(match.transform.position.x, match.transform.position.y, m_matchDockingPoint.transform.position.z);
 
         //seek the docking point until within a current range of it.
-        while (match != null && Vector2.Distance (new Vector2(match.transform.position.x,match.transform.position.y), 
-			new Vector2(m_matchDockingPoint.transform.position.x,m_matchDockingPoint.transform.position.y)) > mc_distanceMaximum) {
-			Vector2 force = (new Vector2 (m_matchDockingPoint.transform.position.x, m_matchDockingPoint.transform.position.y)
-				- new Vector2 (match.transform.position.x, match.transform.position.y)).normalized * mc_seekMagnitude * Time.deltaTime;
+        while (match != null && Vector2.Distance(new Vector2(match.transform.position.x, match.transform.position.y),
+            new Vector2(m_matchDockingPoint.transform.position.x, m_matchDockingPoint.transform.position.y)) > mc_distanceMaximum)
+        {
+            Vector2 force = (new Vector2(m_matchDockingPoint.transform.position.x, m_matchDockingPoint.transform.position.y)
+                - new Vector2(match.transform.position.x, match.transform.position.y)).normalized * mc_seekMagnitude * Time.deltaTime;
 
-			rb.AddForce (force);
+            rb.AddForce(force);
 
-			Debug.DrawRay (match.transform.position, force);
-			yield return new WaitForEndOfFrame ();
-		}
+            Debug.DrawRay(match.transform.position, force);
+            yield return new WaitForEndOfFrame();
+        }
 
-		//Lock the position
-		rb.isKinematic = true;
-	}
+        //Lock the position
+        rb.isKinematic = true;
 
-	public static void DockMatch(GameObject match, bool isMatch = false){
+        if (isMatch == false)
+        {
+            StartCoroutine(DestroyMatch(match));
+        }
+        else
+        {
+            StartCoroutine(HideMatch(match));
+        }
+    }
+
+	public static void DockMatch(GameObject match, bool isMatch){
 
         match.GetComponent<MatchProfile>().SetIsMatch(isMatch);
 
 
         //release previously docked match
-        ms_instance.ReleaseMatch();
 
 		//Dock the new match
-		ms_instance.StartCoroutine (ms_instance.DockMatchCoroutine (match));
+		ms_instance.StartCoroutine (ms_instance.DockMatchCoroutine (match, isMatch));
         ms_instance.StartCoroutine(ms_instance.ShrinkMatchCoroutine(match));
 
 	}

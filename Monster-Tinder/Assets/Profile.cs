@@ -191,8 +191,19 @@ public class Profile : MonoBehaviour {
 
     public void ClearHighlighting()
     {
+        foreach(SpriteRenderer sr in m_toHighlight.Keys)
+        {
+            sr.color = Color.white;
+        }
+
         this.m_toHighlight = new Dictionary<SpriteRenderer, Color>();
         this.m_highlightColor = Color.white;
+    }
+
+    public static void StopHighlightingParts(Profile a, Profile b)
+    {
+        a.ClearHighlighting();
+        b.ClearHighlighting();
     }
 
 
@@ -235,7 +246,7 @@ public class Profile : MonoBehaviour {
                 }
                 yield return new WaitForEndOfFrame();
             }
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(.1f);
         }
 	}
 
@@ -327,6 +338,7 @@ public class Profile : MonoBehaviour {
         ms_strongAgainst.Add(BodyPart.ElementType.Dragon, new List<BodyPart.ElementType>());
         ms_strongAgainst.Add(BodyPart.ElementType.Glitch, new List<BodyPart.ElementType>());
         ms_strongAgainst.Add(BodyPart.ElementType.Psychic, new List<BodyPart.ElementType>());
+        ms_strongAgainst.Add(BodyPart.ElementType.Ice, new List<BodyPart.ElementType>());
 
 
         ms_strongAgainst [BodyPart.ElementType.Water].Add (BodyPart.ElementType.Fire);
@@ -350,6 +362,10 @@ public class Profile : MonoBehaviour {
         ms_strongAgainst[BodyPart.ElementType.Spirit].Add(BodyPart.ElementType.Dragon);
         ms_strongAgainst[BodyPart.ElementType.Psychic].Add(BodyPart.ElementType.Spirit);
         ms_strongAgainst[BodyPart.ElementType.Dark].Add(BodyPart.ElementType.Psychic);
+        ms_strongAgainst[BodyPart.ElementType.Ice].Add(BodyPart.ElementType.Bug);
+        ms_strongAgainst[BodyPart.ElementType.Ice].Add(BodyPart.ElementType.Plant);
+        ms_strongAgainst[BodyPart.ElementType.Ice].Add(BodyPart.ElementType.Water);
+        ms_strongAgainst[BodyPart.ElementType.Fire].Add(BodyPart.ElementType.Ice);
     }
 
 	public int GetPartsOfType(BodyPart.ElementType type){

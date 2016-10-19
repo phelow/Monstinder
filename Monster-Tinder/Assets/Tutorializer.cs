@@ -66,8 +66,19 @@ public class Tutorializer : MonoBehaviour
 
     private IEnumerator Tutorialize()
     {
+
+        int curDifficulty = PlayerPrefs.GetInt("Level", 0);
+        int maxLevelUnlocked = PlayerPrefs.GetInt("MaxLevel", 0);
+        if (maxLevelUnlocked < curDifficulty + 1)
+        {
+            PlayerPrefs.SetInt("MaxLevel", curDifficulty + 1);
+        }
         Fader.Instance.FadeOut(1.0f);
-        m_text.text = "Congratulations, you got " + MatchManager.NumMatches() + " matches.";
+        m_text.text = "Congratulations, you've unlocked the next level.";
+        yield return new WaitForSeconds(3.0f);
+        Fader.Instance.FadeIn(1.0f);
+
+        m_text.text = " You got " + MatchManager.NumMatches() + " matches.";
         yield return new WaitForSeconds(3.0f);
         Fader.Instance.FadeIn(1.0f);
         yield return new WaitForSeconds(2.0f);
@@ -97,12 +108,12 @@ public class Tutorializer : MonoBehaviour
 
     private IEnumerator PickOne()
     {
-
         float interpolateTime = .1f;
 
         matches = MatchManager.GetMatches();
         while (matches.Count > 1)
         {
+            m_text.text = "Pick the best match.\nMatches Left:" + matches.Count;
             foreach (SpriteRenderer sr in PlayerProfile.GetPlayer().GetComponentsInChildren<SpriteRenderer>())
             {
                 sr.color = Color.white;
@@ -407,19 +418,15 @@ public class Tutorializer : MonoBehaviour
         DontDestroyOnLoad(matches[0]);
 
         TallyScore();
-        int curDifficulty = PlayerPrefs.GetInt("Level", 0);
-        int maxLevelUnlocked = PlayerPrefs.GetInt("MaxLevel", 0);
         foreach (SpriteRenderer sr in PlayerProfile.GetPlayer().GetComponentsInChildren<SpriteRenderer>())
         {
             sr.color = Color.white;
         }
-        if (maxLevelUnlocked < curDifficulty + 1)
-        {
-            PlayerPrefs.SetInt("MaxLevel", curDifficulty + 1);
-        }
         EnableInput();
         SceneManager.LoadScene("Success");
     }
+
+   
 
     public void EnableInput()
     {
@@ -429,8 +436,6 @@ public class Tutorializer : MonoBehaviour
 
         //lerp the buttons color
         StartCoroutine(CallAttentionToButtons());
-
-        m_TutorialText.text = "Pick the best match";
     }
 
     private IEnumerator CallAttentionToButtons()

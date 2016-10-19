@@ -4,15 +4,42 @@ using System.Collections;
 
 public class DifficultySystem : MonoBehaviour {
 	[SerializeField]private Text m_text;
-	// Use this for initialization
-	void Start () {
+
+    [SerializeField]
+    private UnityEngine.UI.Button m_minusButton;
+    [SerializeField]
+    private UnityEngine.UI.Button m_plusButton;
+
+    // Use this for initialization
+    void Start () {
 		SetDifficulty ();
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		
-	}
+	void Update ()
+    {
+        int curDifficulty = PlayerPrefs.GetInt("Level", 0);
+        
+        if(curDifficulty == 0)
+        {
+            this.m_minusButton.interactable = false;
+        }
+        else
+        {
+            this.m_minusButton.interactable = true;
+        }
+
+
+        if (curDifficulty < PlayerPrefs.GetInt("MaxLevel", 0))
+        {
+            this.m_plusButton.interactable = true;
+        }
+        else
+        {
+            this.m_plusButton.interactable = false;
+        }
+
+    }
 
 	private void SetDifficulty(){
 		m_text.text = "Level: " + PlayerPrefs.GetInt ("Level",0);
